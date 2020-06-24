@@ -29,9 +29,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('tests/go.mod') }}
+        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: run sqlite
+    - name: gorm source code cache
+      uses: actions/cache@v2
+      with:
+        path: ./gorm
+        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
+
+    - name: Tests
       run: GORM_DIALECT=sqlite ./test.sh
 
   mysql:
@@ -67,9 +73,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('tests/go.mod') }}
+        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: run mysql
+    - name: gorm source code cache
+      uses: actions/cache@v2
+      with:
+        path: ./gorm
+        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
+
+    - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
 
   postgres:
@@ -111,9 +123,15 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('tests/go.mod') }}
+        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: run postgres
+    - name: gorm source code cache
+      uses: actions/cache@v2
+      with:
+        path: ./gorm
+        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
+
+    - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm DB.name=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
 
   sqlserver:
@@ -149,7 +167,13 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('tests/go.mod') }}
+        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: run sqlserver
+    - name: gorm source code cache
+      uses: actions/cache@v2
+      with:
+        path: ./gorm
+        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
+
+    - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
