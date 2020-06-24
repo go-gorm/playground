@@ -10,11 +10,12 @@ Modify [https://github.com/go-gorm/playground/edit/master/main_test.go](https://
 
 If you encounter a bug in GORM, please report it at [https://github.com/go-gorm/gorm/issues](https://github.com/go-gorm/gorm/issues) with the PlayGround Pull Request's link
 
-Your code will run with GORM's lastest master branch, if you want to use a different one, please change following comment in the above [link](https://github.com/go-gorm/playground/edit/master/main_test.go) to your favorite one
+We are using following configuration run your code (GORM's latest master branch, database drivers: sqlite, mysql, postgres, sqlserver), you could change it in the above [link](https://github.com/go-gorm/playground/edit/master/main_test.go)
 
 ```go
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
+// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 ```
 
 BTW, we have prepared some structs with relationships in [https://github.com/go-gorm/playground/blob/master/models.go](https://github.com/go-gorm/playground/blob/master/models.go) that you may interested to use
