@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 dialects=("sqlite" "mysql" "postgres" "sqlserver")
 
 rm -rf gorm
