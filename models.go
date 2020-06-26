@@ -27,6 +27,12 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	Version   int
+}
+
+func (e *User) BeforeSave(db *gorm.DB) (err error) {
+	e.Version = e.Version + 1
+	return
 }
 
 type Account struct {
