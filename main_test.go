@@ -9,12 +9,20 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user1 := User{Name: "jinzhu 1"}
+	user2 := User{Name: "jinzhu 2"}
+	user3 := User{Name: "jinzhu 3"}
+	user4 := User{Name: "jinzhu 4"}
 
-	DB.Create(&user)
+	DB.Create(&user1)
+	DB.Create(&user2)
+	DB.Create(&user3)
+	//user4 not inserted
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Model(&user4).Updates(map[string]interface{}{"name": "test name"}).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	var result []User
+	DB.Find(&result)
+	t.Logf("Result: %v", result)
 }
