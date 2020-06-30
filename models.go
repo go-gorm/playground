@@ -1,10 +1,8 @@
 package main
 
 import (
-	"database/sql"
-	"time"
-
 	"gorm.io/gorm"
+	"log"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -13,48 +11,24 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Avatar   string
+	Nickname string
 }
 
-type Account struct {
+type Comment struct {
 	gorm.Model
-	UserID sql.NullInt64
-	Number string
+	UserId  uint
+	User    *User `gorm:"foreignKey:UserId;AssociationForeignKey:Id"`
+	Content string
 }
 
-type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+func (m *User) AfterFind(db *gorm.DB) error {
+	m.Avatar = "https://oss.xxx.com/" + m.Avatar
+	log.Println("UserAfterFind")
+	return nil
 }
 
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
-}
-
-type Company struct {
-	ID   int
-	Name string
-}
-
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+func (m *Comment) AfterFind(db *gorm.DB) error {
+	log.Println("CommentAfterFind")
+	return nil
 }
