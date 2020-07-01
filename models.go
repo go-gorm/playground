@@ -40,6 +40,8 @@ type Pet struct {
 	UserID *uint
 	Name   string
 	Toy    Toy `gorm:"polymorphic:Owner;"`
+	CompanyID *int
+	Company   Company `gorm:"foreignkey:CompanyID"`
 }
 
 type Toy struct {

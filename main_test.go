@@ -9,20 +9,17 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	defer func() {
-		if r := recover(); r != nil {
-			t.Errorf("Failed, got error: %v", r)
-		}
-	}()
-	user := User{Name: "jinzhu"}
+	companyID := 5
+	user := User{
+		Name: "jinzhu",
+		Pets: []*Pet{{
+			Name:      "Pet1",
+			CompanyID: &companyID,
+		}},
+	}
 
-	DB.Create(&user)
-
-	var entity = struct {
-		ID int64
-	}{}
-
-	if err := DB.Model(&User{}).Select("id").First(&entity, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	err := DB.Create(&user).Error
+	if err == nil {
+		t.Errorf("should set the following error: Error 1452: Cannot add or update a child row: a foreign key constraint fails (`gorm`.`pets`, CONSTRAINT `fk_pets_company` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`))")
 	}
 }
