@@ -26,7 +26,7 @@ func TestGORM(t *testing.T) {
 	// try, query all
 	var users []User
 	if err := DB.Find(&User{}).Find(&users).Error; err != nil {
-		t.Errorf("Failed, User query all error: %v ", err)
+		t.Errorf("Failed, User query all error : %v ", err)
 	}
 
 }
