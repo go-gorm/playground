@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"gorm.io/gorm"
+	"github.com/jinzhu/gorm"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -13,7 +13,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
+	Name      string `gorm:"default:'tester'"`
 	Age       uint
 	Birthday  *time.Time
 	Account   Account

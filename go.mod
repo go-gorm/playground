@@ -14,4 +14,3 @@ require (
 )
 
 replace gorm.io/gorm => ./gorm
-
