@@ -31,12 +31,6 @@ jobs:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: gorm source code cache
-      uses: actions/cache@v2
-      with:
-        path: ./gorm
-        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
-
     - name: Tests
       run: GORM_DIALECT=sqlite ./test.sh
 
@@ -44,7 +38,7 @@ jobs:
     needs: sqlite
     strategy:
       matrix:
-        dbversion: ['mysql:latest', 'mysql:5.7', 'mysql:5.6']
+        dbversion: ['mysql:latest'] # 'mysql:5.7', 'mysql:5.6'
         go: ['1.14']
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
@@ -59,6 +53,12 @@ jobs:
           MYSQL_RANDOM_ROOT_PASSWORD: "yes"
         ports:
           - 9910:3306
+        options: >-
+          --health-cmd "mysqladmin ping -ugorm -pgorm"
+          --health-interval 10s
+          --health-start-period 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
     - name: Set up Go 1.x
@@ -75,12 +75,6 @@ jobs:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: gorm source code cache
-      uses: actions/cache@v2
-      with:
-        path: ./gorm
-        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
-
     - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
 
@@ -88,7 +82,7 @@ jobs:
     needs: sqlite
     strategy:
       matrix:
-        dbversion: ['postgres:latest', 'postgres:11', 'postgres:10']
+        dbversion: ['postgres:latest'] # 'postgres:11', 'postgres:10'
         go: ['1.14']
         platform: [ubuntu-latest] # can not run in macOS and widnowsOS
     runs-on: ${{ matrix.platform }}
@@ -125,12 +119,6 @@ jobs:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
-    - name: gorm source code cache
-      uses: actions/cache@v2
-      with:
-        path: ./gorm
-        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
-
     - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm DB.name=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
 
@@ -153,6 +141,12 @@ jobs:
           MSSQL_PASSWORD: LoremIpsum86
         ports:
           - 9930:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P LoremIpsum86 -l 30 -Q \"SELECT 1\" || exit 1"
+          --health-start-period 10s
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
 
     steps:
     - name: Set up Go 1.x
@@ -168,12 +162,6 @@ jobs:
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
-
-    - name: gorm source code cache
-      uses: actions/cache@v2
-      with:
-        path: ./gorm
-        key: gorm-${{ github.run_id }}-${{ hashFiles('main_test.go') }}
 
     - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
