@@ -4,7 +4,6 @@ import (
 	"testing"
 	
 	"github.com/lib/pq"
-	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
