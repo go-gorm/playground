@@ -2,19 +2,28 @@ package main
 
 import (
 	"testing"
+	
+	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Message struct {
+	gorm.Model
+	Title	string
+	Body	string
+	Slug	string `gorm:"unique;not null"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	message = Message{Title: "", Body: "", Slug: ""}
 
-	DB.Create(&user)
+	err := DB.Create(&message).Error.(*pq.Error)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
