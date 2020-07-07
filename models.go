@@ -58,3 +58,10 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Message struct {
+	gorm.Model
+	Title	string
+	Body	string
+	Slug	string `gorm:"unique;not null"`
+}
