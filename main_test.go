@@ -13,9 +13,9 @@ import (
 func TestGORM(t *testing.T) {
 	message := Message{Title: "", Body: "", Slug: ""}
 
-	err := DB.Create(&message).Error.(*pq.Error)
+	err := DB.Create(&message).Error
 
 	if err != nil {
-		t.Errorf("Failed, got error: %v", err)
+		t.Errorf("Failed, got error: %v", err.(*pq.Error))
 	}
 }
