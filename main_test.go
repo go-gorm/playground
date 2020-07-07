@@ -19,7 +19,7 @@ type Message struct {
 }
 
 func TestGORM(t *testing.T) {
-	message = Message{Title: "", Body: "", Slug: ""}
+	message := Message{Title: "", Body: "", Slug: ""}
 
 	err := DB.Create(&message).Error.(*pq.Error)
 
