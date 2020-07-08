@@ -10,7 +10,7 @@ type Action struct {
 }
 
 type Role struct {
-	IdRole  string   `gorm:"column:idrole;primary_key"`
+	IdRole  int64    `gorm:"column:idrole;primary_key"`
 	Actions []Action `gorm:"Many2Many:roleaction;JoinForeignKey:idrole;JoinReferences:idaction"`
 }
 
