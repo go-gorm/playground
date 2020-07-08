@@ -23,15 +23,7 @@ func TestGORM(t *testing.T) {
 
 	var roles []Role
 
-	if err := DB.AutoMigrate(Action{}); err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-
-	if err := DB.AutoMigrate(Role{}); err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-
-	if err := DB.AutoMigrate(RoleAction{}); err != nil {
+	if err := DB.AutoMigrate(Action{}, Role{}, RoleAction{}); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
