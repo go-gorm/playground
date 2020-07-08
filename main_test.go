@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git	type Action struct {
-// GORM_BRANCH: master		IdAction int64  `gorm:"column:idaction;primary_key"`
+// GORM_REPO: https://github.com/go-gorm/gorm.git
+// GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 type Action struct {
