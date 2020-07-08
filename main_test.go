@@ -4,49 +4,38 @@ import (
 	"testing"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+type Action struct {
+	IdAction int64  `gorm:"column:idaction;primary_key"`
+	Roles    []Role `gorm:"Many2Many:roleaction;JoinForeignKey:idaction;JoinReferences:idrole"`
+}
 
-type Person struct {
-	Id    int64  `gorm:"column:id;primary_key"`
-	Code  string `gorm:"column:code"`
-	Name  string `gorm:"column:name"`
-	SSN   string `gorm:"->"`
-	Email string `gorm:"-"`
+type Role struct {
+	IdRole  string   `gorm:"column:idrole;primary_key"`
+	Actions []Action `gorm:"Many2Many:roleaction;JoinForeignKey:idrole;JoinReferences:idaction"`
+}
+
+type RoleAction struct {
+	IdRole   int64 `gorm:"column:idrole;primary_key"`
+	IdAction int64 `gorm:"column:idaction;primary_key"`
 }
 
 func TestGORM(t *testing.T) {
 
-	if err := DB.AutoMigrate(Person{}); err != nil {
+	var roles []Role
+
+	if err := DB.AutoMigrate(Action{}); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	person := &Person{
-		Id:   1,
-		Code: "JD",
-		Name: "John Doe",
-	}
-
-	if err := DB.Create(person).Error; err != nil {
+	if err := DB.AutoMigrate(Role{}); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	person1 := &Person{
-		Code: "JD",
-		SSN:  "012-74-3045",
+	if err := DB.AutoMigrate(RoleAction{}); err != nil {
+		t.Errorf("Failed, got error: %v", err)
 	}
 
-	if DB.Where(person1).Find(person1).RowsAffected == 0 {
-		t.Error("Should SSN be ignored on select?")
-	}
-
-	person2 := &Person{
-		Code:  "JD",
-		Email: "john@doe.com",
-	}
-
-	if err := DB.Where(person2).Find(person2).Error; err != nil {
+	if err := DB.Model(Action{}).Association("Roles").Find(&roles); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
