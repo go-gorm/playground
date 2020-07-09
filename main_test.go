@@ -8,13 +8,13 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Test struct {
+	Map map[string]string
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	err := DB.AutoMigrate(&Test{})
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
