@@ -8,16 +8,14 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-type Test1 struct {
-	Map []string
+type Test struct {
+	Array []string
 }
 
 
 func TestGORM(t *testing.T) {
-	t.Run("Regular Map", func(t *testing.T) {
-		err := DB.AutoMigrate(&Test1{})
-		if err != nil {
-			t.Errorf("Failed, got error: %v", err)
-		}
-	})
+	err := DB.AutoMigrate(&Test{})
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 }
