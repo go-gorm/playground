@@ -6,15 +6,25 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: sqlite
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	names := make([]string, 0)
 
-	DB.Create(&user)
+	// Works perfectly, no soucy !
+	if err := DB.Table("pets").Pluck("name", &names).Error; err != nil {
+		t.Errorf("error: %s", err.Error())
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// FIXME: Doesn't works as I expect
+	tx := DB.Table("pets AS p").Pluck("p.name", &names)
+	if err := tx.Error; err != nil {
+		t.Errorf("error: %s\n tx generate 'SELECT p.name FROM `pet AS p`' instead of 'SELECT p.name FROM `pet` AS `p`'", err.Error())
+	}
+
+	// FIXME: Doesn't works as I expect
+	tx = DB.Table("public.pets AS p").Pluck("p.name", &names)
+	if err := tx.Error; err != nil {
+		t.Errorf("error: %s\n tx generate 'SELECT p.name FROM `public.pet AS p`' instead of 'SELECT p.name FROM `public.pet` AS `p`'", err.Error())
 	}
 }
