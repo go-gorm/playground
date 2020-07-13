@@ -6,7 +6,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
 type User2 struct {
 	ID        uint   `gorm:"type:mediumint;primary_key;AUTO_INCREMENT;unsigned" json:"ID"`
@@ -16,16 +16,7 @@ type User2 struct {
 	Email     string `gorm:"type:varchar(255)" json:"email"`
 }
 
-func (u *User2) Get(db *gorm.DB) error {
-	result := db.Debug().Where(&u).First(&u)
-	if result.RecordNotFound() {
-		return nil
-	}
-	if err := result.Error; err != nil {
-		return err
-	}
-	return nil
-}
+
 
 func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&User2{})
@@ -41,7 +32,7 @@ func TestGORM(t *testing.T) {
 	find := User2{
 		Username: "test",
 	}
-	err := find.Get(DB)
+	err := db.Debug().Where(&find).First(&find)
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
