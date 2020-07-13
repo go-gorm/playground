@@ -8,7 +8,7 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-type User struct {
+type User2 struct {
 	ID        uint   `gorm:"type:mediumint;primary_key;AUTO_INCREMENT;unsigned" json:"ID"`
 	Username  string `gorm:"type:varchar(30);not null" json:"username"`
 	Password  string `gorm:"type:varchar(255)" json:"password"`
@@ -16,7 +16,7 @@ type User struct {
 	Email     string `gorm:"type:varchar(255)" json:"email"`
 }
 
-func (u *User) Get(db *gorm.DB) error {
+func (u *User2) Get(db *gorm.DB) error {
 	result := db.Debug().Where(&u).First(&u)
 	if result.RecordNotFound() {
 		return nil
@@ -28,8 +28,8 @@ func (u *User) Get(db *gorm.DB) error {
 }
 
 func TestGORM(t *testing.T) {
-	DB.AutoMigrate(&User{})
-	user := User{
+	DB.AutoMigrate(&User2{})
+	user := User2{
 		Username: "test",
 		Password: "test",
 		Rank: "0",
@@ -38,7 +38,7 @@ func TestGORM(t *testing.T) {
 	
 	DB.Create(&user)
 	
-	find := User{
+	find := User2{
 		Username: "test",
 	}
 	err := find.Get(DB)
