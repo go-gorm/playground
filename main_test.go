@@ -34,7 +34,8 @@ func TestGORM(t *testing.T) {
 	}
 	err := DB.Debug().Where(&find).First(&find)
 	if err != nil {
-		t.Errorf("Failed, got error: %v", err)
+		t.Errorf("Failed, got error: %s", err.Error())
+		return
 	}
 	if find.ID == 0 {
 		t.Errorf("Failed, did not get correct struct %v", find)
