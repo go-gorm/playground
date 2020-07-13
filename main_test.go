@@ -32,7 +32,7 @@ func TestGORM(t *testing.T) {
 	find := User2{
 		Username: "test",
 	}
-	err := db.Debug().Where(&find).First(&find)
+	err := DB.Debug().Where(&find).First(&find)
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
