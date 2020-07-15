@@ -16,11 +16,11 @@ type User struct {
 	Name      string
 	Age       uint
 	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
+	Account   Account `gorm:"foreignKey:UserID"`
+	Pets      []*Pet  `gorm:"foreignKey:UserID"`
+	Toys      []Toy   `gorm:"polymorphic:Owner"`
 	CompanyID *int
-	Company   Company
+	Company   Company `gorm:"foreignKey:CompanyID"`
 	ManagerID *uint
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
