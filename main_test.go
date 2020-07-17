@@ -19,4 +19,7 @@ func TestGORM(t *testing.T) {
 	if err := DB.Omit(clause.Associations).Model(&user).Where(&user).Updates(map[string]interface{}{"name": "test"}).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if err := DB.Omit(clause.Associations).Table("users").Where(&user).Updates(map[string]interface{}{"name": "test"}).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 }
