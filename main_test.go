@@ -77,24 +77,33 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Thing 1 Name. Wanted: %v - Got: %v", t1.Name, c.Thing1.Name)
 	}
 	if t1.CreatedAt != c.Thing1.CreatedAt {
-		t.Errorf("Thing 1 ID. Wanted: %v - Got: %v", t1.CreatedAt, c.Thing1.CreatedAt)
+		t.Errorf("Thing 1 Created. Wanted: %v - Got: %v", t1.CreatedAt, c.Thing1.CreatedAt)
+	}
+	if t1.One != c.Thing1.One {
+		t.Errorf("Thing 1 One. Wanted: %v - Got: %v", t1.One, c.Thing1.One)
 	}
 	if t2.ID != c.Thing2.ID {
-		t.Errorf("Thing 1 ID. Wanted: %v - Got: %v", t2.ID, c.Thing2.ID)
+		t.Errorf("Thing 2 ID. Wanted: %v - Got: %v", t2.ID, c.Thing2.ID)
 	}
 	if t2.Name != c.Thing2.Name {
-		t.Errorf("Thing 1 Name. Wanted: %v - Got: %v", t2.Name, c.Thing2.Name)
+		t.Errorf("Thing 2 Name. Wanted: %v - Got: %v", t2.Name, c.Thing2.Name)
 	}
 	if t2.CreatedAt != c.Thing2.CreatedAt {
-		t.Errorf("Thing 1 ID. Wanted: %v - Got: %v", t2.CreatedAt, c.Thing2.CreatedAt)
+		t.Errorf("Thing 2 Created. Wanted: %v - Got: %v", t2.CreatedAt, c.Thing2.CreatedAt)
+	}
+	if t2.Two != c.Thing2.Two {
+		t.Errorf("Thing 2 Two. Wanted: %v - Got: %v", t2.Two, c.Thing2.Two)
 	}
 	if t3.ID != c.Thing3.ID {
-		t.Errorf("Thing 1 ID. Wanted: %v - Got: %v", t3.ID, c.Thing3.ID)
+		t.Errorf("Thing 3 ID. Wanted: %v - Got: %v", t3.ID, c.Thing3.ID)
 	}
 	if t3.Name != c.Thing3.Name {
-		t.Errorf("Thing 1 Name. Wanted: %v - Got: %v", t3.Name, c.Thing3.Name)
+		t.Errorf("Thing 3 Name. Wanted: %v - Got: %v", t3.Name, c.Thing3.Name)
 	}
 	if t3.CreatedAt != c.Thing3.CreatedAt {
-		t.Errorf("Thing 1 ID. Wanted: %v - Got: %v", t3.CreatedAt, c.Thing3.CreatedAt)
+		t.Errorf("Thing 3 Created. Wanted: %v - Got: %v", t3.CreatedAt, c.Thing3.CreatedAt)
+	}
+	if t3.Three != c.Thing3.Three {
+		t.Errorf("Thing 3 Three. Wanted: %v - Got: %v", t3.CreatedAt, c.Thing3.CreatedAt)
 	}
 }
