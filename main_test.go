@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+	
+	"gorm.io/gorm/clause"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -14,7 +16,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Model(&user).Omit(clause.Associations).Updates(map[string]interface{}{"name": "test"}).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
