@@ -120,7 +120,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
     - name: Tests
-      run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm DB.name=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
+      run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm dbname=gorm host=localhost port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
 
   sqlserver:
     needs: sqlite
