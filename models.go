@@ -58,3 +58,8 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Order struct {
+	ID     int
+	Statue int8
+}
