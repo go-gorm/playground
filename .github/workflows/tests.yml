@@ -184,7 +184,7 @@ jobs:
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 10
+          --health-retries 300
 
     steps:
       - name: Set up Go 1.x
