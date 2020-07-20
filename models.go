@@ -63,3 +63,8 @@ type Order struct {
 	ID     int
 	Statue int8
 }
+
+type Article struct {
+	ID    int64  `json:"-"                    gorm:"primary_key"` // 主键
+	Title string `json:"title" `                                  // title
+}

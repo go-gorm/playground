@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -9,7 +10,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	var account = Account{Number: "test1"}
+	var account = Article{Title: "test1"}
 	if err := DB.Create(&account).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 		return
@@ -19,7 +20,9 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %s", "id is zero")
 	}
 
-	var accounts = []Account{{Number: "test2"}, {Number: "test3"}}
+	fmt.Printf("ID: %d", account.ID)
+
+	var accounts = []Article{{Title: "test2"}, {Title: "test3"}}
 	if err := DB.Create(&accounts).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 		return
@@ -29,5 +32,7 @@ func TestGORM(t *testing.T) {
 		if row.ID == 0 {
 			t.Errorf("Failed, got error: %s", "id is zero")
 		}
+
+		fmt.Printf("ID: %d", account.ID)
 	}
 }
