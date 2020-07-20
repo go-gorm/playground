@@ -177,7 +177,6 @@ jobs:
     services:
       oracle:
         image: quillbuilduser/oracle-18-xe:latest
-        env:
         ports:
           - 9940:1433
         options: >-
