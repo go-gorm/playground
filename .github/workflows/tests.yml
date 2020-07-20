@@ -142,7 +142,7 @@ jobs:
         ports:
           - 9930:1433
         options: >-
-          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P LoremIpsum86 -l 30 -Q \"SELECT 1\" || exit 1"
+          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9930/XE as sysdba"
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
@@ -164,4 +164,48 @@ jobs:
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
     - name: Tests
-      run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
+      run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9930" ./test.sh
+
+  oracle:
+    needs: sqlite
+    strategy:
+      matrix:
+        go: ['1.14']
+        platform: [ubuntu-latest] # can not run test in macOS and windows
+    runs-on: ${{ matrix.platform }}
+
+    services:
+      oracle:
+        image: quillbuilduser/oracle-18-xe:latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: LoremIpsum86
+          MSSQL_DB: gorm
+          MSSQL_USER: gorm
+          MSSQL_PASSWORD: LoremIpsum86
+        ports:
+          - 9940:1521
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P LoremIpsum86 -l 30 -Q \"SELECT 1\" || exit 1"
+          --health-start-period 10s
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: go mod pakcage cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
+
+      - name: Tests
+        run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
