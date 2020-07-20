@@ -72,7 +72,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	case "oracle":
 		log.Println("testing oracle...")
 		if dbDSN == "" {
-			dbDSN = "oracle://sys/Oracle18@localhost:9930/XEPDB1"
+			dbDSN = "oracle://sys/Oracle18@localhost:9940/XEPDB1"
 		}
 		db, err = gorm.Open(oracle.Open(dbDSN), &gorm.Config{})
 	default:

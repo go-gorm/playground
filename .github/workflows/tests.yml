@@ -179,9 +179,9 @@ jobs:
         image: quillbuilduser/oracle-18-xe:latest
         env:
         ports:
-          - 9930:1433
+          - 9940:1433
         options: >-
-          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9930/XEPDB1 as sysdba"
+          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9940/XEPDB1 as sysdba"
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
@@ -203,4 +203,4 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
       - name: Tests
-        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9930/XEPDB1" ./test.sh
+        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9940/XEPDB1" ./test.sh
