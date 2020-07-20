@@ -165,3 +165,42 @@ jobs:
 
     - name: Tests
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
+
+  oracle:
+    needs: sqlite
+    strategy:
+      matrix:
+        go: ['1.14']
+        platform: [ubuntu-latest] # can not run test in macOS and windows
+    runs-on: ${{ matrix.platform }}
+
+    services:
+      oracle:
+        image: quillbuilduser/oracle-18-xe:latest
+        env:
+        ports:
+          - 9940:1433
+        options: >-
+          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9940/XEPDB1 as sysdba"
+          --health-start-period 10s
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go }}
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+
+      - name: go mod pakcage cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
+
+      - name: Tests
+        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9940/XEPDB1" ./test.sh

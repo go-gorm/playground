@@ -13,6 +13,8 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+
+	oracle "github.com/stevefan1999-personal/gorm-driver-oracle"
 )
 
 var DB *gorm.DB
@@ -67,6 +69,12 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+	case "oracle":
+		log.Println("testing oracle...")
+		if dbDSN == "" {
+			dbDSN = "oracle://sys/Oracle18@localhost:9940/XEPDB1"
+		}
+		db, err = gorm.Open(oracle.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
