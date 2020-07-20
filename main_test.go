@@ -9,21 +9,25 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	var rows []Order
-
-	if err := DB.Model(Order{}).Find(&rows).Error; err != nil {
+	var account = Account{Number: "test1"}
+	if err := DB.Create(&account).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+		return
 	}
 
-	if err := DB.Model(Order{}).Where("status = ?", 1).Find(&rows).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if account.ID == 0 {
+		t.Errorf("Failed, got error: %s", "id is zero")
 	}
 
-	if err := DB.Model(&Order{}).Where(&Order{Statue: 1}).Find(&rows);err!= nil{
+	var accounts = []Account{{Number: "test2"}, {Number: "test3"}}
+	if err := DB.Create(&accounts).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+		return
 	}
 
-	if err := DB.Model(Order{}).Table("`order`").Find(&rows).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	for _, row := range accounts {
+		if row.ID == 0 {
+			t.Errorf("Failed, got error: %s", "id is zero")
+		}
 	}
 }
