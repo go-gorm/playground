@@ -20,7 +20,7 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %s", "id is zero")
 	}
 
-	fmt.Printf("ID: %d", account.ID)
+	fmt.Printf("ID: %d \n", account.ID)
 
 	var accounts = []Article{{Title: "test2"}, {Title: "test3"}}
 	if err := DB.Create(&accounts).Error; err != nil {
@@ -33,6 +33,6 @@ func TestGORM(t *testing.T) {
 			t.Errorf("Failed, got error: %s", "id is zero")
 		}
 
-		fmt.Printf("ID: %d", account.ID)
+		fmt.Printf("ID: %d \n", row.ID)
 	}
 }
