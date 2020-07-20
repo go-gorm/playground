@@ -142,7 +142,7 @@ jobs:
         ports:
           - 9930:1433
         options: >-
-          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9930/XE as sysdba"
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P LoremIpsum86 -l 30 -Q \"SELECT 1\" || exit 1"
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
@@ -164,7 +164,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
     - name: Tests
-      run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9930" ./test.sh
+      run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
 
   oracle:
     needs: sqlite
@@ -178,15 +178,10 @@ jobs:
       oracle:
         image: quillbuilduser/oracle-18-xe:latest
         env:
-          ACCEPT_EULA: Y
-          SA_PASSWORD: LoremIpsum86
-          MSSQL_DB: gorm
-          MSSQL_USER: gorm
-          MSSQL_PASSWORD: LoremIpsum86
         ports:
-          - 9940:1521
+          - 9930:1433
         options: >-
-          --health-cmd="/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P LoremIpsum86 -l 30 -Q \"SELECT 1\" || exit 1"
+          --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9930/XEPDB1 as sysdba"
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
@@ -208,4 +203,4 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
       - name: Tests
-        run: GORM_ENABLE_CACHE=true GORM_DIALECT=sqlserver GORM_DSN="sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm" ./test.sh
+        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="oracle://sys/Oracle18@localhost:9930/XEPDB1" ./test.sh
