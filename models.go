@@ -64,7 +64,7 @@ type Order struct {
 	Statue int8
 }
 
-type Article struct {
+type NewArticle struct {
 	ID    int64  `json:"-"                   gorm:"type: int auto_increment comment '主键'; primary_key"` // 主键
 	Title string `json:"title" `                                                                        // title
 }
