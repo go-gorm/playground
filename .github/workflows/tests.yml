@@ -178,7 +178,7 @@ jobs:
       oracle:
         image: quillbuilduser/oracle-18-xe:latest
         ports:
-          - 9940:1433
+          - 9940:1521
         options: >-
           --health-cmd="echo SELECT 1 FROM DUAL | sqlplus sys/Oracle18@localhost:9940/XEPDB1 as sysdba"
           --health-start-period 10s

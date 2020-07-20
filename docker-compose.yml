@@ -32,4 +32,4 @@ services:
   oracle:
     image: quillbuilduser/oracle-18-xe:latest
     ports:
-      - 9940:1433
+      - 9940:1521
