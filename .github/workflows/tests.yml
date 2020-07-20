@@ -179,13 +179,6 @@ jobs:
         image: quillbuilduser/oracle-18-xe:latest
         ports:
           - 9940:1521
-        options: >-
-          --health-cmd="echo \"SELECT 1 FROM DUAL;\" | sqlplus sys/Oracle18@localhost:9940/XEPDB1 as sysdba"
-          --health-start-period 10s
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 9999
-
     steps:
       - name: Set up Go 1.x
         uses: actions/setup-go@v2
