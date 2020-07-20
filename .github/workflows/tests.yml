@@ -184,7 +184,7 @@ jobs:
           --health-start-period 10s
           --health-interval 10s
           --health-timeout 5s
-          --health-retries 300
+          --health-retries 9999
 
     steps:
       - name: Set up Go 1.x
@@ -202,4 +202,4 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
       - name: Tests
-        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="sys/Oracle18@localhost:9940/XEPDB1" ./test.sh
+        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="sys/Oracle18@localhost:9940/XEPDB1 as sysdba" ./test.sh
