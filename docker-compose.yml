@@ -11,7 +11,7 @@ services:
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
   postgres:
-    image: 'postgres:12-alpine'
+    image: 'postgres:latest'
     ports:
       - 9920:5432
     environment:
@@ -29,4 +29,3 @@ services:
       - MSSQL_DB=gorm
       - MSSQL_USER=gorm
       - MSSQL_PASSWORD=LoremIpsum86
-
