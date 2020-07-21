@@ -104,3 +104,15 @@ func (u *UUIDModel) BeforeCreate(tx *gorm.DB) (err error) {
 	}
 	return nil
 }
+
+type UserWork struct {
+	User User `gorm:"foreignkey:id;association_foreignkey:uid;primary_key"`
+	Work Work `gorm:"foreignkey:id;association_foreignkey:wid;primary_key"`
+	CreationDateTimeModel
+}
+
+type Work struct {
+	ID   uint   `gorm:"primary_key"`
+	Name string `gorm:"size: 30"`
+	CreationDateTimeModel
+}

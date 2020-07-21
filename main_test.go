@@ -13,5 +13,6 @@ func TestGORM(t *testing.T) {
 		Name: "Test",
 	}
 	DB.Create(&comp)
-
+	data := UserWork{}
+	DB.AutoMigrate(&data)
 }
