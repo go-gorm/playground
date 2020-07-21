@@ -11,7 +11,7 @@ services:
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
   postgres:
-    image: 'postgres:latest'
+    image: 'postgres:12-alpine'
     ports:
       - 9920:5432
     environment:

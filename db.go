@@ -83,15 +83,22 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &Post{}, &Category{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
+	DB.Migrator().DropTable("user_friends", "user_speaks", "posts_categories")
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
 		os.Exit(1)
+	}
+
+	if os.Getenv("GORM_DIALECT") == "postgres" {
+		if err = DB.Exec(`create extension if not exists "uuid-ossp"`).Error; err != nil {
+			log.Printf("Failed to create 'uuid-ossp' extension, but got error %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {
