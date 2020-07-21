@@ -195,4 +195,4 @@ jobs:
           key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
       - name: Tests
-        run: GORM_ENABLE_CACHE=true GORM_DIALECT=oracle GORM_DSN="sys/Oracle18@localhost:9940/XEPDB1 as sysdba" ./test.sh
+        run: GORM_ENABLE_CACHE=false GORM_DIALECT=oracle GORM_DSN="sys/Oracle18@localhost:9940/XEPDB1 as sysdba" ./test.sh
