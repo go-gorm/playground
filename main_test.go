@@ -7,18 +7,19 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
-type User2 struct {
-	Aid int64  `gorm:"primaryKey;size:64;autoIncrement:false`
+type User3 struct {
+	Id  int64  `gorm:"primaryKey;size:64;autoIncrement:false"`
 	Val string `gorm:"size:32"`
 	CreatedAt time.Time
 }
 
 func TestGORM(t *testing.T) {
-	user2 := User2{Aid: 1, Val: "jinzhu"}
+	user3 := User3{Id: 1, Val: "jinzhu"}
+	DB.AutoMigrate(&User3{})
 
-	if err := DB.Create(&user2).Error; err != nil {
+	if err := DB.Create(&user3).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
