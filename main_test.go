@@ -8,7 +8,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
 
 type Post struct {
 	ID         uuid.UUID `gorm:"primary_key;type:uuid;default:uuid_generate_v4()"`
