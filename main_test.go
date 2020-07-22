@@ -1,6 +1,7 @@
 package main
 
 import (
+	"time"
 	"testing"
 )
 
@@ -11,6 +12,7 @@ import (
 type User2 struct {
 	Aid int64  `gorm:"primaryKey;size:64;autoIncrement:false`
 	Val string `gorm:"size:32"`
+	CreatedAt time.Time
 }
 
 func TestGORM(t *testing.T) {
