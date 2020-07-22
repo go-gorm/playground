@@ -8,13 +8,15 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type User2 struct {
+	Aid int64  `gorm:"primaryKey;size:64;autoIncrement:false`
+	Val string `gorm:"size:32"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user2 := User2{Aid: 1, Val: "jinzhu"}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Create(&user2).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
