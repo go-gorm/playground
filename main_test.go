@@ -10,7 +10,7 @@ import (
 
 func TestGORM(t *testing.T) {
 	person := Person{Id: 1231231231231, Name: "test"}
-	if err := DB.Table(person.TableName()).
+	if err := DB.
 		FirstOrCreate(&person, person).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 		return
