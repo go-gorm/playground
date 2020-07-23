@@ -28,11 +28,7 @@ type User struct {
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
 }
-type Person struct {
-	gorm.Model
-	Id   int64 `gorm:"type:bigint(20);NOT NULL;PRIMARY_KEY;"`
-	Name string
-}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
