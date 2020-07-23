@@ -17,4 +17,7 @@ func TestGORM(t *testing.T) {
 	if err := DB.Table("users").Select("name").First(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if err := DB.Table("users").Select("name").Take(&result).Error; result != "" {
+		t.Errorf("Failed, result: %v, got error: %v", result, err)
+	}
 }
