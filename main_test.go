@@ -2,8 +2,7 @@ package main
 
 import (
 	"testing"
-	
-	"gorm.io/driver/sqlite"
+
 	"gorm.io/gorm"
 )
 
@@ -15,7 +14,7 @@ func TestGORM(t *testing.T) {
 
 	DB.Set("gorm:auto_preload", true)
 	DB.AutoMigrate(&Organisation{})
-	if _, err := SetupOrganisation("name", db); err != nil {
+	if _, err := SetupOrganisation("name", DB); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
@@ -39,7 +38,7 @@ type OrgSettings struct {
 }
 
 // User holds user data
-type User struct {
+type GrafUser struct {
 	Name          string
 	ID            uint
 	Email         string
@@ -70,7 +69,7 @@ func SetupOrganisation(orgName string, db *gorm.DB) (orgModel *Organisation, err
 		GrafanaName:  orgName,
 		ID:           123,
 		GrafanaID:    "123",
-		GrafanaUsers: []User{},
+		GrafanaUsers: []GrafUser{},
 	}
 
 	// Create a new auth token
@@ -79,7 +78,7 @@ func SetupOrganisation(orgName string, db *gorm.DB) (orgModel *Organisation, err
 
 	// Create new admin user and add him to the organisation
 	//admin, err := p.Grafana.CreateUser(org, "Admin", "admin")
-	admin := &User{
+	admin := &GrafUser{
 		Name:  "Jesse-admin",
 		Email: "jesse.geens@gmail.com",
 	}
@@ -87,7 +86,7 @@ func SetupOrganisation(orgName string, db *gorm.DB) (orgModel *Organisation, err
 
 	// Create new viewer user and add him to the organisation
 	//viewer, err := p.Grafana.CreateUser(org, "Viewer", "viewer")
-	viewer := &User{
+	viewer := &GrafUser{
 		Name:  "Jesse-viewer",
 		Email: "jesse.geens.viewer@gmail.com",
 	}
