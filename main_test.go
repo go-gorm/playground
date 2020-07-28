@@ -34,7 +34,7 @@ type OrgSettings struct {
 	ID               uint `gorm:"primarykey"`
 	GrafanaID        string
 	GrafanaAuthToken string
-	GrafanaUsers     []User `gorm:"embedded"`
+	GrafanaUsers     []GrafUser `gorm:"embedded"`
 }
 
 // User holds user data
