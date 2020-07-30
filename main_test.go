@@ -25,8 +25,8 @@ type Host struct {
 
 
 func TestGORM(t *testing.T) {
-	db.AutoMigrate(&HostGroup{})
-	db.AutoMigrate(&Host{})
+	DB.AutoMigrate(&HostGroup{})
+	DB.AutoMigrate(&Host{})
 	DB.Exec("INSERT INTO hosts (id) VALUES ('22222222-2222-2222-2222-222222222222')") //Foreign key null
 	hosts := make([]*host.Host, 0)
 	err := DB.Find(&hosts).Error
