@@ -5,6 +5,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
+
 type Service struct {
 	ID uuid.UUID `json:"id,omitempty" gorm:"type:uuid;primary_key;"`
 
