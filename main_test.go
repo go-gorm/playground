@@ -28,7 +28,7 @@ func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&HostGroup{})
 	DB.AutoMigrate(&Host{})
 	DB.Exec("INSERT INTO hosts (id) VALUES ('22222222-2222-2222-2222-222222222222')") //Foreign key null
-	hosts := make([]*host.Host, 0)
+	hosts := make([]*Host, 0)
 	err := DB.Find(&hosts).Error
 	if err != nil {
 		panic(err)
