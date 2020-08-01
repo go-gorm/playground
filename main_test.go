@@ -1,7 +1,6 @@
 package main
 
 import (
-	"gorm.io/gorm"
 	"testing"
 )
 
@@ -10,34 +9,21 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
+	user := User{Name: "jinzhu"}
 
-	type Airport struct {
-		gorm.Model
-		Uuid string `gorm:"type:char(22);not null;uniqueIndex"`
-		CompanyId uint32 `gorm:"not null;uniqueIndex:COMPANY_IATA,COMPANY_ICAO"`
-		IataAirportCode string `gorm:"type:char(3);uniqueIndex:COMPANY_IATA"`
-		IcaoAirportCode string `gorm:"type:char(4);uniqueIndex:COMPANY_ICAO"`
-	}
+	DB.Create(&user)
 
-	if err := DB.AutoMigrate(&Airport{}); err != nil {
+	var c int64
+
+	if err := DB.Table("users").Where("name = ?", "jinzhu").Select("name").Count(&c); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	port := &Airport{
-		Uuid:            "4MxjS55RAivKy0edVtZurH",
-		CompanyId:       1,
-		IataAirportCode: "PVG",
-		IcaoAirportCode: "ZSPD",
-	}
-
-	if err := DB.Create(port).Error; err != nil {
+	if err := DB.Table("users").Where("name = ?", "jinzhu").Count(&c); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	port.Uuid = "3pqmAIxhHGb7V0rZ2Egv1X"
-	port.CompanyId = 2
-
-	if err := DB.Create(port).Error; err != nil {
+	if err := DB.Table("users").Count(&c); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
