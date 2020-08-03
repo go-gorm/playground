@@ -13,17 +13,29 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var c int64
+	var c int64 = 0
 
-	if err := DB.Table("users").Where("name = ?", "jinzhu").Select("name").Count(&c); err != nil {
+	if err := DB.Table("users").Where("name = ?", "jinzhu").Select("name").Count(&c).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if c != 1 {
+		t.Errorf("Failed, expected 1, got %v", c)
+	}
+	c = 0
 
-	if err := DB.Table("users").Where("name = ?", "jinzhu").Count(&c); err != nil {
+	if err := DB.Table("users").Where("name = ?", "jinzhu").Count(&c).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if c != 1 {
+		t.Errorf("Failed, expected 1, got %v", c)
+	}
+	c = 0
 
-	if err := DB.Table("users").Count(&c); err != nil {
+	if err := DB.Table("users").Count(&c).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if c != 1 {
+		t.Errorf("Failed, expected 1, got %v", c)
+	}
+	c = 0
 }
