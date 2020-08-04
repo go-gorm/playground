@@ -18,16 +18,7 @@ func TestGORM(t *testing.T) {
 	var result User
 	DB.First(&result, user.ID)
 	
-	userJson, _ := json.Marshal(user)
-	resultJson, _ := json.Marshal(result)
-	
-	if string(resultJson) != string(userJson) {
-		t.Errorf("jsonEqual Failed, resultJson: %v, userJson: %v", string(resultJson), string(userJson))
-	}
 	if !result.CreatedAt.Equal(user.CreatedAt) {
 		t.Errorf("time.Equal Failed, result.CreatedAt: %v, user.CreatedAt: %v", result.CreatedAt, user.CreatedAt)
-	}
-	if !reflect.DeepEqual(result.CreatedAt, user.CreatedAt) {
-		t.Errorf("reflect.DeepEqual Failed, result.CreatedAt: %v, user.CreatedAt: %v", result.CreatedAt, user.CreatedAt)
 	}
 }
