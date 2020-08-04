@@ -21,8 +21,8 @@ func TestGORM(t *testing.T) {
 	userJson, _ := json.Marshal(user)
 	resultJson, _ := json.Marshal(result)
 	
-	if resultJson != userJson {
-		t.Errorf("jsonEqual Failed, resultJson: %v, userJson: %v", resultJson, userJson)
+	if string(resultJson) != string(userJson) {
+		t.Errorf("jsonEqual Failed, resultJson: %v, userJson: %v", string(resultJson), string(userJson))
 	}
 	if !result.CreatedAt.Equal(user.CreatedAt) {
 		t.Errorf("time.Equal Failed, result.CreatedAt: %v, user.CreatedAt: %v", result.CreatedAt, user.CreatedAt)
