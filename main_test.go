@@ -18,24 +18,11 @@ func TestGORM(t *testing.T) {
 	if err := DB.Table("users").Where("name = ?", "jinzhu").Select("name").Count(&c).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
-	if c != 1 {
-		t.Errorf("Failed, expected 1, got %v", c)
-	}
-	c = 0
 
-	if err := DB.Table("users").Where("name = ?", "jinzhu").Count(&c).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	for i := uint(0); i < 10000; i ++ {
+		err := DB.Updates(User{Name: "jinzhu", Age: i}).Error
+		if err != nil {
+				t.Errorf("gorm errored :%v ", err)
+		}
 	}
-	if c != 1 {
-		t.Errorf("Failed, expected 1, got %v", c)
-	}
-	c = 0
-
-	if err := DB.Table("users").Count(&c).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-	if c != 1 {
-		t.Errorf("Failed, expected 1, got %v", c)
-	}
-	c = 0
 }
