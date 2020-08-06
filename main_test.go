@@ -1,11 +1,9 @@
 package main
 
 import (
-	"regexp"
 	"testing"
 
 	"gorm.io/gorm"
-	. "gorm.io/gorm/utils/tests"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -31,7 +29,6 @@ func TestTable(t *testing.T) {
 	u.Name = "mrparano1d"
 
 	if err := DB.Create(&u).Error; err != nil {
-		panic(err)
+		t.Errorf("Failed, got error: %v", err)
 	}
-	AssertEqual(t, u.Name, "mrparano1d")
 }
