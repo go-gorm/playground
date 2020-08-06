@@ -14,6 +14,7 @@ import (
 type User struct {
 	gorm.Model
 	Name      string
+	Email      string
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
@@ -57,4 +58,12 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	var user User
+	if err := DB.Where(&User{Email: email}).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil //nolint:wsl
 }

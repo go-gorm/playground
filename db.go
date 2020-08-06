@@ -77,7 +77,10 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	} else if debug == "false" {
 		db.Logger = db.Logger.LogMode(logger.Silent)
 	}
-
+	sqlDB, err := DB.DB()
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetMaxIdleConns(100)
+	sqlDB.SetConnMaxLifetime(5 * time.Minute)
 	return
 }
 
