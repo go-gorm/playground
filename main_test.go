@@ -9,7 +9,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{Name: NewCrypto([]byte("jinzhu"))}
 
 	DB.Create(&user)
 
@@ -17,4 +17,5 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	t.Log(result.Name)
 }
