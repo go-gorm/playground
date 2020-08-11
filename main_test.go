@@ -10,13 +10,16 @@ import (
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
-
 	DB.Create(&user)
 
-	for i := uint(0); i < 10000; i ++ {
-		err := DB.Updates(&user).Where("age = ?", i).Error
-		if err != nil {
-				t.Errorf("gorm errored :%v ", err)
-		}
+	company := Company{
+		ID:   int(user.ID),
+		Name: user.Name,
+	}
+	DB.Create(&company)
+
+	i := new(int64)
+	if err := DB.Table("users").Joins("INNER JOIN companies on companies.name = users.name").Count(i).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
 	}
 }
