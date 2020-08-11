@@ -19,7 +19,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&company)
 
 	i := new(int64)
-	if err := DB.Table("users").Joins("INNER JOIN companies on companies.name = users.name").Count(i).Error; err != nil {
+	if err := DB.Table("users").Joins("INNER JOIN companies on companies.name = users.name").Where("users.name = ?", user.Name).Count(i).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
