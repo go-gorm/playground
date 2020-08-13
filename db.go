@@ -7,6 +7,10 @@ import (
 	"path/filepath"
 	"time"
 
+	gormv1 "github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	_ "github.com/jinzhu/gorm/dialects/sqlite"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -15,7 +19,10 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-var DB *gorm.DB
+var (
+	DB   *gorm.DB
+	DBV1 *gormv1.DB
+)
 
 func init() {
 	var err error
@@ -38,6 +45,11 @@ func init() {
 		}
 
 		DB.Logger = DB.Logger.LogMode(logger.Info)
+	}
+
+	if DBV1, err = OpenTestConnectionV1(); err != nil {
+		log.Printf("failed to connect database, got error %v\n", err)
+		os.Exit(1)
 	}
 }
 
@@ -76,6 +88,35 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db.Logger = db.Logger.LogMode(logger.Info)
 	} else if debug == "false" {
 		db.Logger = db.Logger.LogMode(logger.Silent)
+	}
+
+	return
+}
+
+func OpenTestConnectionV1() (db *gormv1.DB, err error) {
+	dbDSN := os.Getenv("GORM_DSN")
+	switch os.Getenv("GORM_DIALECT") {
+	case "mysql":
+		log.Println("testing mysql...")
+		if dbDSN == "" {
+			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
+		}
+		db, err = gormv1.Open("mysql", dbDSN)
+	case "postgres":
+		log.Println("testing postgres...")
+		if dbDSN == "" {
+			dbDSN = "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+		}
+		db, err = gormv1.Open("postgres", dbDSN)
+	default:
+		log.Println("testing sqlite3...")
+		db, err = gormv1.Open("sqlite3", "gorm.db")
+	}
+
+	if debug := os.Getenv("DEBUG"); debug == "true" {
+		db.LogMode(true)
+	} else if debug == "false" {
+		db.LogMode(false)
 	}
 
 	return
