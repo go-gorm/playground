@@ -80,7 +80,7 @@ func TestGORM(t *testing.T) {
 	t.Logf("[2] result: %v", result)
 
 	// Case 3
-	// Adding a GROUP BY statement will lead to an incorrect count (1 instead of 2)
+	// Adding a GROUP BY statement will lead to the correct result, but is a bit cumbersome
 	// SELECT * FROM "users" WHERE name = 'jinzhu' GROUP BY "id" ORDER BY "users"."id" LIMIT 1
 	// SELECT count(1) FROM "users" WHERE name = 'jinzhu' GROUP BY "id" ORDER BY "users"."id" LIMIT 1
 	errRetrieve = DB.Table("users").
