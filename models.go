@@ -11,8 +11,24 @@ import (
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
+
+type BaseModel struct {
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	CreatedBy *int
+	Created   *User `gorm:"foreignKey:CreatedBy"`
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+type VersionModel struct {
+	BaseModel
+	Version   int
+	CompanyID int
+}
+
 type User struct {
-	gorm.Model
+	VersionModel
 	Name      string
 	Age       uint
 	Birthday  *time.Time
