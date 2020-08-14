@@ -17,33 +17,34 @@ import (
 
 var DB *gorm.DB
 
-func init() {
-	var err error
-	if DB, err = OpenTestConnection(); err != nil {
-		log.Printf("failed to connect database, got error %v\n", err)
+func initDb() {
+	var errOpen error
+	DB, errOpen = OpenTestConnection("postgres", true)
+	if errOpen != nil {
+		log.Printf("failed to connect database, got error %v\n", errOpen)
 		os.Exit(1)
-	} else {
-		sqlDB, err := DB.DB()
-		if err == nil {
-			err = sqlDB.Ping()
-		}
-
-		if err != nil {
-			log.Printf("failed to connect database, got error %v\n", err)
-		}
-
-		RunMigrations()
-		if DB.Dialector.Name() == "sqlite" {
-			DB.Exec("PRAGMA foreign_keys = ON")
-		}
-
-		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
+
+	sqlDB, err := DB.DB()
+	if err == nil {
+		err = sqlDB.Ping()
+	}
+
+	if err != nil {
+		log.Printf("failed to connect database, got error %v\n", err)
+	}
+
+	RunMigrations()
+	if DB.Dialector.Name() == "sqlite" {
+		DB.Exec("PRAGMA foreign_keys = ON")
+	}
+
+	DB.Logger = DB.Logger.LogMode(logger.Info)
 }
 
-func OpenTestConnection() (db *gorm.DB, err error) {
+func OpenTestConnection(dialect string, debug bool) (db *gorm.DB, err error) {
 	dbDSN := os.Getenv("GORM_DSN")
-	switch os.Getenv("GORM_DIALECT") {
+	switch dialect {
 	case "mysql":
 		log.Println("testing mysql...")
 		if dbDSN == "" {
@@ -72,9 +73,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
 	}
 
-	if debug := os.Getenv("DEBUG"); debug == "true" {
+	if debug {
 		db.Logger = db.Logger.LogMode(logger.Info)
-	} else if debug == "false" {
+	} else {
 		db.Logger = db.Logger.LogMode(logger.Silent)
 	}
 
@@ -83,7 +84,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
