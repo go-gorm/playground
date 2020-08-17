@@ -17,7 +17,7 @@ func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&TestTable{})
 
 	var count int64
-	db.Raw("select count(*) as count from pg_indexes where tablename='test_tables'").First(&count)
+	DB.Raw("select count(*) as count from pg_indexes where tablename='test_tables'").First(&count)
 
 	if count == 0 {
 		t.Errorf("create index fail")
