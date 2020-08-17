@@ -22,6 +22,6 @@ func TestGORM(t *testing.T) {
 
 	
 	if count == 0 {
-		t.Errorf("Failed, got error: %v", err)
+		t.Errorf("test_tables create index fail")
 	}
 }
