@@ -9,7 +9,6 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 type TestTable struct {
-	gorm.Model
 	Address string `gorm:"unique_index:address_type_user"`
 	Type    string `gorm:"unique_index:address_type_user"`
 }
