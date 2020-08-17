@@ -8,13 +8,19 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type TestTable struct {
+	gorm.Model
+	Address string `gorm:"unique_index:address_type_user"`
+	Type    string `gorm:"unique_index:address_type_user"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.AutoMigrate(&TestTable{})
 
-	DB.Create(&user)
+	var count int64
+	db.Raw("select count(*) as count from pg_indexes where tablename='test_tables'").First(&count)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if count == 0 {
+		t.Errorf("create index fail")
 	}
 }
