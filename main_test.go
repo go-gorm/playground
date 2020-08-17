@@ -6,7 +6,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
 
 type TestTable struct {
 	Address string `gorm:"unique_index:address_type_user"`
