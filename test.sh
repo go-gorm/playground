@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-dialects=("sqlite" "mysql" "postgres" "sqlserver")
+dialects=("sqlite")
+# dialects=("sqlite" "mysql" "postgres" "sqlserver")
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then

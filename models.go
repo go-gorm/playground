@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/guregu/null/zero"
 	"gorm.io/gorm"
 )
 
@@ -57,4 +58,10 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+// MHAllergy represents a MHAllergy in the system
+type MHAllergy struct {
+	gorm.Model
+	Allergen zero.String `json:"allergen"`
 }
