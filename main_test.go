@@ -8,13 +8,14 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	corp := Corp{Base:Company{Name: "jinzhu"}}
 
-	DB.Create(&user)
+	DB.Create(&corp)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var result Corp
+	if err := DB.First(&result, corp.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }

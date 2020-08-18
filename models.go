@@ -54,6 +54,11 @@ type Company struct {
 	Name string
 }
 
+type Corp struct {
+        gorm.Model
+        Base Company `gorm:"embedded;embeddedPrefix:company_"`
+}
+
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
