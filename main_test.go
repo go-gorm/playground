@@ -9,12 +9,16 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	petTypes := []PetType{{Type: "Cat"}, {Type: "Dog"}}
+	DB.Create(&petTypes)
 
-	DB.Create(&user)
+	pet := Pet{Name: "Felix", PetType: petTypes[0]}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	DB.Create(&pet)
+
+	var result []Pet
+	if err := DB.Joins("PetType").Find(&result, "PetType.Type = ?", "Cat").Error; err != nil {
+		t.Errorf("failed, got error: %v", err)
 	}
+	t.Logf("%+v", result)
 }

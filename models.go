@@ -34,12 +34,18 @@ type Account struct {
 	UserID sql.NullInt64
 	Number string
 }
+type PetType struct {
+	gorm.Model
+	Type string
+}
 
 type Pet struct {
 	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+	UserID    *uint
+	Name      string
+	Toy       Toy `gorm:"polymorphic:Owner;"`
+	PetTypeID uint
+	PetType   PetType
 }
 
 type Toy struct {
