@@ -64,32 +64,32 @@ func TestGORM_AutoMigrate2(t *testing.T) { // OK
 	}
 }
 
-func TestGORM_StackOverflowInCreate(t *testing.T) {
-	if os.Getenv("SKIP") != "" {
-		t.Skip()
-	}
-	InitDB(true, false)
-
-	admin := &User{PersonName: " Admin", Enabled: true, UserType: "admin", Password: "123"}
-	admin.Name = "Admin"
-	admin.Description = "Администратор сайта"
-	admin.User = admin
-	testDB.Create(admin)
-}
-
-func TestGORM_StackOverflowInSave(t *testing.T) {
-	if os.Getenv("SKIP") != "" {
-		t.Skip()
-	}
-	InitDB(true, false)
-
-	admin := &User{PersonName: " Admin", Enabled: true, UserType: "admin", Password: "123"}
-	admin.Name = "Admin"
-	admin.Description = "Администратор сайта"
-	testDB.Create(admin)
-	admin.User = admin
-	testDB.Save(admin)
-}
+//func TestGORM_StackOverflowInCreate(t *testing.T) {
+//	if os.Getenv("SKIP") != "" {
+//		t.Skip()
+//	}
+//	InitDB(true, false)
+//
+//	admin := &User{PersonName: " Admin", Enabled: true, UserType: "admin", Password: "123"}
+//	admin.Name = "Admin"
+//	admin.Description = "Администратор сайта"
+//	admin.User = admin
+//	testDB.Create(admin)
+//}
+//
+//func TestGORM_StackOverflowInSave(t *testing.T) {
+//	if os.Getenv("SKIP") != "" {
+//		t.Skip()
+//	}
+//	InitDB(true, false)
+//
+//	admin := &User{PersonName: " Admin", Enabled: true, UserType: "admin", Password: "123"}
+//	admin.Name = "Admin"
+//	admin.Description = "Администратор сайта"
+//	testDB.Create(admin)
+//	admin.User = admin
+//	testDB.Save(admin)
+//}
 
 func TestGORM_Series(t *testing.T) {
 	Series(false, t) // data corruption occurs
