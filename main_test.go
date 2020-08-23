@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -27,7 +27,7 @@ type T02 struct {
 }
 
 func TestTest2(t *testing.T) {
-	db, err := gorm.Open(postgres.Open("database=postgres"), &gorm.Config{
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{
 		Logger: logger.New(
 			log.New(os.Stdout, "", log.LstdFlags),
 			logger.Config{
