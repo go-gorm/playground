@@ -12,6 +12,10 @@ import (
 	"gorm.io/gorm/logger"
 )
 
+// GORM_REPO: https://github.com/go-gorm/gorm.git
+// GORM_BRANCH: master
+// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+
 type T01 struct {
 	ID   int    `gorm:"autoIncrement"`
 	Name string `gorm:"uniqueIndex"`
