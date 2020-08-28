@@ -12,9 +12,9 @@ func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
 	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	
+	var result2 User
+	if err := DB.Where("name = ?", "tpp").Find(&result2).Error; err != nil {
+		t.Errorf("Failed, User name tpp not found: %v", err)	
 	}
 }
