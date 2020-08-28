@@ -14,7 +14,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 	
 	var result2 User
-	if err := DB.Where("name = ?", "tpp").Find(&result2).Error; err != nil {
+	if err := DB.Table("user").Where("name = ?", "tpp").Find(&result2).Error; err != nil {
 		t.Errorf("Failed, User name tpp not found: %v", err)	
 	}
 }
