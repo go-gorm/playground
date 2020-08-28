@@ -13,8 +13,13 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var result1 User
+	if err := DB.Table("users").Where("name = ?", "tpp").Find(&result1).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	
+	var result2 User
+	if err := DB.Table("users").Where("name = ?", "tpp").First(&result2).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
