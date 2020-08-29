@@ -10,8 +10,9 @@ import (
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
+	user.ID = 1
 
-	DB.Create(&user)
+	DB.Save(&user)
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
