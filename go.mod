@@ -11,5 +11,4 @@ require (
 	gorm.io/gorm v1.9.19
 )
 
-replace gorm.io/gorm => E:/Git/github.com/stevefan1999-personal/gorm
-replace github.com/stevefan1999-personal/gorm-driver-oracle => E:/go/oracle_driver_gorm/
+replace gorm.io/gorm => ./gorm
