@@ -3,13 +3,13 @@ module gorm.io/playground
 go 1.14
 
 require (
-	github.com/godror/godror v0.17.1 // indirect
-	github.com/stevefan1999-personal/gorm-driver-oracle v0.0.0-20200720134927-d43380d395ca
-	gorm.io/driver/mysql v0.3.0
-	gorm.io/driver/postgres v0.2.6
-	gorm.io/driver/sqlite v1.0.8
-	gorm.io/driver/sqlserver v0.2.4
-	gorm.io/gorm v0.2.23
+	github.com/stevefan1999-personal/gorm-driver-oracle v0.0.0-20200829094520-df84a6d6b3cd
+	gorm.io/driver/mysql v1.0.0
+	gorm.io/driver/postgres v1.0.0
+	gorm.io/driver/sqlite v1.1.0
+	gorm.io/driver/sqlserver v1.0.0
+	gorm.io/gorm v1.9.19
 )
 
-replace gorm.io/gorm => ./gorm
+replace gorm.io/gorm => E:/Git/github.com/stevefan1999-personal/gorm
+replace github.com/stevefan1999-personal/gorm-driver-oracle => E:/go/oracle_driver_gorm/
