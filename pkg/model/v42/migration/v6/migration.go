@@ -7,6 +7,6 @@ var (
 		type Documento struct {
 			Locacion string
 		}
-		return m.AutoMigrate(&Documento{})
+		return m.AddColumn(&Documento{}, "locacion")
 	}
 )
