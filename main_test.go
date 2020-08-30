@@ -2,6 +2,16 @@ package main
 
 import (
 	"testing"
+	"time"
+
+	"github.com/sirupsen/logrus"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
+	"gorm.io/playground/pkg/model/migrator"
+	v42 "gorm.io/playground/pkg/model/v42"
+	v43 "gorm.io/playground/pkg/model/v43"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -15,7 +25,7 @@ func TestGORM(t *testing.T) {
 		PrepareStmt:    false,
 	}
 
-	url := "postgres://gorm:gorm@postgres:9920/gorm?sslmode=disable"
+	url := "postgres://gorm:gorm@localhost:5432/gorm?sslmode=disable"
 	var err error
 	var db *gorm.DB
 	for intento := 1; intento < 5; intento++ {
@@ -31,12 +41,12 @@ func TestGORM(t *testing.T) {
 	// termina la aplicación si no fue posible conectar con la base de
 	// datos
 	if err != nil {
-		logrus.Panic("cannot connect with the database")
+		t.Fatalf("cannot connect with database: %v", err)
 	}
 
 	m := migrator.New(db, append(v42.Migrations, v43.Migrations...))
 	err = m.MigrateAll()
 	if err != nil {
-		logrus.Panicf("cannot migrate: %v", err)
+		t.Fatal(err)
 	}
 }
