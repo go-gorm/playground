@@ -14,7 +14,7 @@ type ActividadesEconomicas struct {
 
 var (
 	Migrate_15_Crea_nueva_tabla_de_Emisor_y_Receptor = func(tx *gorm.DB, m gorm.Migrator) error {
-		err := tx.AutoMigrate(&Grupo{}, &Emisor{}, &Documento{}, &Actividad{})
+		err := tx.AutoMigrate(&Documento{}, &Grupo{}, &Emisor{}, &Actividad{})
 		if err != nil {
 			return err
 		}
