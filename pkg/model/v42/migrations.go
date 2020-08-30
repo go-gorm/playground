@@ -11,7 +11,6 @@ import (
 	v3migration "gorm.io/playground/pkg/model/v42/migration/v3"
 	v4migration "gorm.io/playground/pkg/model/v42/migration/v4"
 	v5migration "gorm.io/playground/pkg/model/v42/migration/v5"
-	v6migration "gorm.io/playground/pkg/model/v42/migration/v6"
 	v7migration "gorm.io/playground/pkg/model/v42/migration/v7"
 	v8migration "gorm.io/playground/pkg/model/v42/migration/v8"
 	v9migration "gorm.io/playground/pkg/model/v42/migration/v9"
@@ -43,11 +42,6 @@ var Migrations = []*migrator.SingleMigration{
 		ID:       "5-agregar-estado-documento",
 		Migrate:  v5migration.Migrate_5_agregar_estado_documento,
 		Rollback: v5migration.Rollback_5_agregar_estado_documento,
-	},
-	{
-		ID:       "6-agregar-locacion-documento",
-		Migrate:  v6migration.Migrate_6_agregar_locacion_documento,
-		Rollback: return_nil,
 	},
 	{
 		ID:       "7-agregar-secuenciales-grupo",
