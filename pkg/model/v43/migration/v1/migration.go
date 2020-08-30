@@ -12,24 +12,8 @@ var (
 		if err := m.AutoMigrate(&OtrosCargos{}); err != nil {
 			return err
 		}
-
-		// if you uncomment this code block and rebuild the image you will
-		// get a different error regarding the field `otros_cargos`:
-		// `failed to look up field with name: otros_cargos"`
-		for _, field := range []string{
-			"codigo_actividad",
-			"resumen_total_serv_exonerado",
-			"resumen_total_merc_exonerada",
-			"resumen_total_exonerado",
-			"resumen_total_iva_devuelto",
-			"resumen_total_otros_cargos",
-			"otros_cargos",
-		} {
-			if !m.HasColumn(&Documento{}, field) {
-				if err := m.AddColumn(&Documento{}, field); err != nil {
-					return err
-				}
-			}
+		if err := m.AutoMigrate(&Documento{}); err != nil {
+			return err
 		}
 		if err := m.AutoMigrate(&LineaDetalle{}); err != nil {
 			return err
