@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -25,7 +26,7 @@ func TestGORM(t *testing.T) {
 		PrepareStmt:    false,
 	}
 
-	dbDSN := "user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	dbDSN := os.Getenv("GORM_DSN")
 	var err error
 	var db *gorm.DB
 	for intento := 1; intento < 5; intento++ {
