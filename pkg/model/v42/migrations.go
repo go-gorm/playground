@@ -1,20 +1,20 @@
 package model42
 
 import (
-	"gitlab.com/shackra/gormbug/pkg/model/migrator"
-	v1migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v1"
-	v10migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v10"
-	v11migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v11"
-	v12migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v12"
-	v13migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v13"
-	v3migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v3"
-	v4migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v4"
-	v5migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v5"
-	v6migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v6"
-	v7migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v7"
-	v8migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v8"
-	v9migration "gitlab.com/shackra/gormbug/pkg/model/v42/migration/v9"
 	"gorm.io/gorm"
+	"gorm.io/playground/pkg/model/migrator"
+	v1migration "gorm.io/playground/pkg/model/v42/migration/v1"
+	v10migration "gorm.io/playground/pkg/model/v42/migration/v10"
+	v11migration "gorm.io/playground/pkg/model/v42/migration/v11"
+	v12migration "gorm.io/playground/pkg/model/v42/migration/v12"
+	v13migration "gorm.io/playground/pkg/model/v42/migration/v13"
+	v3migration "gorm.io/playground/pkg/model/v42/migration/v3"
+	v4migration "gorm.io/playground/pkg/model/v42/migration/v4"
+	v5migration "gorm.io/playground/pkg/model/v42/migration/v5"
+	v6migration "gorm.io/playground/pkg/model/v42/migration/v6"
+	v7migration "gorm.io/playground/pkg/model/v42/migration/v7"
+	v8migration "gorm.io/playground/pkg/model/v42/migration/v8"
+	v9migration "gorm.io/playground/pkg/model/v42/migration/v9"
 )
 
 var (

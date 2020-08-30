@@ -1,17 +1,17 @@
 package models43
 
 import (
-	"gitlab.com/shackra/gormbug/pkg/model/migrator"
-	v1 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v1"
-	v2 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v2"
-	v3 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v3"
-	v4 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v4"
-	v5 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v5"
-	v6 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v6"
-	v7 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v7"
-	v8 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v8"
-	v9 "gitlab.com/shackra/gormbug/pkg/model/v43/migration/v9"
 	"gorm.io/gorm"
+	"gorm.io/playground/pkg/model/migrator"
+	v1 "gorm.io/playground/pkg/model/v43/migration/v1"
+	v2 "gorm.io/playground/pkg/model/v43/migration/v2"
+	v3 "gorm.io/playground/pkg/model/v43/migration/v3"
+	v4 "gorm.io/playground/pkg/model/v43/migration/v4"
+	v5 "gorm.io/playground/pkg/model/v43/migration/v5"
+	v6 "gorm.io/playground/pkg/model/v43/migration/v6"
+	v7 "gorm.io/playground/pkg/model/v43/migration/v7"
+	v8 "gorm.io/playground/pkg/model/v43/migration/v8"
+	v9 "gorm.io/playground/pkg/model/v43/migration/v9"
 )
 
 var (

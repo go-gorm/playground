@@ -1,8 +1,8 @@
 package v12migration
 
 import (
-	"gitlab.com/shackra/gormbug/pkg/model"
 	"gorm.io/gorm"
+	"gorm.io/playground/pkg/model"
 )
 
 var (

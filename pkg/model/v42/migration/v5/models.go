@@ -1,6 +1,6 @@
 package v5migration
 
-import "gitlab.com/shackra/gormbug/pkg/model"
+import "gorm.io/playground/pkg/model"
 
 type Documento struct {
 	Estado model.EstadoTipo

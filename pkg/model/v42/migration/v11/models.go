@@ -3,10 +3,10 @@ package v11migration
 import (
 	"time"
 
-	"gorm.io/gorm"
 	"github.com/lib/pq"
 	"github.com/shopspring/decimal"
-	"gitlab.com/shackra/gormbug/pkg/model"
+	"gorm.io/gorm"
+	"gorm.io/playground/pkg/model"
 )
 
 // Documento es una estructura que representa los diferentes tipos de

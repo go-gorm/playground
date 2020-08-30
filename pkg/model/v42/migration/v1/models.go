@@ -5,8 +5,8 @@ import (
 
 	"github.com/lib/pq"
 	"github.com/shopspring/decimal"
-	"gitlab.com/shackra/gormbug/pkg/model"
 	"gorm.io/gorm"
+	"gorm.io/playground/pkg/model"
 )
 
 // Emisor representa al emisor del comprobante electrónico

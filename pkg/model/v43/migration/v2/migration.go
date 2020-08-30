@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"os"
 
-	model42 "gitlab.com/shackra/gormbug/pkg/model/v42"
 	"gorm.io/gorm"
+	model42 "gorm.io/playground/pkg/model/v42"
 )
 
 type ActividadesEconomicas struct {

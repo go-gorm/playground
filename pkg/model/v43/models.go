@@ -3,7 +3,7 @@ package models43
 import (
 	"time"
 
-	"gitlab.com/shackra/gormbug/pkg/model"
+	"gorm.io/playground/pkg/model"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/lib/pq"
