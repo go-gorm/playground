@@ -5,7 +5,6 @@ import (
 	"gorm.io/playground/pkg/model/migrator"
 	v1 "gorm.io/playground/pkg/model/v43/migration/v1"
 	v2 "gorm.io/playground/pkg/model/v43/migration/v2"
-	v3 "gorm.io/playground/pkg/model/v43/migration/v3"
 	v4 "gorm.io/playground/pkg/model/v43/migration/v4"
 	v5 "gorm.io/playground/pkg/model/v43/migration/v5"
 	v6 "gorm.io/playground/pkg/model/v43/migration/v6"
@@ -30,16 +29,6 @@ var Migrations = []*migrator.SingleMigration{
 		ID:       "15-Crea nueva tabla de emisor y receptor y copia datos del grupo en cada comprobante a tabla de emisores",
 		Migrate:  v2.Migrate_15_Crea_nueva_tabla_de_Emisor_y_Receptor,
 		Rollback: return_nil,
-	},
-	{
-		ID:       "15-Crea todas las actividades economicas dentro de la tabla",
-		Migrate:  v2.Migrar_15_Crea_Actividades,
-		Rollback: return_nil,
-	},
-	{
-		ID:       "16-ubicaciones codificadas",
-		Migrate:  v3.Migrate_16_ubicaciones,
-		Rollback: v3.Rollback_16_ubicaciones,
 	},
 	{
 		ID:       "17-cambia precision decimal en Exoneraciones y Otros Cargos",
