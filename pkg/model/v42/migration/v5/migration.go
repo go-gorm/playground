@@ -12,6 +12,7 @@ var (
 		if err := m.AddColumn(&Documento{}, "locacion"); err != nil {
 			return err
 		}
+		return nil
 	}
 	Rollback_5_agregar_estado_documento = func(tx *gorm.DB, m gorm.Migrator) error {
 		// Borra las viejas columnas
