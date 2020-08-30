@@ -30,7 +30,10 @@ func TestGORM(t *testing.T) {
 	var err error
 	var db *gorm.DB
 	for intento := 1; intento < 5; intento++ {
-		db, err = gorm.Open(postgres.Open(dbDSN), config)
+		db, err = gorm.Open(postgres.New(postgres.Config{
+			DSN:                  dbDSN,
+			PreferSimpleProtocol: true,
+		}), config)
 		if err != nil {
 			logrus.Errorf("connection failed: %s (%s)", err.Error(), dbDSN)
 			logrus.Infof("Retrying in %d seconds", intento)
