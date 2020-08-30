@@ -3,8 +3,8 @@ package v2
 import (
 	"time"
 
-	"gorm.io/gorm"
 	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
 )
 
 type Actividad struct {
@@ -12,10 +12,6 @@ type Actividad struct {
 	Codigo      string   `gorm:"unique;not null;size=6"`
 	Descripcion string   `gorm:"not null"`
 	Grupos      []*Grupo `gorm:"many2many:ga"`
-}
-
-func (a Actividad) TableName() string {
-	return "actividades"
 }
 
 type GrupoBase struct {
@@ -84,11 +80,8 @@ type Emisor struct {
 	IdentificacionNumero string `gorm:"not null;size:14"`
 }
 
-func (e Emisor) TableName() string {
-	return "emisores"
-}
-
 type Documento struct {
+	ID          uint
 	EmisorID    uint
 	Emisor      Emisor
 	ActividadID uint
