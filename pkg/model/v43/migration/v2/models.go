@@ -81,11 +81,12 @@ type Emisor struct {
 }
 
 type Documento struct {
-	ID          uint
+	gorm.Model
 	EmisorID    uint
 	Emisor      Emisor
 	ActividadID uint
 	Actividad   Actividad
+	GrupoID     uint
 }
 
 type MensajeHacienda struct {
