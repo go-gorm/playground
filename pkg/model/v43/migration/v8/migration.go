@@ -7,7 +7,12 @@ func Migrate(tx *gorm.DB, m gorm.Migrator) error {
 	m.DropColumn(&Suscripcion{}, "identificacion_numero")
 	m.DropColumn(&Suscripcion{}, "nombre")
 
-	err := m.RenameTable("suscripcions", "suscripciones")
+	if m.HasTable("suscripcions") {
+		err := m.RenameTable("suscripcions", "suscripciones")
+		if err != nil {
+			return err
+		}
+	}
 
-	return err
+	return nil
 }
