@@ -25,13 +25,13 @@ func TestGORM(t *testing.T) {
 		PrepareStmt:    false,
 	}
 
-	url := "postgres://gorm:gorm@localhost:5432/gorm?sslmode=disable"
+	dbDSN := "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 	var err error
 	var db *gorm.DB
 	for intento := 1; intento < 5; intento++ {
-		db, err = gorm.Open(postgres.Open(url), config)
+		db, err = gorm.Open(postgres.Open(dbDSN), config)
 		if err != nil {
-			logrus.Errorf("connection failed: %s (%s)", err.Error(), url)
+			logrus.Errorf("connection failed: %s (%s)", err.Error(), dbDSN)
 			logrus.Infof("Retrying in %d seconds", intento)
 			time.Sleep(time.Duration(intento) * time.Duration(3) * time.Second)
 		} else {
