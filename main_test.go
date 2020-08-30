@@ -25,7 +25,7 @@ func TestGORM(t *testing.T) {
 		PrepareStmt:    false,
 	}
 
-	dbDSN := "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+	dbDSN := "user=gorm password=gorm dbname=gorm port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 	var err error
 	var db *gorm.DB
 	for intento := 1; intento < 5; intento++ {
