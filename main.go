@@ -1,14 +1,17 @@
 package main
 
 import (
-	"testing"
+	"time"
+
+	"github.com/sirupsen/logrus"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
+	"gorm.io/playground/pkg/model/migrator"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: postgres
-
-func TestGORM(t *testing.T) {
+func main() {
 	config := &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{TablePrefix: "t_", SingularTable: true},
 		Logger:         logger.Default.LogMode(logger.Info),
