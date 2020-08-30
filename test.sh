@@ -21,10 +21,16 @@ for dialect in "${dialects[@]}" ; do
     then
       if [[ "$dialect" =~ "oracle" ]]
       then
-        echo "downloading oracle instant client..."
-        curl "$ORACLE_INSTANT_CLIENT_URL" -o "$ORACLE_INSTANT_CLIENT_FILE"
-        echo "unzipping oracle instant client..."
-        unzip "$ORACLE_INSTANT_CLIENT_FILE"
+        if [[ ! -d $(pwd)/instantclient_19_6 ]]
+        then
+          if [[ ! -f "$ORACLE_INSTANT_CLIENT_FILE" ]]
+          then
+            echo "downloading oracle instant client..."
+            curl "$ORACLE_INSTANT_CLIENT_URL" -o "$ORACLE_INSTANT_CLIENT_FILE"
+          fi
+          echo "unzipping oracle instant client..."
+          unzip -o "$ORACLE_INSTANT_CLIENT_FILE"
+        fi
         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/instantclient_19_6
         echo "exported instant client libraries to LD_LIBRARY_PATH, now it should not complain about missing oracle libraries"
       fi
