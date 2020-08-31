@@ -47,6 +47,7 @@ type Toy struct {
 	Name      string
 	OwnerID   string
 	OwnerType string
+	TestArray []int64 `gorm:"type:int[]"`
 }
 
 type Company struct {
