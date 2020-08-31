@@ -1,14 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"log"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
 
-	"github.com/DATA-DOG/go-txdb"
 	_ "github.com/lib/pq"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -61,14 +59,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		txdb.Register("txdb", "postgres", dbDSN)
-		sqlDB, err := sql.Open("txdb", "postgres_test")
-		if err != nil {
-			return nil, err
-		}
-		db, err = gorm.Open(postgres.New(postgres.Config{
-			Conn: sqlDB,
-		}), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
