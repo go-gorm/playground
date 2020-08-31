@@ -16,6 +16,9 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/playground/models"
+	v1 "gorm.io/playground/models/v1"
+	v2 "gorm.io/playground/models/v2"
 )
 
 var DB *gorm.DB
@@ -93,9 +96,8 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&models.User{}, &models.Account{}, &models.Pet{}, &models.Company{}, &models.Toy{}, &models.Language{}}
 	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
 	DB.Migrator().DropTable("user_friends", "user_speaks")
 
@@ -104,15 +106,10 @@ func RunMigrations() {
 		os.Exit(1)
 	}
 
-	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
+	if err = v1.Migrate(DB.Migrator()); err != nil {
 		os.Exit(1)
 	}
-
-	for _, m := range allModels {
-		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
-		}
+	if err = v2.Migrate(DB.Migrator()); err != nil {
+		os.Exit(1)
 	}
 }

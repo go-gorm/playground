@@ -1,4 +1,4 @@
-package main
+package v1
 
 import (
 	"database/sql"
@@ -13,7 +13,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string `gorm:"not null;size:100;unique"`
+	Name      string
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
