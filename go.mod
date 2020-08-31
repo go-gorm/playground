@@ -3,6 +3,7 @@ module gorm.io/playground
 go 1.14
 
 require (
+	github.com/DATA-DOG/go-txdb v0.1.3
 	github.com/lib/pq v1.8.0
 	gorm.io/driver/mysql v1.0.0
 	gorm.io/driver/postgres v1.0.0
