@@ -21,7 +21,7 @@ func TestGORM(t *testing.T) {
 
 	fmt.Println(stmt.SQL.String()) //SELECT * FROM `users` ORDER BY `users`. LIMIT 1
 
-	if err := DB.Model(&User{}).First(&result).Error; err != nil {
+	if err := DB.Table("users").First(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
