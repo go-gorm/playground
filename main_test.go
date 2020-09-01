@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+	"gorm.io/gorm"
+	"fmt"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -13,8 +15,13 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var result map[string]interface{}
+
+	stmt:=DB.Session(&gorm.Session{DryRun: true}).Table("users").First(&result).Statement
+
+	fmt.Println(stmt.SQL.String()) //SELECT * FROM `users` ORDER BY `users`. LIMIT 1
+
+	if err := DB.Model(&User{}).First(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
