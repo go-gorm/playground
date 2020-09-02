@@ -19,6 +19,7 @@ func TestGORM(t *testing.T) {
 		Value: "",
 	}
 
+	DB.AutoMigrate(&Foo{})
 	DB.Create(&foo)
 
 	var result Foo
