@@ -27,6 +27,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	Labels    []Label
 }
 
 type Account struct {
@@ -57,4 +58,10 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Label struct {
+	UserID *uint  `gorm:"primarykey"`
+	Name   string `gorm:"primarykey"`
+	Value  string
 }
