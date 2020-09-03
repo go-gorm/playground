@@ -58,3 +58,25 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+// City struct is used to store all relevant information
+type City struct {
+	gorm.Model
+	Name         string
+	DepositoryID uint
+}
+
+// County struct is used to store all relevant information
+type County struct {
+	gorm.Model
+	Name         string
+	DepositoryID sql.NullInt64
+}
+
+// Depository struct is used to store all relevant information
+type Depository struct {
+	gorm.Model
+	Name   string
+	County County
+	City   City
+}

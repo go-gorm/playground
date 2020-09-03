@@ -1,6 +1,8 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
+	"log"
 	"testing"
 )
 
@@ -9,12 +11,26 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	city := City{Name: "City-Test"}
+	county := County{Name: "County-Test"}
 
-	DB.Create(&user)
+	depository := Depository{
+		Name:   "Depository-Test",
+		County: county,
+		City:   city,
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	log.Println("Entity to save: ", depository)
+
+	DB.Create(&depository)
+
+	var depositoryResult Depository
+	if err := DB.Set("gorm:auto_preload", true).First(&depositoryResult, depository.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	log.Println("Depository: ", depositoryResult)
+	log.Println("Depository City Name: ", depositoryResult.City.Name)
+
+	assert.Equal(t, depository.City, depositoryResult.City)
 }
