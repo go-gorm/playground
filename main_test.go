@@ -19,7 +19,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	DB, err := OpenTestConnection()
+	DB, err := OpenTestConnectionConfig()
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
@@ -35,7 +35,7 @@ func TestGORM(t *testing.T) {
 	})
 }
 
-func OpenTestConnection() (db *gorm.DB, err error) {
+func OpenTestConnectionConfig() (db *gorm.DB, err error) {
 	dbDSN := os.Getenv("GORM_DSN")
 	switch os.Getenv("GORM_DIALECT") {
 	case "mysql":
