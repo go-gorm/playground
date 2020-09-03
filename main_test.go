@@ -12,7 +12,7 @@ func TestGORM(t *testing.T) {
 	user := []*User{
 		{Name: "jinzhu"},
 		{},
-		nil
+		nil,
 	}
 
 	DB.Create(&user)
