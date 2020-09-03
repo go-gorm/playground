@@ -8,13 +8,26 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Foo struct {
+	ID    string `json:"id"`
+	Value string `json:"value" gorm:"default:null"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	foo := &Foo{
+		ID:    "001",
+		Value: "",
+	}
 
-	DB.Create(&user)
+	DB.AutoMigrate(&Foo{})
+	DB.Create(&foo)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var result Foo
+	if err := DB.First(&result, foo.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+	
+	if result.Value != "" {
+		t.Errorf("Value is not empty")
 	}
 }
