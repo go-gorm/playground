@@ -31,13 +31,13 @@ func init() {
 		if err != nil {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
-
+		DB.Logger = DB.Logger.LogMode(logger.Info)
 		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
 
-		DB.Logger = DB.Logger.LogMode(logger.Info)
+		//DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
 }
 
@@ -89,10 +89,10 @@ func RunMigrations() {
 
 	DB.Migrator().DropTable("user_friends", "user_speaks")
 
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
-	}
+	//if err = DB.Migrator().DropTable(allModels...); err != nil {
+	//	log.Printf("Failed to drop table, got error %v\n", err)
+	//	os.Exit(1)
+	//}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
