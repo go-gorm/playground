@@ -1,10 +1,6 @@
 package main
 
-import (
-	"testing"
-
-	"gorm.io/gorm"
-)
+import "testing"
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
