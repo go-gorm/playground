@@ -18,7 +18,7 @@ func TestGORM(t *testing.T) {
 	// with an error 'record not found'. If we skip this (comment it out) we can
 	// successfully create the new user in line 25
 	if usernameTaken(user.Name) {
-		t.Errorln("Failed, username taken")
+		t.Errorf("Failed, username taken\n")
 	}
 
 	// If not taken, create new user
