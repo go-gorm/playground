@@ -58,3 +58,13 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+type Person struct {
+	ID      uint     `gorm:"primaryKey;type:INT UNSIGNED AUTO_INCREMENT;"`
+	Clothes *[]Cloth `gorm:"foreignKey:OwnerID;"`
+}
+
+type Cloth struct {
+	ClothID uint `gorm:"primaryKey;type:INT UNSIGNED AUTO_INCREMENT;"`
+	OwnerID uint `gorm:"index;type:INT UNSIGNED;autoIncrement:false;"`
+	Color   string
+}
