@@ -1,7 +1,11 @@
 package main
 
 import (
+	"math/rand"
 	"testing"
+	"time"
+
+	"github.com/oklog/ulid/v2"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +13,18 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	now := time.Now()
+	entropy := ulid.Monotonic(rand.New(rand.NewSource(now.UnixNano())), 0)
 
-	DB.Create(&user)
+	one := One{
+		ID:   ulid.MustNew(ulid.Timestamp(now), entropy),
+		Name: "Asdf",
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	DB.Create(&one)
+
+	var result One
+	if err := DB.First(&result, one.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
