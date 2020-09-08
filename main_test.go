@@ -19,7 +19,7 @@ func TestGORM(t *testing.T) {
 	
 	original := exampleWithComputedCols{
 		FirstName: "jon",
-		LastName: "hartman"
+		LastName: "hartman",
 	}
 	if err := DB.Create(&original).Error; err != nil {
 		t.Errorf("Failed create: error = %v", err)
