@@ -30,8 +30,8 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed load: error = %v", err)
 	}
 	// It's expected that this is OK; since we're reloading a fresh struct
-	if results.FullName != "jon hartman" {
-		t.Errorf("Reloaded struct: computed 'Full Name' mismatch: have %s", results.FullName)
+	if result.FullName != "jon hartman" {
+		t.Errorf("Reloaded struct: computed 'Full Name' mismatch: have %s", result.FullName)
 	}
 	// However, this will fail - since the .Create() call above will not add full_name to the RETURNING clause (at least
 	// with POSTGRES syntax). We get "RETURNING id, created_at, updated_at", while to make it return the computed column
