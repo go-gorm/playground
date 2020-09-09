@@ -17,8 +17,6 @@ type UserWithJSON struct {
 	Attributes datatypes.JSON
 }
 
-
-
 func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&UserWithJSON{})
 
