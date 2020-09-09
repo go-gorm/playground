@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+
 	"gorm.io/gorm"
 )
 
@@ -13,21 +14,21 @@ func TestGORM(t *testing.T) {
 	type exampleWithComputedCols struct {
 		gorm.Model
 		FirstName string `gorm:"type:varchar;"`
-		LastName string `gorm:"type:varchar;"`
-		FullName string `gorm:"->;type:varchar GENERATED ALWAYS AS (CONCAT(first_name, ' ', last_name)) STORED"`
+		LastName  string `gorm:"type:varchar;"`
+		FullName  string `gorm:"->;type:varchar GENERATED ALWAYS AS (CONCAT(first_name || ' ' || last_name)) STORED"`
 	}
 	if err := DB.AutoMigrate(&exampleWithComputedCols{}); err != nil {
 		t.Errorf("Failed test setup: error = %v", err)
 	}
-	
+
 	original := exampleWithComputedCols{
 		FirstName: "jon",
-		LastName: "hartman",
+		LastName:  "hartman",
 	}
 	if err := DB.Create(&original).Error; err != nil {
 		t.Errorf("Failed create: error = %v", err)
 	}
-	
+
 	var result exampleWithComputedCols
 	if err := DB.First(&result, original.ID).Error; err != nil {
 		t.Errorf("Failed load: error = %v", err)
