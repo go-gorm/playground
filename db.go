@@ -12,6 +12,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 	"gorm.io/gorm/logger"
 )
 
@@ -55,7 +56,13 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(postgres.New(postgres.Config{
+			DSN: dbDSN,
+		}), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix: "public.",
+			},
+		})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
