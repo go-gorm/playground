@@ -2,15 +2,11 @@ package main
 
 import (
 	"testing"
-
-	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
-
-var DB *gorm.DB
 
 func TestGORM(t *testing.T) {
 	subQuery := DB.Model(Company{}).Where("id>?", 1)
