@@ -22,7 +22,7 @@ type UserWithJSON struct {
 func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&UserWithJSON{})
 
-	err = DB.Create(&UserWithJSON{
+	err := DB.Create(&UserWithJSON{
 		Name:       "json-1",
 		Attributes: datatypes.JSON([]byte(`{"name": "jinzhu", "age": 18, "tags": ["tag1", "tag2"], "orgs": {"orga": "orga"}}`)),
 	}).Error
