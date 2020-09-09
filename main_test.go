@@ -15,7 +15,7 @@ func TestGORM(t *testing.T) {
 		gorm.Model
 		FirstName string `gorm:"type:varchar;"`
 		LastName  string `gorm:"type:varchar;"`
-		FullName  string `gorm:"->;type:varchar GENERATED ALWAYS AS (CONCAT(first_name || ' ' || last_name)) STORED"`
+		FullName  string `gorm:"->;type:varchar GENERATED ALWAYS AS (first_name || ' ' || last_name) STORED"`
 	}
 	if err := DB.AutoMigrate(&exampleWithComputedCols{}); err != nil {
 		t.Errorf("Failed test setup: error = %v", err)
