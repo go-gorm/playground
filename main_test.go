@@ -9,7 +9,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	subQuery := DB.Model(Company{}).Where("id>?", 1)
+	subQuery := DB.Model(Company{}).Select("id").Where("id>? AND name<>?", 1, "asdf")
 
 	var testData []*User
 	if err := DB.Model(User{}).Where("company_id>?", subQuery).Find(&testData); err != nil {
