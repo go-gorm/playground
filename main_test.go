@@ -2,19 +2,21 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+var DB *gorm.DB
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	subQuery := DB.Model(Company{}).Where("id>?", 1)
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var testData []*User
+	if err := DB.Model(User{}).Where("company_id>?", subQuery).Find(&testData); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
