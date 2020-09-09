@@ -8,20 +8,23 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: postgres
 
-type TestTable struct {
-	Address string `gorm:"unique_index:address_type_user"`
-	Type    string `gorm:"unique_index:address_type_user"`
+type UserWithJSON struct {
+	gorm.Model
+	Name       string
+	Attributes datatypes.JSON
 }
 
 
+
 func TestGORM(t *testing.T) {
-	DB.AutoMigrate(&TestTable{})
+	DB.AutoMigrate(&UserWithJSON{})
 
-	var count int64
-	DB.Raw("select count(*) as count from pg_indexes where tablename='test_tables'").First(&count)
+	err = tx.Create(&UserWithJSON{
+		Name:       "json-1",
+		Attributes: datatypes.JSON([]byte(`{"name": "jinzhu", "age": 18, "tags": ["tag1", "tag2"], "orgs": {"orga": "orga"}}`)),
+	}).Error
 
-	
-	if count == 0 {
-		t.Errorf("test_tables create index fail")
+	if err != nil {
+		t.Errorf("datatypes.json create error")
 	}
 }
