@@ -13,7 +13,7 @@ func TestGORM(t *testing.T) {
 	subQuery = subQuery.Where("name <> ?", "asdf")
 
 	var testData []*User
-	if err := DB.Model(User{}).Where("age>?", 18)Where("company_id > ?", subQuery).Find(&testData).Error; err != nil {
+	if err := DB.Model(User{}).Where("age>?", 18).Where("company_id > ?", subQuery).Find(&testData).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
