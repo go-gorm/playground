@@ -9,12 +9,11 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	subQuery := DB.Model(Company{}).Select("id").Where("id > ?", 1)
+	subQuery = subQuery.Where("name <> ?", "asdf")
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var testData []*User
+	if err := DB.Model(User{}).Where("age>?", 18)Where("company_id > ?", subQuery).Find(&testData).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
