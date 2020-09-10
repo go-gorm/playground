@@ -12,7 +12,7 @@ import (
 func TestGORM(t *testing.T) {
 	oldRule := &Rule{
 		Name:        "bob",
-		Email:       "bob@gmail.com",
+		Description: "this is description",
 		IntervalStr: "5s",
 		Interval:    time.Second * 5,
 	}
@@ -20,9 +20,9 @@ func TestGORM(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err := DB.Model(Rule{Id: oldRule.Id}).Updates(&User{
+	if err := DB.Model(Rule{Id: oldRule.Id}).Updates(&Rule{
 		Name:        "bob",
-		Email:       "bob@gmail.com",
+		Description: "this is description",
 		IntervalStr: "10s",
 		Interval:    time.Second * 10,
 	}).Error; err != nil {

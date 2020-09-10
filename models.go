@@ -59,6 +59,16 @@ type Language struct {
 	Name string
 }
 
+
+/**
+CREATE TABLE `rule` (
+	`id` INT (11) NOT NULL AUTO_INCREMENT,
+	`name` VARCHAR (255) NOT NULL DEFAULT '',
+	`description` VARCHAR (255) NOT NULL DEFAULT '',
+	`interval` VARCHAR (255) NOT NULL DEFAULT '',
+	PRIMARY KEY (`id`)
+) ENGINE = INNODB AUTO_INCREMENT = 4 DEFAULT CHARSET = utf8mb4
+ */
 type Rule struct {
 	Id          int           `gorm:"column:id;primaryKey;autoIncrement"`
 	Name        string        `gorm:"column:name"`
