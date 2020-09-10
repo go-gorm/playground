@@ -29,7 +29,7 @@ func TestGORM(t *testing.T) {
 	println(user.UpdatedAt.Format("2006-01-02 15:04:05"))
 	println(sameUser.UpdatedAt.Format("2006-01-02 15:04:05"))
 
-	totalItemCreated := 10
+	totalItemCreated := 100
 	for i := 0; i < totalItemCreated; i++ {
 		rand.Seed(time.Now().UnixNano())
 
