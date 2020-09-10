@@ -58,3 +58,11 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Rule struct {
+	Id          int    `gorm:"column:id;primaryKey;autoIncrement"`
+	Name        string `gorm:"column:name"`
+	Description string `gorm:"column:description"`
+	IntervalStr string `gorm:"column:interval"`
+	Interval    string `gorm:"-"`
+}
