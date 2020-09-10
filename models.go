@@ -60,9 +60,9 @@ type Language struct {
 }
 
 type Rule struct {
-	Id          int    `gorm:"column:id;primaryKey;autoIncrement"`
-	Name        string `gorm:"column:name"`
-	Description string `gorm:"column:description"`
-	IntervalStr string `gorm:"column:interval"`
-	Interval    string `gorm:"-"`
+	Id          int           `gorm:"column:id;primaryKey;autoIncrement"`
+	Name        string        `gorm:"column:name"`
+	Description string        `gorm:"column:description"`
+	IntervalStr string        `gorm:"column:interval"`
+	Interval    time.Duration `gorm:"-"`
 }

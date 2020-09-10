@@ -9,20 +9,18 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestCreate(t *testing.T) {
-	if err := DB.Create(&User{
+func TestGORM(t *testing.T) {
+	oldRule := &Rule{
 		Name:        "bob",
 		Email:       "bob@gmail.com",
 		IntervalStr: "5s",
 		Interval:    time.Second * 5,
-	}).Error; err != nil {
+	}
+	if err := DB.Create(oldRule).Error; err != nil {
 		t.Fatal(err)
 	}
-}
 
-
-func TestUpdate(t *testing.T) {
-	if err := DB.Model(User{Id: 1}).Updates(&User{
+	if err := DB.Model(Rule{Id: oldRule.Id}).Updates(&User{
 		Name:        "bob",
 		Email:       "bob@gmail.com",
 		IntervalStr: "10s",
@@ -30,4 +28,14 @@ func TestUpdate(t *testing.T) {
 	}).Error; err != nil {
 		t.Fatal(err)
 	}
+
+	var newRule Rule
+	if err := DB.First(&newRule, oldRule.Id).Error; err != nil {
+		t.Fatal(err)
+	}
+
+	if newRule.IntervalStr != "10s" {
+		t.Fatal("wrong field value")
+	}
+
 }
