@@ -4,17 +4,27 @@ import (
 	"testing"
 )
 
+type StatusEmbed struct {
+    Status string `gorm:"not null;default:''"`
+}
+
+type Bugs struct {
+    ID int64 `gorm:"primaryKey"`
+
+    Foo string
+    StatusEmbed
+}
+
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+    if err := DB.AutoMigrate(new(Bugs)); err != nil {
+        t.Errorf("Failed, got error: %v", err)
+    }
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+    if err := DB.Select("foo").Create(new(Bugs)).Error; err != nil {
+        t.Errorf("Failed, got error: %v", err)
+    }
 }
