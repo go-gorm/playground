@@ -4,17 +4,23 @@ import (
 	"testing"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+type Embed struct {
+	Status string `gorm:"not null;default:''"`
+}
+
+type Bugs struct {
+	Embed
+
+	ID  int64
+	Foo string
+}
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	if err := DB.AutoMigrate(new(Bugs)); err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Select("foo").Create(new(Bugs)).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
