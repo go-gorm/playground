@@ -8,13 +8,21 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type TestData struct {
+	Id   int
+	Data string
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	tx := DB.Begin()
+	tx.Migrator().AutoMigrate(&TestData{})
+	if err = tx.Rollback().Error; err != nil {
+		t.Error(err)
 	}
+
+	test := TestData{Data: "blub"}
+	if err = DB.Save(&test).Error; err == nil {
+		t.Log("table shouldn't exist")
+		t.FailNow()
+	}	
 }
