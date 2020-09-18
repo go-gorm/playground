@@ -1,7 +1,8 @@
 package main
 
 import (
-	"gorm.io/gorm/clause"
+	"errors"
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -15,14 +16,12 @@ type Asset struct {
 	Value      float32
 	BusinessID int
 }
-
 type Business struct {
 	ID       int
 	Name     string
 	Assets   []Asset `gorm:"foreignkey:BusinessID;"`
 	PersonID int
 }
-
 type Person struct {
 	ID       int
 	Name     string
@@ -35,32 +34,11 @@ func TestGORM(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
+	p := &Person{}
+	result := DB.Find(p, "id = ?", "nothing")
 
-	if err = DB.Create(&Person{
-		Name: "Jinzhu",
-		Business: Business{
-			Name: "GORM",
-			Assets: []Asset{
-				{
-					Kind: "Cash",
-					Value: 10000,
-				},
-			},
-		},
-	}).Error; err != nil {
-		panic(err)
+	if !errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		t.Fail()
 	}
 
-	people := make([]Person, 0)
-
-	// If I do the following, it works:
-	// db.Preload("Company").Preload("Company.Address").Preload("Company.Assets")
-	// But not if I do this:
-	err = DB.Preload(clause.Associations).Find(&people).Error
-	if err != nil {
-		panic(err)
-	}
-	if people[0].Business.Assets == nil {
-		panic("despite having assets, they are not preloaded, and are nil")
-	}
 }
