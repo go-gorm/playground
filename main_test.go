@@ -16,6 +16,7 @@ type TestData struct {
 func TestGORM(t *testing.T) {
 	tx := DB.Begin()
 	tx.Migrator().AutoMigrate(&TestData{})
+	var err error
 	if err = tx.Rollback().Error; err != nil {
 		t.Error(err)
 	}
