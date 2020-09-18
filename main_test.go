@@ -15,7 +15,7 @@ type TestTable struct {
 
 func TestGORM(t *testing.T) {
 	DB.Exec(`
-	CREATE TABLE public.test_tables (
+	CREATE TABLE test_tables (
 		"name" text NULL
 	)`)
 
