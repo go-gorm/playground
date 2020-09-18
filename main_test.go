@@ -8,13 +8,21 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type TestTable struct {
+	Name     string `gorm:"column:name;uniqueIndex:test_tables_name_nick_name_uind"`
+	NickName string `gorm:"column:nick_name;uniqueIndex:test_tables_name_nick_name_uind"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.Exec(`
+	CREATE TABLE public.test_tables (
+		"name" text NULL
+	)`)
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&TestTable{}); err != nil {
+		t.Fail()
+	}
+	if !DB.Migrator().HasIndex(&TestTable{}, "test_tables_name_nick_name_uind") {
+		t.Fail()
 	}
 }
