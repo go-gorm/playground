@@ -10,5 +10,5 @@ import (
 
 func TestGORM(t *testing.T) {
 	out := User{}
-	DB.Preload("Profiles").Find(&out)
+	DB.Preload("Groups").Find(&out)
 }
