@@ -17,6 +17,10 @@ func (ns NamingStrategy) TableName(table string) string {
 func (ns NamingStrategy) ColumnName(table, column string) string {
 	baseColumnName := ns.baseStrategy.ColumnName(table, column)
 
+	if table == "" {
+		return baseColumnName
+	}
+
 	s := strings.Split(table, "_")
 
 	var prefix string
