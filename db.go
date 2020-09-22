@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -77,6 +78,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	} else if debug == "false" {
 		db.Logger = db.Logger.LogMode(logger.Silent)
 	}
+
+	// Force the database to preload relationships
+	db = db.Set("gorm:auto_preload", true)
 
 	return
 }
