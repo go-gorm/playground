@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"time"
 
+	"gorm.io/datatypes"
+
 	"gorm.io/gorm"
 )
 
@@ -57,4 +59,12 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+
+// UserWithJSON is a table with JSON column
+type UserWithJSON struct {
+	gorm.Model
+	Name       string         `json:"name" gorm:"type:varchar(128)"`
+	Attributes datatypes.JSON `json:"attributes" gorm:"type:json"`
 }
