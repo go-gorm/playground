@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"testing"
 )
 
@@ -8,13 +9,41 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Test struct {
+	ID    int
+	Value string
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	DB.Migrator().DropTable(Test{})
+	DB.AutoMigrate(Test{})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	value := &Test{Value: "test"}
+
+	if err := DB.Debug().Create(&value).Error; err != nil {
+		t.Fatalf("Create: %s\n", err)
+	}
+
+	tests := []struct {
+		name  string
+		model interface{}
+		isNil bool
+	}{
+		{name: "no model", isNil: true},
+		{name: "ptr", model: &Test{}},
+		{name: "not ptr", model: Test{}},
+	}
+
+	for _, test := range tests {
+		scope := DB
+		if !test.isNil {
+			log.Println("model=", test.model)
+			scope = scope.Model(test.model)
+		}
+
+		if err := scope.Save(&value).Error; err != nil {
+			t.Errorf("%s: %s\n", test.name, err)
+		}
 	}
 }
