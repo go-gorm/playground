@@ -58,3 +58,8 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Ip struct {
+	ID   uint
+	Flow float64
+}
