@@ -9,7 +9,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	if err := DB.Migrator().CreateTable(&User{}).Error; err != nil {
+	if err := DB.Migrator().CreateTable(&User{}); err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
