@@ -61,5 +61,10 @@ type Language struct {
 
 type Ip struct {
 	ID   uint
+	IP   string `gorm:"-"`
 	Flow float64
+}
+
+func (m Ip) TableName() string {
+	return m.IP
 }
