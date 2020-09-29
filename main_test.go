@@ -2,6 +2,9 @@ package main
 
 import (
 	"testing"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"time"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +12,14 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	config := "user=postgres password=Zps05..... dbname=version3 host=localhost port=5432 sslmode=disable"
+	for {
+		db, err := gorm.Open(postgres.Open(config), &gorm.Config{})
+		if err != nil {
+			println(err.Error())
+		}
+		sqlDB, err := db.DB()
+		_ = sqlDB.Close()
+		time.Sleep(10 * time.Millisecond)
 	}
 }
