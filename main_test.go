@@ -9,12 +9,27 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	rdb := DB.Model(&User{}).Select("name").First(&User{})
+	if rdb.Error != nil {
+		t.Errorf("select `name` should success")
+		t.Fail()
+	}
 
-	DB.Create(&user)
+	rdb := DB.Model(&User{}).Select("name, age").First(&User{})
+	if rdb.Error != nil {
+		t.Errorf("select `name, age` should success")
+		t.Fail()
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	rdb := DB.Model(&User{}).Select("name as n, age as a").First(&User{})
+	if rdb.Error != nil {
+		t.Errorf("select `name as n, age as a` should success")
+		t.Fail()
+	}
+
+	rdb := DB.Model(&User{}).Select("name as n").First(&User{})
+	if rdb.Error == nil {
+		t.Errorf("select `name as n` should return error")
+		t.Fail()
 	}
 }
