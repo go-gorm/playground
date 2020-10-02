@@ -15,19 +15,19 @@ func TestGORM(t *testing.T) {
 		t.Fail()
 	}
 
-	rdb := DB.Model(&User{}).Select("name, age").First(&User{})
+	rdb = DB.Model(&User{}).Select("name, age").First(&User{})
 	if rdb.Error != nil {
 		t.Errorf("select `name, age` should success")
 		t.Fail()
 	}
 
-	rdb := DB.Model(&User{}).Select("name as n, age as a").First(&User{})
+	rdb = DB.Model(&User{}).Select("name as n, age as a").First(&User{})
 	if rdb.Error != nil {
 		t.Errorf("select `name as n, age as a` should success")
 		t.Fail()
 	}
 
-	rdb := DB.Model(&User{}).Select("name as n").First(&User{})
+	rdb = DB.Model(&User{}).Select("name as n").First(&User{})
 	if rdb.Error == nil {
 		t.Errorf("select `name as n` should return error")
 		t.Fail()
