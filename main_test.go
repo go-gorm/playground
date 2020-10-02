@@ -9,7 +9,13 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	rdb := DB.Model(&User{}).Select("name").First(&User{})
+	rdb := DB.Model(&User{}).Create(&User{Name: "name", Age: 10})
+	if rdb.Error != nil {
+		t.Errorf("create should succes")
+		t.Fail()
+	}
+
+	rdb = DB.Model(&User{}).Select("name").First(&User{})
 	if rdb.Error != nil {
 		t.Errorf("select `name` should success")
 		t.Fail()
