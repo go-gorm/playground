@@ -1,6 +1,9 @@
 package main
 
 import (
+	"database/sql"
+	"github.com/lib/pq/hstore"
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -8,10 +11,30 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+type TestModel struct {
+	gorm.Model
+	SomeMap hstore.Hstore
+}
 
-	DB.Create(&user)
+func TestGORM(t *testing.T) {
+	if os.Getenv("GORM_DIALECT") != "postgres" {
+		return
+	}
+
+	DB.AutoMigrate(new(TestModel))
+
+	test := TestModel{
+		SomeMap: hstore.Hstore{
+			Map: map[string]sql.NullString{
+				"a": sql.NullString{
+					String: "",
+					Valid:  false,
+				},
+			},
+		},
+	}
+
+	DB.Create(&test)
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
