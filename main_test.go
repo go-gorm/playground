@@ -14,7 +14,7 @@ import (
 
 type TestModel struct {
 	gorm.Model
-	SomeMap hstore.Hstore
+  SomeMap hstore.Hstore `gorm:"type:hstore"`
 }
 
 func TestGORM(t *testing.T) {
@@ -22,6 +22,7 @@ func TestGORM(t *testing.T) {
 		return
 	}
 
+  DB.Exec("CREATE EXTENSION IF NOT EXISTS hstore")
 	DB.AutoMigrate(new(TestModel))
 
 	test := TestModel{
