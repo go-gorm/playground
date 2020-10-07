@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"github.com/lib/pq/hstore"
 	"gorm.io/gorm"
+	"os"
 	"testing"
 )
 
@@ -34,10 +35,7 @@ func TestGORM(t *testing.T) {
 		},
 	}
 
-	DB.Create(&test)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Create(&test).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
