@@ -2,19 +2,32 @@ package main
 
 import (
 	"testing"
+	"github.com/google/uuid"
+	"time"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
+
+type UserWithUUID struct {
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+
+	TestID     *uuid.UUID `gorm:"type:uuid"`
+}
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	value := UserWithUUID{}
+	err := DB.AutoMigrate(&value).Error
 
-	DB.Create(&user)
+	if err != nil {
+		t.Errorf("datatypes.json create error")
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	createErr := DB.Save(&value).Error
+	if createErr != nil {
+		t.Errorf("create Error : %v", createErr)
 	}
 }
