@@ -15,4 +15,12 @@ func TestGORM(t *testing.T) {
 	if err := DB.AutoMigrate(&SomeAttModel{}); err != nil {
 		t.Errorf("Failed SomeAttModel, got error: %v", err)
 	}
+
+	id := "s-1"
+
+	if err := DB.Create(&SomeModel{
+		SomeId: &id,
+	}).Error; err != nil {
+		t.Errorf("failed to create SomeModel: %v", err)
+	}
 }
