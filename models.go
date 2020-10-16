@@ -60,13 +60,13 @@ type Language struct {
 }
 
 type SomeModel struct {
-	SomeId  *string `gorm:"VARCHAR(255);unique"`
-	SomeAtt *SomeAttModel
+	SomeId  *string       `gorm:"VARCHAR(255);unique"`
+	SomeAtt *SomeAttModel `gorm:"foreignkey:SomeId;references:SomeId;constraint:OnDelete:Cascade,OnUpdate:Cascade"`
 }
 
 type SomeAttModel struct {
 	Value *string
 
-	SomeId    *string   `gorm:"type:VARCHAR(255);index"`
-	SomeModel SomeModel `gorm:"foreignkey:SomeId;references:SomeId;constraint:OnDelete:Cascade,OnUpdate:Cascade"`
+	SomeId *string `gorm:"type:VARCHAR(255);index"`
+	// SomeModel SomeModel `gorm:"foreignkey:SomeId;references:SomeId;constraint:OnDelete:Cascade,OnUpdate:Cascade"`
 }
