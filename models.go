@@ -58,3 +58,15 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type SomeModel struct {
+	SomeId  *string `gorm:"VARCHAR(255);unique"`
+	SomeAtt *SomeAttModel
+}
+
+type SomeAttModel struct {
+	Value *string
+
+	SomeId    *string   `gorm:"type:VARCHAR(255);index"`
+	SomeModel SomeModel `gorm:"foreignkey:SomeId;references:SomeId;constraint:OnDelete:Cascade,OnUpdate:Cascade"`
+}
