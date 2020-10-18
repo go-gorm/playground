@@ -1,20 +1,38 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+func TestColumnTypeLengthInfo(t *testing.T) {
+	columns, err := DB.Migrator().ColumnTypes(&User{})
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	for _, c := range columns {
+		if c.Name() == "string_len" {
+			if _, ok := c.Length(); !ok {
+				t.Errorf("%s: missing length information on column %s", os.Getenv("GORM_DIALECT"), c.Name())
+			}
+		}
+	}
+}
+
+func TestColumnTypeNullableInfo(t *testing.T) {
+	columns, err := DB.Migrator().ColumnTypes(&User{})
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	for _, c := range columns {
+		if _, ok := c.Nullable(); !ok {
+			t.Errorf("%s: missing nullable information on column %s", os.Getenv("GORM_DIALECT"), c.Name())
+		}
 	}
 }

@@ -13,8 +13,9 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
+	Name      string `gorm:"not null"`
+	Age       uint   `gorm:"nullable"`
+	StringLen string `gorm:"size:255"`
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
