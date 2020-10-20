@@ -7,7 +7,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: postgres
+TEST_DRIVERS: postgres
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
