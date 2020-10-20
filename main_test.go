@@ -15,7 +15,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 
 	var deletedUser User
-	err := dbPG.
+	err := DB.
 		Where("created_at < NOW() - INTERVAL ?", strconv.Itoa(10)+" hours").
 		Delete(&deletedUser).Error
 	
