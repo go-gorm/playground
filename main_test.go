@@ -6,6 +6,8 @@ import (
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
+// MYSQL_REPO: https://github.com/asmeikal/mysql.git
+// POSTGRES_REPO: https://github.com/asmeikal/postgres.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: mysql, postgres, sqlserver
 

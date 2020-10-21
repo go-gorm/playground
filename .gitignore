@@ -1,4 +1,6 @@
 gorm
+mysql
+postgres
 go.sum
 .*
 *.db
