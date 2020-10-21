@@ -14,7 +14,7 @@ type Player struct {
 }
 
 type Bio struct {
-	Places []*Places
+	Places []*Places `gorm:"type:jsonb"`
 }
 
 type Places struct {
