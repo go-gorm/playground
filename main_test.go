@@ -9,6 +9,7 @@ import (
 // TEST_DRIVERS: postgres
 
 type Player struct {
+	Name string
 	Bio *Bio `gorm:"type:jsonb"`
 }
 
@@ -21,7 +22,7 @@ type Places struct {
 }
 
 func TestGORM(t *testing.T) {
-	player := Player{Name: "jinzhu"}
+	player := Player{Name: "jinzhu", Bio: &Bio{}}
 
 	err := DB.Create(&player)
 	if err != nil {
