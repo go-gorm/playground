@@ -11,22 +11,24 @@ import (
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
+// User model definition
+
+// Base with id, created_at, updated_at & deleted_at
+type Base struct {
+	ID        uint            `gorm:"primaryKey" json:"id"`
+	CreatedAt time.Time       `json:"created_at"`
+	UpdatedAt time.Time       `json:"updated_at"`
+	DeletedAt *gorm.DeletedAt `gorm:"index" json:"deleted_at"`
+}
+
 type User struct {
-	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Base
+	Email     string `gorm:"column:email;uniqueIndex" json:"email"`
+	KID       string `gorm:"column:kid;" json:"kid"`
+	FirstName string `gorm:"column:first_name" json:"first_name"`
+	LastName  string `gorm:"column:last_name" json:"last_name"`
+	BirthDate string `gorm:"column:birth_date" json:"birth_date"`
+	Gender    string `gorm:"column:gender" json:"gender"`
 }
 
 type Account struct {

@@ -3,11 +3,11 @@ module gorm.io/playground
 go 1.14
 
 require (
-	gorm.io/driver/mysql v1.0.1
-	gorm.io/driver/postgres v1.0.2
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/driver/postgres v1.0.5
 	gorm.io/driver/sqlite v1.1.3
-	gorm.io/driver/sqlserver v1.0.4
-	gorm.io/gorm v1.20.2
+	gorm.io/driver/sqlserver v1.0.5
+	gorm.io/gorm v1.20.5
 )
 
 replace gorm.io/gorm => ./gorm
