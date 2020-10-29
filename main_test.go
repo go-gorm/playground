@@ -1,6 +1,7 @@
 package main
 
 import (
+	"testing"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"gorm.io/driver/sqlite"
@@ -16,7 +17,11 @@ type TestFileList struct {
 	Files []TestFile `gorm:"ForeignKey:ProjName"`
 }
 
-func main() {
+// GORM_REPO: https://github.com/go-gorm/gorm.git
+// GORM_BRANCH: master
+// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+
+func TestGORM(t *testing.T) {
 	var files []TestFile
 
 	files = append(files,TestFile{"test","test"})
