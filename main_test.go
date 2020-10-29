@@ -1,20 +1,31 @@
 package main
 
 import (
-	"testing"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"gorm.io/driver/sqlite"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+type TestFile struct {
+	ProjName string
+	File string
+}
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+type TestFileList struct {
+	ProjName string `gorm:"primaryKey"`
+	Files []TestFile `gorm:"ForeignKey:ProjName"`
+}
 
-	DB.Create(&user)
+func main() {
+	var files []TestFile
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	files = append(files,TestFile{"test","test"})
+
+	zart := TestFileList {"test",files}
+
+	_db,_ := gorm.Open(sqlite.Open("db.sql"), &gorm.Config{PrepareStmt: true})
+
+	_db.AutoMigrate(&TestFile{},&TestFileList{})
+
+	_db.Clauses(clause.OnConflict{DoNothing: true}).Create(zart)
 }
