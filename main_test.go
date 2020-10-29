@@ -1,6 +1,10 @@
 package main
 
 import (
+	"database/sql/driver"
+	"encoding/json"
+	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -44,8 +48,11 @@ type Jobs struct {
 	ID                    uint
 	RelabelConfigs       JSON           `json:"relabel_configs" gorm:"column:relabel_configs; type:json"`
 }
+func (Jobs) TableName() string {
+	return "jobs"
+}
 type Targets struct {
-	Model
+	ID	    uint
 	Target string `json:"target" gorm:"not null;unique"`
 	JobID  uint   `json:"job_id" gorm:"column:job_id"`
 	Job    Jobs   `json:"job"`
@@ -53,18 +60,18 @@ type Targets struct {
 
 func TestGORM(t *testing.T) {
 	job := Jobs{RelabelConfigs: []byte("{\"relabel_configs\": [{\"regex\": \"(.*):\\\\\\\\d+\", \"replacement\": \"1\", \"target_label\": \"host\", \"source_labels\": [\"__address__\"]}]}")}
-	
+	DB.AutoMigrate(Jobs{},Targets{})
 	DB.Create(&job)
-	var jobs []model.Jobs
+	var jobs []Jobs
         DB.Find(&jobs)
 	for _, job := range jobs {
 		fmt.Println("GetTarget前:RelabelConfigs", string(job.RelabelConfigs))
 	}
 	target := Targets{Target: "test1", JobID: 1}
 	DB.Create(&target)
-	var targets = []Targets
-	DB.Find(&target)
-	
+	var targets []Targets
+	DB.Find(&targets)
+
 	for _, job := range jobs {
 		fmt.Println("GetTarget后:RelabelConfigs", string(job.RelabelConfigs))
 	}
