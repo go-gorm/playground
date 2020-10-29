@@ -20,15 +20,16 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	DB.Model(&user).Updates(User{
+	user.Age = 12
+	DB.Create(&user)
+
+	err := DB.Model(&user).Updates(User{
 		Name: "het",
 		Age:  0,
-	}).First(&user)
+	}).First(&user).Error
 
-	fmt.Println(user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err != nil {
+		fmt.Println("Got Error:", err)
 	}
+	fmt.Println(user)
 }
