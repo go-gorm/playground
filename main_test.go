@@ -32,5 +32,7 @@ func TestGORM(t *testing.T) {
 
 	_db.AutoMigrate(&TestFile{},&TestFileList{})
 
-	_db.Clauses(clause.OnConflict{DoNothing: true}).Create(zart)
+	if err := _db.Clauses(clause.OnConflict{DoNothing: true}).Create(zart).Error ; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 }
