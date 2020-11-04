@@ -13,8 +13,16 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	var names []string
+	DB.Raw(`select name from users`).Pluck("name", &names)
+
+	if len(names) != 1 {
+		t.Errorf("Failed, Pluck without Table() didn't return any results")
 	}
+
+	DB.Table("blag").Raw(`select name from users`).Pluck("name", &names)
+	if len(names) != 1 {
+		t.Errorf("Failed, Pluck without Table() didn't return any results")
+	}
+	// This succeeds, even though "blag" isn't even a real table.
 }
