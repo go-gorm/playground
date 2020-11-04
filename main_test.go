@@ -9,12 +9,62 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{Name: "test user"}
 
-	DB.Create(&user)
+	r := DB.Create(&user)
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	pet := Pet{
+		UserID: &user.ID,
+		Name:   "Pet 1",
+	}
+
+	r = DB.Create(&pet)
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
+
+	pet = Pet{
+		UserID: &user.ID,
+		Name:   "Pet 2",
+	}
+
+	r = DB.Create(&pet)
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
+
+	r = DB.Where(Pet{
+		UserID: &user.ID,
+	}).Delete(Pet{})
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
+
+	if r.RowsAffected != 2 {
+		t.Errorf("unexpected number of affected rows. expected: 2; got: %v", r.RowsAffected)
+	}
+
+	pet = Pet{
+		UserID: &user.ID,
+		Name:   "Pet 3",
+	}
+
+	r = DB.Create(&pet)
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
+
+	r = DB.Where(Pet{
+		UserID: &user.ID,
+	}).Delete(Pet{})
+	if r.Error != nil {
+		t.Errorf("error: %v", r.Error)
+	}
+
+	if r.RowsAffected != 1 {
+		t.Errorf("unexpected number of affected rows. expected: 1; got: %v", r.RowsAffected)
 	}
 }
