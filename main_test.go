@@ -1,20 +1,44 @@
 package main
 
 import (
+	"fmt"
 	"testing"
+	"time"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Foo struct {
+	ID        string `gorm:"primaryKey;"`
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.AutoMigrate(&Foo{})
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	f := Foo{
+		ID:   "id",
+		Name: "jinzhu",
 	}
+
+	if err := DB.Create(&f).Error; err != nil {
+		panic(err)
+	}
+
+	fmt.Println(f)
+	f2 := Foo{
+		ID:   "id",
+		Name: "new-name",
+	}
+
+	if err := DB.Save(&f2).Error; err != nil {
+		panic(err)
+	}
+
+	fmt.Println(f2)
+
 }
