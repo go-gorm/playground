@@ -39,6 +39,9 @@ func TestGORM(t *testing.T) {
 		panic(err)
 	}
 
+	if f2.CreatedAt.Year() == 1 {
+		t.Errorf("CreatedAt time is zero")
+	}
 	fmt.Println(f2)
 
 }
