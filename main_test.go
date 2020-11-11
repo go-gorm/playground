@@ -2,24 +2,19 @@ package main
 
 import (
 	"testing"
-	"time"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-type Model struct {
-	ID        uint       `json:"id" gorm:"primary_key"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"-" sql:"index"`
-}
-
 type TestUniqueIdx struct {
-	// Model
+	gorm.Model
 	Foo string `form:"foo" json:"foo" gorm:"unique_index:idx_foo_bar"`
 	Bar string `form:"bar" json:"bar" gorm:"unique_index:idx_foo_bar"`
+	Baz int    `form:"baz" json:"baz"  gorm:"default:500"`
 }
 
 func addTestUniqueIdx(test TestUniqueIdx) error {
@@ -27,7 +22,7 @@ func addTestUniqueIdx(test TestUniqueIdx) error {
 }
 
 func updateTestUniqueIdxMap(test map[string]interface{}) error {
-	return DB.Model(&TestUniqueIdx{}).Where("foo = ?", test["foo"]).Updates(test).Error
+	return DB.Model(TestUniqueIdx{}).Where("foo = ?", test["foo"]).Updates(test).Error
 }
 
 func updateTestUniqueIdx(test TestUniqueIdx) error {
@@ -44,10 +39,12 @@ func TestGORM(t *testing.T) {
 	test := TestUniqueIdx{
 		Foo: foo,
 		Bar: bar,
+		Baz: 100,
 	}
 	testMap := make(map[string]interface{})
 	testMap["foo"] = foo
 	testMap["bar"] = bar
+	testMap["baz"] = 100
 
 	if err := DB.AutoMigrate(&TestUniqueIdx{}); err != nil {
 		t.Errorf("Failed, got error: %v", err)
