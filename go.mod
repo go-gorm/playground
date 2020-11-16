@@ -9,5 +9,4 @@ require (
 	gorm.io/driver/sqlserver v1.0.5
 	gorm.io/gorm v1.20.5
 )
-
 replace gorm.io/gorm => ./gorm
