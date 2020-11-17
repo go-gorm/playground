@@ -12,6 +12,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
+	//	os.Setenv("GORM_DIALECT", "mysql")
 	var Users [100]User
 	for i := range Users {
 		Users[i].Name = "Test"
