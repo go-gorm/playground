@@ -13,7 +13,7 @@ import (
 
 func TestGORM(t *testing.T) {
 	//	os.Setenv("GORM_DIALECT", "mysql")
-	var Users [100]User
+	var Users [1000]User
 	for i := range Users {
 		Users[i].Name = "Test"
 		Users[i].Active = false
@@ -22,7 +22,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&Users)
 	results := []User{}
 
-	result := DB.Where("Active = ?", false).FindInBatches(&results, 10, func(tx *gorm.DB, batch int) error {
+	result := DB.Where("Active = ?", false).FindInBatches(&results, 100, func(tx *gorm.DB, batch int) error {
 
 		for i := range results {
 
