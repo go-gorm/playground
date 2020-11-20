@@ -18,7 +18,7 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	
-	if result.Account.Number == 5 {
+	if result.Account.Number == "123" {
 		t.Errorf("SkipHooks did not apply to a Preloaded relation")
 	}
 }
