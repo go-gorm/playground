@@ -35,6 +35,12 @@ type Account struct {
 	Number string
 }
 
+func (a *Account) AfterFind(ts *gorm.DB) error {
+	a.Number = 5
+
+	return nil
+}
+
 type Pet struct {
 	gorm.Model
 	UserID *uint
