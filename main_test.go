@@ -17,4 +17,8 @@ func TestGORM(t *testing.T) {
 	if err := DB.Session(&gorm.Session{SkipHooks: true}).Preload("Account").First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	
+	if result.Account.Name == 5 {
+		t.Errorf("SkipHooks did not apply to a Preloaded relation")
+	}
 }
