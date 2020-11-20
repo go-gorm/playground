@@ -36,7 +36,7 @@ type Account struct {
 }
 
 func (a *Account) AfterFind(ts *gorm.DB) error {
-	a.Number = 5
+	a.Number = "123"
 
 	return nil
 }
