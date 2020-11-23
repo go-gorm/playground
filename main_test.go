@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -15,6 +16,10 @@ func TestGORM(t *testing.T) {
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	t.Logf("%+v\n",user)
+	if err := DB.Where("name = ?", "jinzhu").UpdateColumn("age", gorm.Expr("age + ?", 1)).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
