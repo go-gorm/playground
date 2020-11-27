@@ -32,7 +32,8 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
-		RunMigrations()
+		// 注释掉这个否则会有缓存，无法复现bug
+		//RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
