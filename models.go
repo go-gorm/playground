@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -27,6 +28,13 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+}
+
+func (u User) BeforeSave(tx *gorm.DB) error {
+	if u.Age < 20 {
+		return errors.New("20 or higher age required")
+	}
+	return nil
 }
 
 type Account struct {

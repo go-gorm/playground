@@ -9,12 +9,22 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	t.Run("20_or_higher_age_validation", func(t *testing.T) {
+		DB.Begin()
+		defer DB.Rollback()
 
-	DB.Create(&user)
+		user := User{
+			Name: "jinzhu",
+			Age:  20,
+		}
+		DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+		err := DB.Model(&user).Updates(User{
+			Age: 19,
+		}).Error
+
+		if err == nil {
+			t.Error("20 or higher age validation doesn't work")
+		}
+	})
 }
