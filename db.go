@@ -34,6 +34,9 @@ func init() {
 
 		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
+			// Disable this to make it work
+			DB.Exec("PRAGMA journal_mode = WAL")
+
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
 
@@ -49,13 +52,17 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{
+			PrepareStmt: true,
+		})
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{
+			PrepareStmt: true,
+		})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -66,10 +73,18 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{
+			PrepareStmt: true,
+		})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		// Does not work with/without busy_timeout
+		//db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")+"?_busy_timeout=3600"), &gorm.Config{
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{
+
+			// Disabling prepared statements and enabling WAL does work
+			PrepareStmt: true,
+		})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
