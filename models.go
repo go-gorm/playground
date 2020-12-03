@@ -12,7 +12,7 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	ID        uint `gorm:"type:smallserial;primarykey"`
+	ID        uint        `gorm:"type:smallserial;primarykey"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -21,7 +21,7 @@ type User struct {
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
 	Company   Company
-	ManagerID *uint
+	ManagerID *uint      `gorm:"type:smallint"`
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
