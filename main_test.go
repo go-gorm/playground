@@ -15,9 +15,4 @@ func TestGORM(t *testing.T) {
 		users = append(users, User{Name: "rbren"})
 	}
 	DB.Create(users)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
 }
