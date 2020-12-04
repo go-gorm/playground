@@ -7,6 +7,15 @@ import (
 	"time"
 )
 
+// GORM_REPO: https://github.com/go-gorm/gorm.git
+// GORM_BRANCH: master
+// TEST_DRIVERS: sqlite
+
+func TestGORM(t *testing.T) {
+	Test_formService_DataWithCount(t)
+	Test_formService_DataWithoutCount(t)
+}
+
 func init() {
 	DB.Create(&Channel{
 		ID:    1,
@@ -28,11 +37,6 @@ func init() {
 			ID: 1,
 		},
 	})
-}
-
-func TestGORM(t *testing.T) {
-	Test_formService_DataWithCount(t)
-	Test_formService_DataWithoutCount(t)
 }
 
 func Test_formService_DataWithCount(t *testing.T) {
