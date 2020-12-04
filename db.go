@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm/schema"
 	"log"
 	"math/rand"
 	"os"
@@ -77,13 +78,22 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	} else if debug == "false" {
 		db.Logger = db.Logger.LogMode(logger.Silent)
 	}
-
+	// be SingularTable
+	db.NamingStrategy = schema.NamingStrategy{
+		SingularTable: true,
+	}
+	db.Logger = logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			SlowThreshold: 10 * time.Second,
+			Colorful:      true,
+		})
 	return
 }
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&Channel{}, &User{}, &Form{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
