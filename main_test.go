@@ -11,7 +11,7 @@ import (
 func TestGORM(t *testing.T) {
 	count := 100000
 	users := make([]User, count)
-	for (i := 0; i < count; i++) {
+	for i := 0; i < count; i++ {
 		users = append(users, User{Name: "rbren"})
 	}
 	DB.Create(users)
