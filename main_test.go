@@ -30,6 +30,11 @@ func init() {
 	})
 }
 
+func TestGORM(t *testing.T) {
+	Test_formService_DataWithCount(t)
+	Test_formService_DataWithoutCount(t)
+}
+
 func Test_formService_DataWithCount(t *testing.T) {
 	type fields struct {
 		mutex *sync.Mutex
