@@ -8,13 +8,27 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Role struct {
+	ID     uint   `gorm:"primarykey"`
+	Name   string `gorm:"unique;not null"`
+	Entity string `gorm:"unique;not null"`
+}
+
+type Group struct {
+	ID   uint   `gorm:"primarykey"`
+	Name string `gorm:"unique;not null"`
+}
+
+type RolesGroups struct {
+	RID Role  `gorm:"foreignKey:id"`
+	GID Group `gorm:"foreignKey:id"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	err := DB.AutoMigrate(&Role{},
+		&Group{},
+		&RolesGroups{})
+	if err != nil {
+		t.Errorf(err.Error())
 	}
 }
