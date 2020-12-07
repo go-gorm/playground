@@ -122,7 +122,7 @@ func Test_formService_DataWithoutCount(t *testing.T) {
 				form.mutex,
 			},
 			args:      args{&Form{}, 0, -1},
-			wantCount: 1,
+			wantCount: 0,
 			wantInfo: []*totalData{
 				{
 					Channel{},
