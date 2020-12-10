@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"gorm.io/gorm"
+	"reflect"
 	"testing"
 	"time"
 )
@@ -55,4 +56,18 @@ func TestGORM(t *testing.T) {
 			Name: "First Address",
 		}},
 	})
+
+	var pa PersonAddress
+	DB.First(&pa, "person_id = ? AND home = ?", 1, true)
+
+	if reflect.DeepEqual(pa, PersonAddress{}) {
+		t.Error("Not found, but I should")
+	}
+
+	DB.First(&pa, "person_id = ? AND home = ?", 1, false)
+
+	if !reflect.DeepEqual(pa, PersonAddress{}) {
+		t.Error("Found, but I should not")
+	}
+
 }
