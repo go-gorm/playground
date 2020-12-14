@@ -70,7 +70,7 @@ func TestGORM(t *testing.T) {
 		state        = "-1"
 	)
 	
-	var result StatisticsDetail
+	var result []StatisticsDetail
 	if err := DB.Model(&Order{}).Debug().
 		Select("SUM( total ) as total_price,`orders`.coin_type,(transaction_accounts.api_key) as api_key,"+
 			"(transaction_accounts.api_secret) as api_secret,(transaction_accounts.passphrase) as passphrase,"+
