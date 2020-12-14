@@ -72,8 +72,8 @@ func TestGORM(t *testing.T) {
 	
 	var result StatisticsDetail
 	if err := DB.Model(&Order{}).Debug().
-		Select("SUM( total ) as total_price,`orders`.coin_type,any_value(transaction_accounts.api_key) as api_key,"+
-			"any_value(transaction_accounts.api_secret) as api_secret,any_value(transaction_accounts.passphrase) as passphrase,"+
+		Select("SUM( total ) as total_price,`orders`.coin_type,(transaction_accounts.api_key) as api_key,"+
+			"(transaction_accounts.api_secret) as api_secret,(transaction_accounts.passphrase) as passphrase,"+
 			"GROUP_CONCAT(`orders`.transaction_account_id) as ids").
 		Joins("left JOIN transaction_accounts on transaction_accounts.id = `orders`.transaction_account_id").
 		Where("`orders`.exchange =? AND `orders`.contract_type=? AND `orders`.state=?", exchange, contractType, state).
