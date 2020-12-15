@@ -27,6 +27,7 @@ func init() {
 		if err == nil {
 			err = sqlDB.Ping()
 		}
+		sqlDB.SetMaxOpenConns(100)
 
 		if err != nil {
 			log.Printf("failed to connect database, got error %v\n", err)
@@ -49,7 +50,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{PrepareStmt: false})
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
