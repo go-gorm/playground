@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -13,8 +14,20 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	subQuery := DB.Table("users").Where("name=?", user.Name).Select("id")
+
+	err := DB.Model(&Pet{}).Create([]map[string]interface{}{
+		{
+			"name": "cat",
+			"user_id": gorm.Expr("(?)", DB.Table("(?) as tmp", subQuery).Select("@uid:=id")),
+		},
+		{
+			"name": "dog",
+			"user_id": gorm.Expr("@uid"),
+		},
+	}).Error
+
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
