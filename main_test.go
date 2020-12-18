@@ -17,4 +17,11 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	createTime := user.CreatedAt.UnixNano()
+	readTime := result.CreatedAt.UnixNano()
+
+	if createTime != readTime {
+		t.Errorf("Failed, inconsistent CreatedAt: Create: %+v, Read: %+v", createTime, readTime)
+	}
 }
