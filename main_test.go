@@ -9,12 +9,29 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	accountSender := &Account{Email: "test@test.test"}
+	if err := DB.Save(accountSender).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	DB.Create(&user)
+	customerSender := &Customer{Name: "test"}
+	if err := DB.Save(customerSender).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	accountMessage := &TicketMessage{
+		Message:       "hello world!",
+		AccountSender: accountSender,
+	}
+	if err := DB.Save(accountMessage).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	customerMessage := &TicketMessage{
+		Message:        "hello world!",
+		CustomerSender: customerSender,
+	}
+	if err := DB.Save(customerMessage).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
