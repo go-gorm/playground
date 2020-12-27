@@ -12,9 +12,18 @@ func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
 	DB.Create(&user)
+	ReadDB.Create(&User{Name: "jinzhu-read"})
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	result.Name = ""
+	if err := DB.Raw(`
+SELECT name FROM users
+WHERE name = ?
+`, "jinzhu-read").Row().Scan(&result.Name); err == nil || result.Name != "" {
+		t.Errorf("Failed, did not go to read db, name %q", result.Name)
 	}
 }

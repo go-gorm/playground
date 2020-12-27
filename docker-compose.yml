@@ -29,4 +29,32 @@ services:
       - MSSQL_DB=gorm
       - MSSQL_USER=gorm
       - MSSQL_PASSWORD=LoremIpsum86
+  mysql_read:
+    image: 'mysql:latest'
+    ports:
+      - 9911:3306
+    environment:
+      - MYSQL_DATABASE=gorm
+      - MYSQL_USER=gorm
+      - MYSQL_PASSWORD=gorm
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+  postgres_read:
+    image: 'postgres:latest'
+    ports:
+      - 9921:5432
+    environment:
+      - TZ=Asia/Shanghai
+      - POSTGRES_DB=gorm
+      - POSTGRES_USER=gorm
+      - POSTGRES_PASSWORD=gorm
+  mssql_read:
+    image: 'mcmoe/mssqldocker:latest'
+    ports:
+      - 9931:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=LoremIpsum86
+      - MSSQL_DB=gorm
+      - MSSQL_USER=gorm
+      - MSSQL_PASSWORD=LoremIpsum86
 
