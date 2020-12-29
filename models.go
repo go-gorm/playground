@@ -27,6 +27,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	Nickname  sql.NullString
 }
 
 type Account struct {
