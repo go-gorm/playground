@@ -13,6 +13,7 @@ func articleServiceInit() {
 	})
 }
 func Test_articleService_List(t *testing.T) {
+	articleServiceInit()
 	type fields struct {
 		mutex *sync.Mutex
 	}

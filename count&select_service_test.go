@@ -31,6 +31,7 @@ func formServiceInit() {
 }
 
 func Test_formService_DataWithCount(t *testing.T) {
+	formServiceInit()
 	type fields struct {
 		mutex *sync.Mutex
 	}
@@ -91,6 +92,7 @@ func Test_formService_DataWithCount(t *testing.T) {
 }
 
 func Test_formService_DataWithoutCount(t *testing.T) {
+	formServiceInit()
 	type fields struct {
 		mutex *sync.Mutex
 	}
