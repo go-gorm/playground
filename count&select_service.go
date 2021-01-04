@@ -41,7 +41,7 @@ func (srv *formService) DataWithCount(fields interface{}, maps *Form, limit, off
 func (srv *formService) DataWithoutCount(maps *Form, limit, offset int) (info []*totalData, count int64, err error) {
 	query := DB.Model(&Form{}).Debug().
 		Select(
-			//"channel.*",
+			"channel.*",
 			"sum(CASE WHEN form.user_type=1 THEN 1 ELSE 0 END) as worker",
 			"sum(CASE WHEN form.user_type=2 THEN 1 ELSE 0 END) as mechanism",
 			"sum(CASE WHEN user.sign_time is not null THEN 1 ELSE 0 END) as sign").
@@ -49,7 +49,7 @@ func (srv *formService) DataWithoutCount(maps *Form, limit, offset int) (info []
 		Joins("left join channel on channel.id = user.channel_id").
 		Where(maps).
 		Group("channel.id").
-		//Count(&count).
+		Count(&count).
 		Offset(offset).
 		Limit(limit).
 		Find(&info)
