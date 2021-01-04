@@ -9,5 +9,5 @@ import (
 // TEST_DRIVERS: sqlite
 
 func TestGORM(t *testing.T) {
-	Test_articleService_List(t)
+
 }
