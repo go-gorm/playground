@@ -7,9 +7,15 @@ import (
 )
 
 func articleServiceInit() {
-	DB.Create(&Article{
-		ID:    1,
-		Title: "test Article",
+	DB.Create([]*Article{
+		{
+			ID:    1,
+			Title: "test Article",
+		},
+		{
+			ID:    2,
+			Title: "test helloWorld!",
+		},
 	})
 }
 func Test_articleService_List(t *testing.T) {
@@ -40,17 +46,11 @@ func Test_articleService_List(t *testing.T) {
 				&Article{
 					Title: "test Article",
 				},
-				"",
+				"`title` like '%test%'",
 				-1,
 				0,
 			},
 			wantCount: 1,
-			//wantInfo: []Article{
-			//	{
-			//		ID:    1,
-			//		Title: "test Article",
-			//	},
-			//},
 		},
 	}
 	for _, tt := range tests {
