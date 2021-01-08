@@ -12,9 +12,15 @@ func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
 	DB.Create(&user)
+	
+	//disable default transction due to mysql already done it inside.
+	DB.SkipDefaultTransaction = true
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Where("id=?", user.ID).Delete(User{}).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	//again, panic
+	if err := DB.Where("id=?", user.ID).Delete(User{}).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
