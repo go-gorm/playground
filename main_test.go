@@ -31,7 +31,7 @@ func TestGORM(t *testing.T) {
 			os.Exit(1)
 		}
 		
-		tx := pkg.MysqlClient.Begin()
+		tx := db.Begin()
 		defer func() {
 			if r := recover(); r != nil {
 				tx.Rollback()
