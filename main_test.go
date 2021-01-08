@@ -20,6 +20,7 @@ func TestGORM(t *testing.T) {
 	//disable default transction due to mysql already done it inside.
 	if os.Getenv("GORM_DIALECT") == "mysql" {
 		db, _ := gorm.Open(mysql.Open("gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"), &gorm.Config{
+			PrepareStmt:            true,
 			SkipDefaultTransaction: true,
 		})
 		if err := db.Where("id=?", user.ID).Delete(&User{}).Error; err != nil {
