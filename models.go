@@ -11,7 +11,7 @@ import (
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
-type User struct {
+type user struct {
 	gorm.Model
 	Name      string
 	Age       uint
@@ -22,10 +22,10 @@ type User struct {
 	CompanyID *int
 	Company   Company
 	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
+	Manager   *user
+	Team      []user     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
+	Friends   []*user    `gorm:"many2many:user_friends"`
 	Active    bool
 }
 
