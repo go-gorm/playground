@@ -26,7 +26,7 @@ func TestGORM(t *testing.T) {
 			Name string
 		}
 
-		if err = DB.AutoMigrate(&Test{}); err != nil {
+		if err := DB.AutoMigrate(&Test{}); err != nil {
 			log.Printf("Failed to auto migrate, but got error %v\n", err)
 			os.Exit(1)
 		}
