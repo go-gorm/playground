@@ -27,23 +27,40 @@ func TestGORM(t *testing.T) {
 		}
 
 		if err := DB.AutoMigrate(&Test{}); err != nil {
-			log.Printf("Failed to auto migrate, but got error %v\n", err)
+			log.Printf("Failed to auto migrate, got error %v\n", err)
 			os.Exit(1)
 		}
 		
-		if err := db.Where("name=?", "zzjin").Delete(&Test{}).Error; err != nil {
-			t.Errorf("Failed, got error: %v", err)
+		tx := pkg.MysqlClient.Begin()
+		defer func() {
+			if r := recover(); r != nil {
+				tx.Rollback()
+			}
+		}()
+		if err := tx.Error; err != nil {
+			log.Printf("Failed to start transaction, got error %v\n", err)
+			os.Exit(1)
 		}
 		
-		user := Test{Name: "zzjin"}
-		DB.Create(&user)
-		
-		user = Test{Name: "zzjin2"}
-		DB.Create(&user)
-		
-		if err := db.Where("name=?", "zzjin").Delete(&Test{}).Error; err != nil {
-			t.Errorf("Failed, got error: %v", err)
+		if err := tx.Where("name=?", "zzjin").Delete(&Test{}).Error; err != nil {
+			tx.Rollback()
+			
+			log.Printf("Failed to run one transaction, got error %v\n", err)
+			os.Exit(1)
 		}
+		
+		if err := tx.Create(&Test{Name: "zzjin"}).Error; err != nil {
+			tx.Rollback()
+			
+			log.Printf("Failed to run one transaction, got error %v\n", err)
+			os.Exit(1)
+		}
+		
+		if err := tx.Commit().Error; err != nil {
+			log.Printf("Failed to commit transaction, got error %v\n", err)
+			os.Exit(1)
+		}
+		
 		//again, panic
 		if err := db.Where("name=?", "zzjin").Delete(&Test{}).Error; err != nil {
 			t.Errorf("Failed, got error: %v", err)
