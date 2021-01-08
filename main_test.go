@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"testing"
 	"os"
 	
