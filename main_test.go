@@ -31,6 +31,10 @@ func TestGORM(t *testing.T) {
 			os.Exit(1)
 		}
 		
+		if err := db.Where("name=?", "zzjin").Delete(&Test{}).Error; err != nil {
+			t.Errorf("Failed, got error: %v", err)
+		}
+		
 		user := Test{Name: "zzjin"}
 		DB.Create(&user)
 		
