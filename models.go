@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"time"
 
 	"gorm.io/gorm"
@@ -16,7 +15,7 @@ type User struct {
 	Name      string
 	Age       uint
 	Birthday  *time.Time
-	Account   Account
+	Account   []Account `gorm:"foreignkey:UserID"`
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
@@ -31,7 +30,7 @@ type User struct {
 
 type Account struct {
 	gorm.Model
-	UserID sql.NullInt64
+	UserID uint
 	Number string
 }
 
