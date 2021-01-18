@@ -11,4 +11,4 @@ require (
 	gorm.io/gorm v1.20.8
 )
 
-// replace gorm.io/gorm => ./gorm
+replace gorm.io/gorm => ./gorm
