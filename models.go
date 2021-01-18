@@ -29,6 +29,15 @@ type User struct {
 	Active    bool
 }
 
+type UserWithPetCount struct {
+	User 
+	PetCount int64
+}
+
+func (UserWithPetCount) TableName() string {
+	return "users"
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
