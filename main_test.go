@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -9,12 +12,29 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	tx := DB.Model(TestUser{})
+	err := tx.Statement.Parse(tx.Statement.Model)
+	assert.NoError(t, err)
+	s := tx.Statement.Schema
+	fmt.Println(s.Relationships.Relations)
+	fs := s.Relationships.Relations["CreatedBy"].FieldSchema
+	fmt.Println(fs.Relationships.Relations)
 
-	DB.Create(&user)
+	fmt.Println(s.Name, " -> ", fs.Name)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if _, ok := fs.Relationships.Relations["CreatedBy"]; !ok {
+		t.Errorf("Missing CreatedBy")
 	}
+}
+
+type TestUser struct {
+	BaseModel
+
+	Name string
+}
+
+type BaseModel struct {
+	gorm.Model
+	CreatedByID *int
+	CreatedBy   *TestUser
 }
