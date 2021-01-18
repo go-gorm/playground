@@ -11,5 +11,5 @@ type Article struct {
 
 	CreatedAt time.Time  `gorm:"column:created_at;not null;default:CURRENT_TIMESTAMP;type:datetime" json:"created_at"`
 	UpdatedAt *time.Time `gorm:"column:updated_at;type:datetime" json:"updated_at"`
-	gorm.DeletedAt
+	DeletedAt gorm.DeletedAt
 }

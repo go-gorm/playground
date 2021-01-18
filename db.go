@@ -14,6 +14,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 )
 
 var DB *gorm.DB
@@ -88,6 +89,13 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			SlowThreshold: 10 * time.Second,
 			Colorful:      true,
 		})
+	db.Use(dbresolver.Register(dbresolver.Config{
+		Sources:  []gorm.Dialector{},
+		Replicas: []gorm.Dialector{},
+	}).
+		SetConnMaxLifetime(time.Minute).
+		SetMaxIdleConns(100).
+		SetMaxOpenConns(0))
 	return
 }
 

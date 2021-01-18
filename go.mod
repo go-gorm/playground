@@ -7,7 +7,8 @@ require (
 	gorm.io/driver/postgres v1.0.5
 	gorm.io/driver/sqlite v1.1.3
 	gorm.io/driver/sqlserver v1.0.5
-	gorm.io/gorm v1.20.8
+	gorm.io/gorm v1.20.11
+	gorm.io/plugin/dbresolver v1.1.0
 )
 
 replace gorm.io/gorm => ./gorm
