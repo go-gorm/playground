@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-dialects=("sqlite" "mysql" "postgres" "sqlserver")
+#dialects=("sqlite" "mysql" "postgres" "sqlserver")
+dialects=("mysql" )
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then
@@ -17,6 +18,7 @@ for dialect in "${dialects[@]}" ; do
   then
     if [[ $(grep TEST_DRIVER main_test.go) =~ "${dialect}" ]]
     then
+      set -x
       echo "testing ${dialect}..."
       GORM_DIALECT=${dialect} go test -race -count=1 -v ./...
     else

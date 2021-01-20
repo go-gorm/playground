@@ -5,6 +5,7 @@ services:
     image: 'mysql:latest'
     ports:
       - 9910:3306
+    command: '--auto_increment_increment=2'
     environment:
       - MYSQL_DATABASE=gorm
       - MYSQL_USER=gorm
