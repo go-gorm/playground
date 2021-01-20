@@ -29,6 +29,11 @@ type User struct {
 	Active    bool
 }
 
+func (user *User) BeforeSave(tx *gorm.DB) error {
+	user.Age += 1
+	return nil
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
