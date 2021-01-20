@@ -11,6 +11,7 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -83,7 +84,11 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{
+		&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{},
+		&TwoTieredEntryDb{}, &TwoTieredLinkDb{},
+		&ThreeTieredParentDb{}, &ThreeTieredEntryDb{}, &ThreeTieredLinkDb{},
+	}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
