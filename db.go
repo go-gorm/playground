@@ -32,12 +32,12 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
-		RunMigrations()
-		if DB.Dialector.Name() == "sqlite" {
-			DB.Exec("PRAGMA foreign_keys = ON")
-		}
+		// RunMigrations()
+		// if DB.Dialector.Name() == "sqlite" {
+		// 	DB.Exec("PRAGMA foreign_keys = ON")
+		// }
 
-		DB.Logger = DB.Logger.LogMode(logger.Info)
+		// DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
 }
 

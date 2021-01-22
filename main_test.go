@@ -12,10 +12,9 @@ import (
 
 func TestGORM(t *testing.T) {
 	require := require.New(t)
-	user := User{Name: "jinhzu"}
-
-	// require.NoError(DB.Migrator().DropTable(&RUser{}))
-	// require.NoError(DB.Migrator().CreateTable(&RUser{}))
+	require.NoError(DB.Migrator().DropTable(&User{}))
+	require.NoError(DB.Migrator().CreateTable(&User{}))
+	user := User{Name: "jihnzu"}
 
 	require.NoError(DB.Create(&user).Error)
 	var result User
