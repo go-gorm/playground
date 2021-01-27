@@ -14,7 +14,7 @@ import (
 type User struct {
 	gorm.Model
 	Name      string
-	Age       uint
+	Age       uint `gorm:"default:null"`
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
