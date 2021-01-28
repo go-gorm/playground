@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"gorm.io/gorm/clause"
 	"testing"
 )
@@ -21,7 +20,7 @@ func TestGORM(t *testing.T) {
 	}
 }
 
-func TestAppendNested(t *testing.T){
+func TestReplace(t *testing.T){
 	user := User{Name: "jinzhu"}
 
 	DB.Create(&user)
@@ -32,7 +31,18 @@ func TestAppendNested(t *testing.T){
 		IsDog:  false,
 	}
 
+
 	err := DB.Model(&user).Association("Pets").Append(&pet1)
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	// Add pet3, all good
+	pet3 := Pet{
+		Name:   "Pet3",
+		IsDog:  false,
+	}
+	err = DB.Model(&user).Association("Pets").Append(&pet3)
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
@@ -42,20 +52,22 @@ func TestAppendNested(t *testing.T){
 			t.Errorf("Failed, got error: %v", err)
 	}
 
-	if len(result.Pets) != 1 {
-		t.Errorf("Should be only 1 pet, but is: %v", result.Pets)
+	if len(result.Pets) != 2 {
+		t.Errorf("Should be 2 pets, but is: %s", result.Pets)
 	}
 
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	// Add second pet, all good
+	// Replace with pet2
 	pet2 := Pet{
 		Name:   "Pet2",
 		IsDog:  false,
 	}
-	err = DB.Model(&user).Association("Pets").Append(&pet2)
+	var pets []Pet
+	pets = append(pets, pet2)
+	err = DB.Model(&user).Association("Pets").Replace(&pet2)
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
@@ -64,30 +76,33 @@ func TestAppendNested(t *testing.T){
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	if len(result.Pets) != 2 {
-		t.Errorf("Should be only 2 pet, but is: %v", result.Pets)
+	if result.Pets[0].Name != pet2.Name {
+		t.Errorf("Should be %s but is %s", pet2.Name, result.Pets[0].Name)
 	}
 
-	// Add third pet, which is the same as first and should throw something like a unique constraint exception
-	pet3 := Pet{
-		Name:   "Pet1",
-		IsDog:  false,
+	if len(result.Pets) != 1 {
+		t.Errorf("Should be exactly 1 pet, but is: %+v", &result.Pets)
 	}
 
-	expectedErr := DB.Model(&user).Association("Pets").Append(&pet3)
+
+	// Now replace with adjusted pet2
+	pet2.Name = "Adjusted Pet2"
+	err = DB.Model(&user).Association("Pets").Replace(&pet2)
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
 	if err := DB.Preload(clause.Associations).First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	if len(result.Pets) != 2 {
-		t.Errorf("Should be only 2 pet, but is: %v", result.Pets)
-	} else {
-		fmt.Println("We have only 2 pets. Which is the expected result. But i would an error already when trying to append")
+	if result.Pets[0].Name != "Adjusted Pet2" {
+		t.Errorf("Should be %s but is %s", "'Adjusted Pet2'", result.Pets[0].Name)
 	}
 
-	if expectedErr == nil {
-		t.Errorf("I would expect error here")
+	if len(result.Pets) != 1 {
+		t.Errorf("Should be exactly 1 pet, but is: %+v", &result.Pets)
 	}
+
 
 }

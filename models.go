@@ -38,9 +38,13 @@ type Account struct {
 type Pet struct {
 	gorm.Model
 	UserID *uint
-	Name   string `gorm:"uniqueIndex:unique_name_isdog;type:varchar(255)"`
-	IsDog	bool `gorm:"uniqueIndex:unique_name_isdog"`
+	Name   string `gorm:"type:varchar(255)"`
+	IsDog	bool
 	Toy    Toy `gorm:"polymorphic:Owner;"`
+}
+
+func (p Pet) String() string{
+	return p.Name
 }
 
 type Toy struct {
