@@ -38,7 +38,8 @@ type Account struct {
 type Pet struct {
 	gorm.Model
 	UserID *uint
-	Name   string
+	Name   string `gorm:"uniqueIndex:unique_name_isdog;type:varchar(255)"`
+	IsDog	bool `gorm:"uniqueIndex:unique_name_isdog"`
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
 
