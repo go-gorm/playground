@@ -11,28 +11,20 @@ import (
 
 func TestGORM(t *testing.T) {
 	c1 := C{Name: "c1"}
-	c2 := C{Name: "c2"}
-
 	b1 := B{C: c1, Name: "b1"}
-	b2 := B{C: c2, Name: "b2"}
-	b3 := B{C: c1, Name: "b3"}
+	a1 := A{B: b1, Name: "a1"}
 
-	a1 := A{BB: []B{b1,b2}, Name: "a1"}
-	a2 := A{BB: []B{b3}, Name: "a2"}
-
-	aa := []A{a1,a2}
-
-	if err := DB.Create(&aa).Error; err != nil {
+	if err := DB.Create(&a1).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
 	// BUG: preloading all associations together with nested associations fails.
-	tx := DB.Where(A{Name: a1.Name}).
+	tx := DB.
 		Preload(clause.Associations).
-		Preload("BB.C")
+		Preload("B.C")
 
 	var res A
-	if err := tx.Find(&res).Error; err != nil {
+	if err := tx.Find(&res, a1.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
