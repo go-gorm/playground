@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -9,12 +10,28 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{Id: 1, Nickname: "user01", Avatar: "1.png", Password: "123456"}
+	group := Group{Id: 1, Name: "group01", Avatar: "1.png", Password: "123456"}
 
 	DB.Create(&user)
+	DB.Create(&group)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	userInfo := &UserInfo{}
+	groupInfo := &GroupInfo{}
+
+	if err := DB.Model(&User{}).First(userInfo).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if err := DB.Model(&Group{}).First(groupInfo).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if !strings.HasPrefix(groupInfo.Avatar, ossUrl) {
+		t.Error("Failed")
+	}
+
+	if !strings.HasPrefix(userInfo.Avatar, ossUrl) {
+		t.Error("Failed")
 	}
 }

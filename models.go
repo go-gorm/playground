@@ -1,60 +1,48 @@
 package main
 
-import (
-	"database/sql"
-	"time"
-
-	"gorm.io/gorm"
-)
+import "gorm.io/gorm"
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
+
+const ossUrl = "http://www.baidu.com"
+
 type User struct {
-	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Id       uint   `gorm:"primarykey"`
+	Nickname string `json:"nickname"`
+	Avatar   string `json:"avatar"`
+	Password string `json:"password"`
 }
 
-type Account struct {
-	gorm.Model
-	UserID sql.NullInt64
-	Number string
+type UserInfo struct {
+	Id       uint   `gorm:"primarykey"`
+	Nickname string `json:"nickname"`
+	Avatar   string `json:"avatar"`
 }
 
-type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+type Group struct {
+	Id       uint   `gorm:"primarykey"`
+	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
+	Password string `json:"password"`
 }
 
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
+type GroupInfo struct {
+	Id     uint   `gorm:"primarykey"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
 }
 
-type Company struct {
-	ID   int
-	Name string
+func (v *UserInfo) AfterFind(db *gorm.DB) error {
+	v.Avatar = ossUrl + v.Avatar
+	return nil
 }
-
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+func (v *Group) AfterFind(db *gorm.DB) error {
+	return nil
+}
+func (v *GroupInfo) AfterFind(db *gorm.DB) error {
+	v.Avatar = ossUrl + v.Avatar
+	return nil
 }
