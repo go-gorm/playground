@@ -43,6 +43,15 @@ type Pet struct {
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
 
+
+// Updating data in same transaction
+func (p *Pet) AfterUpdate(tx *gorm.DB) (err error) {
+	HookCalled =  true
+	return
+}
+
+var HookCalled  = false
+
 func (p Pet) String() string{
 	return p.Name
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 	"testing"
 )
@@ -84,10 +85,9 @@ func TestReplace(t *testing.T){
 		t.Errorf("Should be exactly 1 pet, but is: %+v", &result.Pets)
 	}
 
-
 	// Now replace with adjusted pet2
 	pet2.Name = "Adjusted Pet2"
-	err = DB.Model(&user).Association("Pets").Replace(&pet2)
+	err = DB.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Association("Pets").Replace(&pet2)
 	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
@@ -104,5 +104,8 @@ func TestReplace(t *testing.T){
 		t.Errorf("Should be exactly 1 pet, but is: %+v", &result.Pets)
 	}
 
+	if !HookCalled {
+		t.Errorf("Hook was not called")
+	}
 
 }
