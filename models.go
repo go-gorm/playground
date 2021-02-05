@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ type User struct {
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
-	Company   Company `gorm:"<-:create"`
+	Company   Company
 	ManagerID *uint
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
@@ -57,4 +58,18 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+func (user *User) AfterFind(tx *gorm.DB) error {
+	if user.Company.Name == "" {
+		return fmt.Errorf("company name not specified")
+	}
+	return nil
+}
+
+func (user *User) BeforeCreate(tx *gorm.DB) error {
+	if user.Company.Name == "" {
+		user.Company.Name = user.Name
+	}
+	return nil
 }
