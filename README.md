@@ -1,6 +1,8 @@
 # GORM Playground
 
-GORM Playground can be used to play GORM and reports issues, if you encounter a bug in GORM, please report it at [https://github.com/go-gorm/gorm/issues](https://github.com/go-gorm/gorm/issues) with the Playground Pull Request's link
+GORM Playground can be used to easily try out GORM and to aid in reporting issues.
+
+If you encounter a bug in GORM, please open a pull request in the [Playground](https://github.com/go-gorm/playground) first showing detailed examples of the bug then open an issue at [https://github.com/go-gorm/gorm/issues](https://github.com/go-gorm/gorm/issues) with the Playground Pull Request's link.
 
 [![test status](https://github.com/go-gorm/playground/workflows/tests/badge.svg?branch=master "test status")](https://github.com/go-gorm/playground/actions)
 
@@ -19,7 +21,7 @@ GORM Playground can be used to play GORM and reports issues, if you encounter a 
 docker-compose up
 ```
 
-##### 4. Run tests with lastest GORM and all drivers
+##### 4. Run tests with latest GORM and all drivers
 
 ```bash
 ./test.sh
@@ -27,7 +29,7 @@ docker-compose up
 # Run tests with cached GORM and latest drivers
 GORM_ENABLE_CACHE=true ./test.sh
 
-# Run tests with specfied database
+# Run tests with specified database
 GORM_DIALECT=mysql go test
 ```
 
@@ -45,6 +47,8 @@ We are using the following configuration run your code (GORM's latest master bra
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 ```
 
-We have prepared some structs with relationships in [https://github.com/go-gorm/playground/blob/master/models.go](https://github.com/go-gorm/playground/blob/master/models.go) that you can use for your tests
+We have prepared some structs with relationships in [https://github.com/go-gorm/playground/blob/master/models.go](https://github.com/go-gorm/playground/blob/master/models.go) that you can use for your tests.
+
+If you add/remove/change structs in the models.go file, you may also need to update the migrations defined in [db.go](https://github.com/go-gorm/playground/blob/master/db.go).
 
 ## Happy Hacking!
