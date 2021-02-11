@@ -60,16 +60,17 @@ type Language struct {
 	Name string
 }
 
-func (user *User) AfterFind(tx *gorm.DB) error {
-	if user.Company.Name == "" {
-		return fmt.Errorf("company name not specified")
+func (pet *Pet) BeforeCreate(tx *gorm.DB) error {
+
+	fmt.Println("PetBeforeCreate")
+	if pet.ID != 0 {
+		return fmt.Errorf("BeforeCreate shouldnot run on existing ones")
 	}
 	return nil
 }
 
-func (user *User) BeforeCreate(tx *gorm.DB) error {
-	if user.Company.Name == "" {
-		user.Company.Name = user.Name
-	}
+func (pet *Pet) BeforeSave(tx *gorm.DB) error {
+
+	fmt.Println("PetBeforeSave")
 	return nil
 }
