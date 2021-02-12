@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -22,12 +21,20 @@ type User struct {
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
 	Company   Company
+	UUID      string
+	Aux       *UserAux `gorm:"foreignkey:UUID;references:uuid"`
 	ManagerID *uint
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+}
+
+type UserAux struct {
+	gorm.Model
+	Aux  string
+	UUID string
 }
 
 type Account struct {
@@ -58,18 +65,4 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
-}
-
-func (user *User) AfterFind(tx *gorm.DB) error {
-	if user.Company.Name == "" {
-		return fmt.Errorf("company name not specified")
-	}
-	return nil
-}
-
-func (user *User) BeforeCreate(tx *gorm.DB) error {
-	if user.Company.Name == "" {
-		user.Company.Name = user.Name
-	}
-	return nil
 }
