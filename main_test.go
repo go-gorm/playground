@@ -18,3 +18,15 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestDoubleStatementExect(t *testing.T) {
+	var result User
+	err := DB.Raw(`
+			SELECT * FROM users WHERE id = 0;
+			SELECT * FROM users WHERE id = 0;
+		`).Scan(&result).Error
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+		//ERROR: cannot insert multiple commands into a prepared statement (SQLSTATE 42601); ERROR: cannot insert multiple commands into a prepared statement (SQLSTATE 42601)
+	}
+}
