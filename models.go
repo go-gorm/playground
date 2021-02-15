@@ -38,6 +38,7 @@ type Account struct {
 type Pet struct {
 	gorm.Model
 	UserID *uint
+	User User
 	Name   string
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
