@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+	"os"
 	"testing"
 )
 
@@ -8,13 +10,37 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+func TestAddUniqueConstraintOnExistingColumn(t *testing.T) {
+	// Migrate User table without unique constraint
+	if err := DB.AutoMigrate(&User1{}); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
 
-	DB.Create(&user)
+	exist := DB.Migrator().HasConstraint(&User2{}, "users_email_key")
+	if exist {
+		t.Errorf("constraint exist. it should not")
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// Then, we add a unique constraint
+	if err := DB.AutoMigrate(&User2{}); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
+
+	exist = DB.Migrator().HasConstraint(&User2{}, "users_email_key")
+	if !exist {
+		t.Errorf("constraint does not exist. it should")
+	}
+}
+
+func TestUniqueConstraintOnNewTable(t *testing.T) {
+	if err := DB.AutoMigrate(&SomeNewTable{}); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
+	exist := DB.Migrator().HasConstraint(&SomeNewTable{}, "some_new_tables_email_key")
+	if exist {
+		t.Errorf("constraint does not exist. it should")
 	}
 }

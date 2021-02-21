@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -32,7 +30,6 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
-		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
@@ -79,30 +76,4 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	}
 
 	return
-}
-
-func RunMigrations() {
-	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
-
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
-	}
-
-	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
-		os.Exit(1)
-	}
-
-	for _, m := range allModels {
-		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
-		}
-	}
 }

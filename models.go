@@ -1,60 +1,32 @@
 package main
 
 import (
-	"database/sql"
-	"time"
-
 	"gorm.io/gorm"
 )
 
-// User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
-// He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
-// He speaks many languages (many to many) and has many friends (many to many - single-table)
-// His pet also has one Toy (has one - polymorphic)
-type User struct {
+type User1 struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Email string
 }
 
-type Account struct {
+func (User1) TableName() string {
+	return "users"
+}
+
+type User2 struct {
 	gorm.Model
-	UserID sql.NullInt64
-	Number string
+	Email string `gorm:"unique"`
 }
 
-type Pet struct {
+func (User2) TableName() string {
+	return "users"
+}
+
+type SomeNewTable struct {
 	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+	Email string `gorm:"unique"`
 }
 
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
-}
-
-type Company struct {
-	ID   int
-	Name string
-}
-
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+func (SomeNewTable) TableName() string {
+	return "some_new_tables"
 }
