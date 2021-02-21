@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 dialects=("sqlite" "mysql" "postgres" "sqlserver")
 
