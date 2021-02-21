@@ -12,6 +12,9 @@ fi
 cp go.mod go.mod.bak
 sed '/gorm.io\/driver/d' go.mod.bak > go.mod
 
+err=0
+trap 'err=1' ERR
+
 for dialect in "${dialects[@]}" ; do
   if [ "$GORM_DIALECT" = "" ] || [ "$GORM_DIALECT" = "${dialect}" ]
   then
@@ -26,3 +29,5 @@ for dialect in "${dialects[@]}" ; do
 done
 
 mv go.mod.bak go.mod
+
+test $err = 0
