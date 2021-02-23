@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"gorm.io/gorm/clause"
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -11,56 +11,25 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-}
-
-func TestUserCompany(t *testing.T) {
 	user := User{
 		Name: "jinzhu",
-		Company: Company{
-			Name: "TestCompany",
+		Age:  32,
+		Account: Account{
+			Number: "123",
 		},
 	}
 
-	if err := DB.Create(&user).Error; err != nil {
-		t.Errorf("Failed to create user. %v", err.Error())
-		return
-	}
+	newDB := DB.Create(&user)
 
-	if user.CompanyID == nil || *user.CompanyID == 0 {
-		t.Errorf("CompanyID field not updated")
-		return
-	}
-	var result User
-	if err := DB.Preload(clause.Associations).First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-		return
-	}
-	if result.Company.Name == "" {
-		t.Errorf("company not saved")
-		return
-	}
+	tx := newDB.Session(&gorm.Session{NewDB: true}).Begin()
 
-	user.Company.Name = "NewTestCompany"
-	if err := DB.Save(&user).Error; err != nil {
-		t.Errorf("Failed to update user. %v", err.Error())
+	var acc Account
+	if err := tx.Where("number = ?", "345").Find(&acc).Error; err != nil {
+		t.Errorf("error finding account: %v", err)
+		tx.Rollback()
 		return
 	}
-
-	if err := DB.Preload(clause.Associations).First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-		return
-	}
-	if result.Company.Name == "NewTestCompany" {
-		t.Errorf("company name got updated eventhough it is create only permission")
-		return
-	}
+	tx.Commit()
+	return
 
 }
