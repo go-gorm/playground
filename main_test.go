@@ -19,9 +19,10 @@ func TestGORM(t *testing.T) {
 		},
 	}
 
-	newDB := DB.Create(&user)
+	DB.Create(&user)
+	db := DB.Where("FakeName = 1")
 
-	tx := newDB.Session(&gorm.Session{NewDB: true}).Begin()
+	tx := db.Session(&gorm.Session{NewDB: true}).Begin()
 
 	var acc Account
 	if err := tx.Where("number = ?", "345").Find(&acc).Error; err != nil {
