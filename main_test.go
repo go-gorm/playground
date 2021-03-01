@@ -19,18 +19,18 @@ func TestGORM(t *testing.T) {
 		},
 	}
 
-	DB.Create(&user)
-	db := DB.Where("FakeName = 1")
+	DB.Session(&gorm.Session{NewDB: true}).Create(&user)
 
-	tx := db.Session(&gorm.Session{NewDB: true}).Begin()
+	user.Account.Number = "324"
+	DB.Session(&gorm.Session{NewDB: true}).Model(User{}).Omit("Account").Save(&user)
 
-	var acc Account
-	if err := tx.Where("number = ?", "345").Find(&acc).Error; err != nil {
-		t.Errorf("error finding account: %v", err)
-		tx.Rollback()
-		return
+	var createdUser User
+	if err := DB.Session(&gorm.Session{NewDB: true}).Model(User{}).Find(&createdUser, "id = ?", user.ID).Error; err != nil {
+		t.Errorf("there should not be any error finding: %v", err)
 	}
-	tx.Commit()
+	if createdUser.Account.Number != "123" {
+		t.Errorf("The number should not have updated: %v", createdUser.Account.Number)
+	}
 	return
 
 }
