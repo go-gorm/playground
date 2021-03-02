@@ -1,8 +1,10 @@
 package main
 
 import (
+	"strings"
 	"testing"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -11,56 +13,48 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
 
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-}
 
-func TestUserCompany(t *testing.T) {
-	user := User{
-		Name: "jinzhu",
-		Company: Company{
-			Name: "TestCompany",
+	newDB := DB.Session(&gorm.Session{NewDB: true, DryRun: true})
+
+	newDB = newDB.Table("users")
+	newDB.Clauses(
+		clause.From{
+			Tables: []clause.Table{{Name: "users"}},
+			Joins: []clause.Join{
+				{
+					Table: clause.Table{Name: "companies", Raw: false},
+					ON: clause.Where{
+						Exprs: []clause.Expression{
+							clause.Eq{
+								Column: clause.Column{
+									Table: "users",
+									Name:  "company_id",
+								},
+								Value: clause.Column{
+									Table: "companies",
+									Name:  "id",
+								},
+							},
+						},
+					},
+				},
+			},
 		},
+	)
+
+	newDB.Joins("inner join rgs on rgs.id = user.id")
+
+	stmt := newDB.First(&result).Statement
+	str := stmt.SQL.String()
+
+	if !strings.Contains(str, "rgs.id = user.id") {
+		t.Errorf("The second join condition is over written instead of combining")
 	}
 
-	if err := DB.Create(&user).Error; err != nil {
-		t.Errorf("Failed to create user. %v", err.Error())
-		return
-	}
-
-	if user.CompanyID == nil || *user.CompanyID == 0 {
-		t.Errorf("CompanyID field not updated")
-		return
-	}
-	var result User
-	if err := DB.Preload(clause.Associations).First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-		return
-	}
-	if result.Company.Name == "" {
-		t.Errorf("company not saved")
-		return
-	}
-
-	user.Company.Name = "NewTestCompany"
-	if err := DB.Save(&user).Error; err != nil {
-		t.Errorf("Failed to update user. %v", err.Error())
-		return
-	}
-
-	if err := DB.Preload(clause.Associations).First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-		return
-	}
-	if result.Company.Name == "NewTestCompany" {
-		t.Errorf("company name got updated eventhough it is create only permission")
-		return
+	if !strings.Contains(str, "`users`.`company_id` = `companies`.`id`") && !strings.Contains(str, "\"users\".\"company_id\" = \"companies\".\"id\"") {
+		t.Errorf("The first join condition is over written instead of combining")
 	}
 
 }
