@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-dialects=("sqlite" "mysql" "postgres" "sqlserver")
+# running only on mysql because of the query syntax used for the example
+dialects=( "mysql")
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then
