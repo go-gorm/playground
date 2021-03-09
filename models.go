@@ -13,14 +13,16 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
+	Name     string
+	Age      uint
+	Birthday *time.Time
+	Account  Account
+	Pets     []*Pet
+	Toys     []Toy `gorm:"polymorphic:Owner"`
+
+	TestID  *int
+	Company *Company `gorm:"foreignKey:TestID"`
+
 	ManagerID *uint
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
@@ -52,6 +54,9 @@ type Toy struct {
 type Company struct {
 	ID   int
 	Name string
+
+	// commenting this out allows the constraint to be created
+	TestID *int
 }
 
 type Language struct {
