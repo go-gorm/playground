@@ -8,13 +8,35 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Result struct {
+	Total           int64
+	TodayTotal      int64
+	TodayTotalMoney int64
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	// timestamp
+	var start, stop int64 = 1615219200, 1615305599
 
-	DB.Create(&user)
+	var result = new(Result)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	err := DB.Table("order").Select([]string{
+		"COUNT(id) AS total",
+		"SUM(if(create_time BETWEEN ? AND ?, 1, 0)) as today_total",
+		"SUM(if(create_time BETWEEN ? AND ?, money, 0)) as today_total_money",
+	}, start, stop, start, stop).Scan(result).Error
+
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	err = DB.Table("order").Select([]string{
+		"COUNT(id) AS total",
+		"SUM(if(create_time BETWEEN @start AND @stop, 1, 0)) as today_total",
+		"SUM(if(create_time BETWEEN @start AND @stop, money, 0)) as today_total_money",
+	}, start, stop).Scan(result).Error
+
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
