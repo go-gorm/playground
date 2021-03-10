@@ -13,12 +13,12 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	if err := DB.Updates(user).Error; err != nil {
+	if err := DB.Updates(&user).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
 	var result User
-	if err := DB.Where(user).Take(&result).Error; err != nil {
+	if err := DB.Where(&user).Take(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
