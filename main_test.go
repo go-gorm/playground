@@ -9,12 +9,33 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
+	var user User
+	user = User{Name: "noopple"}
 	DB.Create(&user)
+	var pet Pet
+	pet = Pet{
+		Name: "Marsel",
+		UserID: &user.ID,
+	}
+	DB.Create(&pet)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	pet = Pet{
+		Name: "Gendalf",
+		UserID: &user.ID,
+	}
+	DB.Create(&pet)
+
+	var userID uint
+
+	err := DB.Model(&User{}).
+		Select("users.id").
+		Joins("Pets").
+		Where("LENGTH(name) > 3").
+		Group("users.id").
+		Having("COUNT(1) > 1").
+		Scan(&userID).Error
+
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
