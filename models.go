@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -13,20 +12,20 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
+	Name string
+	// Age       uint
+	// Birthday  *time.Time
+	// Account   Account
+	// Pets      []*Pet
+	// Toys      []*Toy `gorm:"polymorphic:Owner;polymorphicValue:ID"`
 	CompanyID *int
-	Company   Company `gorm:"<-:create"`
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Company   Company `gorm:"->"`
+	// ManagerID *uint
+	// Manager   *User
+	// Team      []User     `gorm:"foreignkey:ManagerID"`
+	// Languages []Language `gorm:"many2many:UserSpeak"`
+	// Friends   []*User    `gorm:"many2many:user_friends"`
+	// Active    bool
 }
 
 type Account struct {
