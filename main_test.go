@@ -27,4 +27,7 @@ func TestGORM(t *testing.T) {
 	if err := DB.Scopes(UserScope).Find(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	if len(result) != 1 {
+		t.Errorf("limit is invalid")
+	}
 }
