@@ -79,7 +79,13 @@ func TestGORM(t *testing.T) {
 	wg.Wait()
 }
 
-func worker(wg *sync.WaitGroup, stop <-chan struct{}, input <-chan context.Context, output chan<- error, queryFunc func(context.Context) error) {
+func worker(
+	wg *sync.WaitGroup,
+	stop <-chan struct{},
+	input <-chan context.Context,
+	output chan<- error,
+	queryFunc func(context.Context) error,
+) {
 	defer wg.Done()
 
 	for {
