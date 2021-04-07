@@ -37,7 +37,7 @@ func init() {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
 
-		DB.Logger = DB.Logger.LogMode(logger.Info)
+		DB.Logger = logger.Discard.LogMode(logger.Info)
 	}
 }
 
