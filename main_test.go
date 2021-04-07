@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 	"sync"
 	"testing"
@@ -98,7 +99,11 @@ func worker(wg *sync.WaitGroup, stop <-chan struct{}, input <-chan context.Conte
 							!strings.HasSuffix(err.Error(), " canceled") &&
 							!strings.HasSuffix(err.Error(), " connection refused") &&
 							!strings.HasSuffix(err.Error(), " invalid connection") {
-							output <- err
+							if ctx.Err() == context.Canceled {
+								output <- err
+							} else {
+								output <- fmt.Errorf("the context is not cancelled but there is an error: %w", err)
+							}
 							break TEST_ITERATION
 						}
 					}
