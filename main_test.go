@@ -9,12 +9,13 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	tx := DB.Begin()
+	defer tx.Rollback()
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := tx.Exec(
+		`INSERT INTO "users" ( "id" ) VALUES ( $1 )`,
+		`1`,
+	).Error; err != nil {
+		t.Errorf("Failed, got error:%v", err)
 	}
 }
