@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"time"
-
+	"fmt"
 	"gorm.io/gorm"
 )
 
@@ -27,6 +27,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	CreatedBy string `gorm:"not null;default:null"`
 }
 
 type Account struct {
@@ -50,11 +51,35 @@ type Toy struct {
 }
 
 type Company struct {
+	gorm.Model
 	ID   int
 	Name string
 }
 
 type Language struct {
-	Code string `gorm:"primarykey"`
+	gorm.Model
+	Code string
 	Name string
+}
+
+type UserLanguage struct {
+	gorm.Model
+	UserID int
+	LanguageID int
+	CreatedBy string `gorm:"not null;default:null"`
+}
+
+func (ul *User) BeforeCreate(tx *gorm.DB) error {
+	if user, ok := tx.Get("user"); ok {
+		ul.CreatedBy = fmt.Sprintf("%v", user)
+	}
+	return nil
+}
+
+func (ul *UserLanguage) BeforeCreate(tx *gorm.DB) error {
+	// why I can't get "user" here?
+	if user, ok := tx.Get("user"); ok {
+		ul.CreatedBy = fmt.Sprintf("%v", user)
+	}
+	return nil
 }
