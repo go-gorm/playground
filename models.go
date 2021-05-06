@@ -50,8 +50,9 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
-	Name string
+	ID      int
+	Name    string
+	Address string
 }
 
 type Language struct {
