@@ -29,6 +29,12 @@ type User struct {
 	Active    bool
 }
 
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	// PROBLEM OCCURS HERE
+	tx.Statement.SetColumn("name", "System-Glitch")
+	return nil
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
