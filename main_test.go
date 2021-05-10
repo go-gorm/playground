@@ -8,13 +8,39 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type (
+	Product struct {
+		ProductID  string `gorm:"primaryKey"`
+		MaterialID string
+		SalesItem  SalesItem `gorm:"foreignKey:MaterialID"`
+	}
+
+	SalesItem struct {
+		MaterialID string `gorm:"primaryKey"`
+	}
+)
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	err := DB.AutoMigrate(&Product{}, &SalesItem{})
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	DB.Create(&user)
+	err = DB.Create(&Product{
+		ProductID:  "product",
+		MaterialID: "1",
+		SalesItem: SalesItem{
+			MaterialID: "1",
+		},
+	}).Error
+	if err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	err = DB.Create(&SalesItem{
+		MaterialID: "2",
+	}).Error
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
