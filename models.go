@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -27,6 +28,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	DeletedBy string
 }
 
 type Account struct {
@@ -57,4 +59,26 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+func (u *User) BeforeDelete(tx *gorm.DB) error {
+	// how to update u.DeletedBy of all records being deleted
+	// by this transaction on BeforeDelete?
+
+	// I tried to modify the current structure:
+	u.DeletedBy = "gabriel"
+
+	// I tried to use SetColumn()
+	tx.Statement.SetColumn("DeletedBy", "gabriel")
+	tx.Statement.SetColumn("deleted_by", "gabriel")
+
+	// I tried to use AddClause()
+	tx.Statement.AddClause(clause.Set{{Column: clause.Column{Name: "DeletedBy"}, Value: "gabriel"}})
+	tx.Statement.AddClause(clause.Set{{Column: clause.Column{Name: "deleted_by"}, Value: "gabriel"}})
+
+	// if I use tx.Update() here, I don't know how to match the
+	// same records being deleted by this transaction
+	// tx.Model(&User{}).Where("???").Update("DeletedBy", "gabriel")
+
+	return nil
 }
