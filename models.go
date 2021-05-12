@@ -2,8 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"time"
 
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -57,4 +59,39 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+// strcut for marshall and unmarshall data column
+type ProductExtraData struct {
+	Name string `gorm:"-" json:"name,omitempty"`
+	Age  int    `gorm:"-" json:"age,omitempty"`
+}
+
+// Only id primary key and data json column
+type Product struct {
+	ProductExtraData
+	Id   int64          `gorm:"column:id;primaryKey;autoIncrement" json:"id,omitempty"`
+	Data datatypes.JSON `gorm:"column:data" json:"-"`
+}
+
+func (*Product) TableName() string {
+	return "products"
+}
+
+func (p *Product) BeforeCreate(tx *gorm.DB) error {
+	if data, err := json.Marshal(p.ProductExtraData); err != nil {
+		return err
+	} else {
+		p.Data = data
+	}
+	return nil
+}
+
+func (p *Product) AfterFind(tx *gorm.DB) error {
+	if len(p.Data) > 0 {
+		if err := json.Unmarshal(p.Data, &p.ProductExtraData); err != nil {
+			return err
+		}
+	}
+	return nil
 }
