@@ -105,4 +105,17 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+
+	// passed
+	if !DB.Migrator().HasTable("users") {
+		log.Printf("Failed to create table for %#v\n", &User{})
+		os.Exit(1)
+	}
+
+	// stmt.Schema nil err
+	if !DB.Migrator().HasColumn("users", "id") {
+		log.Printf("Failed to check table column for %#v\n", &User{})
+		os.Exit(1)
+	}
+
 }
