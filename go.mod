@@ -1,6 +1,6 @@
 module gorm.io/playground
 
-go 1.16
+go 1.15
 
 require (
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
@@ -17,4 +17,4 @@ require (
 	gorm.io/gorm v1.21.9
 )
 
-replace gorm.io/gorm => ./gorm
+//replace gorm.io/gorm => ./gorm
