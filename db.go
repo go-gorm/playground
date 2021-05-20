@@ -70,6 +70,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
@@ -83,7 +84,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &PackageName{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
@@ -105,4 +106,11 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+	DB.Exec(`
+CREATE TABLE IF NOT EXISTS package_names
+(
+    id   SERIAL PRIMARY KEY NOT NULL,
+    name TEXT UNIQUE        NOT NULL CHECK ( name <> '' )
+)
+`)
 }
