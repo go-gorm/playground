@@ -18,7 +18,7 @@ func TestGORM(t *testing.T) {
 	var result User
 
 	// create the SQL query to display a bug
-	query := "SELECT * FROM users WHERE name = ?"
+	query := "SELECT * FROM users WHERE name = ?;"
 
 	// run the good raw SQL query to display the query is valid
 	goodResult := DB.Raw(query, "jinzhu").Scan(&result)
