@@ -6,15 +6,18 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	nonExistingFolderId := 65473574
+	folder := Folder{
+		Name:     "I reference non existing",
+		ParentID: &nonExistingFolderId,
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	result := DB.Save(&folder)
+	if result.Error == nil {
+		t.Errorf("expected foreign key violation, but got no error")
 	}
 }
