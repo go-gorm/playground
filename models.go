@@ -13,20 +13,21 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Name        string
+	Age         uint
+	Birthday    *time.Time
+	Account     Account
+	Pets        []*Pet
+	Toys        []Toy `gorm:"polymorphic:Owner"`
+	CompanyID   *int
+	Company     Company
+	ManagerID   *uint
+	Manager     *User
+	Team        []User     `gorm:"foreignkey:ManagerID"`
+	Languages   []Language `gorm:"many2many:UserSpeak"`
+	Friends     []*User    `gorm:"many2many:user_friends"`
+	Active      bool
+	Employments []Employment
 }
 
 type Account struct {
@@ -57,4 +58,11 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Employment struct {
+	CompanyID uint    `gorm:"primaryKey"`
+	UserID    uint    `gorm:"primaryKey;index"`
+	Company   Company `gorm:"constraint:OnDelete:CASCADE;"`
+	User      User    `gorm:"constraint:OnDelete:CASCADE;"`
 }
