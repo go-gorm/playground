@@ -1,20 +1,25 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"gorm.io/gorm/clause"
 	"testing"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	db := DB
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	db = db.Omit(clause.Associations)
+
+	users := make([]User, 0)
+	err := db.Find(&users).Error
+	require.NoError(t, err)
+
+	assert.Equal(t, "", db.Statement.Table)
 }

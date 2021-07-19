@@ -18,6 +18,8 @@ import (
 var DB *gorm.DB
 
 func init() {
+	os.Setenv("GORM_DIALECT", "postgres")
+
 	var err error
 	if DB, err = OpenTestConnection(); err != nil {
 		log.Printf("failed to connect database, got error %v\n", err)
@@ -69,7 +71,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.DB")), &gorm.Config{})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
@@ -83,7 +85,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &Organisation{}, &File{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
