@@ -72,10 +72,10 @@ type Model struct {
 
 type Organisation struct {
 	Model
-	Name       string     `json:"name"`
-	WmbusKeys  *WmbusKeys `gorm:"type:jsonb" json:"wmbusKeys"`
-	LogoFileId *int64     `gorm:"default: null" json:"logoFileId"`
-	Logo       *File      `gorm:"foreignKey:LogoFileId" json:"logo"`
+	Name      string        `json:"name"`
+	WmbusKeys *WmbusKeys    `gorm:"type:jsonb" json:"wmbusKeys"`
+	LogoId    sql.NullInt64 `json:"logoFileId"`
+	Logo      File          `gorm:"foreignKey:LogoId" json:"logo"`
 }
 
 type WmbusKey struct {

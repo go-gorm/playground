@@ -18,6 +18,8 @@ import (
 var DB *gorm.DB
 
 func init() {
+	os.Setenv("GORM_DIALECT", "postgres")
+
 	var err error
 	if DB, err = OpenTestConnection(); err != nil {
 		log.Printf("failed to connect database, got error %v\n", err)
