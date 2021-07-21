@@ -9,12 +9,15 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	u := &User{Name: "george"}
+	DB.Create(&u)
 
-	DB.Create(&user)
+	DB.Create(&User{Name: "jinzhu", Friends: []*User{u}})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	george := &User{}
+	DB.Model(&User{}).Where("name = ?", "george").Find(george)
+	if err := george.UUID.String() != u.UUID.String(); err {
+		t.Error("Failed, u.UUID has changed but the the one in the DB is the same")
 	}
+
 }
