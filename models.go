@@ -5,7 +5,18 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"github.com/google/uuid"
 )
+
+type ID struct {
+	UUID uuid.UUID
+}
+
+func (id  *ID) BeforeCreate(tx *gorm.DB) error {
+	u := uuid.New()
+	tx.Statement.SetColumn("UUID", u)
+	return nil
+}
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
@@ -13,6 +24,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
+	ID
 	Name      string
 	Age       uint
 	Birthday  *time.Time
