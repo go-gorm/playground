@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm/clause"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +11,26 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	products := []Product{{Name: "test-product"}, {Name: "test-product"}}
 
-	DB.Create(&user)
+	for _, product := range products {
+		res := DB.Omit(clause.Associations).
+			Clauses(clause.OnConflict{
+				Columns: []clause.Column{
+					{Name: "name"},
+				},
+				DoUpdates: clause.AssignmentColumns([]string{
+					"name",
+				}),
+			}).
+			Create(&product)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+		if err := res.Error; err != nil {
+			t.Error(err)
+		}
+
+		if product.ID == 0 {
+			t.Errorf("product: %s has an ID: %d", product.Name, product.ID)
+		}
 	}
 }

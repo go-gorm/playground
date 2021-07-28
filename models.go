@@ -58,3 +58,16 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type TestCase struct {
+	gorm.Model `json:"-" yaml:"-"`
+	ProductID  *uint  `gorm:"uniqueIndex:product_test,not null" json:"-" yaml:"-"`
+	Product    string `gorm:"-" json:"product" yaml:"product"`
+	Name       string `gorm:"type:varchar(255);uniqueIndex:product_test;not null" json:"testcase" yaml:"testcase"`
+}
+
+type Product struct {
+	gorm.Model `json:"-" yaml:"-"`
+	Name       string      `gorm:"type:varchar(100);uniqueIndex:product_name;not null" json:"name" yaml:"name"`
+	TestCases  []*TestCase `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"-" yaml:"-"`
+}
