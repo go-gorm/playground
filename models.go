@@ -58,3 +58,32 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type BaseModelWithOneEmbedded struct {
+	BaseModelId string `gorm:"primaryKey"`
+	ChildOne
+}
+
+type BaseModelWithTwoEmbedded struct {
+	BaseModelId string `gorm:"primaryKey"`
+	ChildOne
+	ChildTwo
+}
+
+type ChildOne struct {
+	Column1 string
+}
+
+func (model *ChildOne) BeforeCreate(tx *gorm.DB) (err error) {
+	model.Column1 = "WORKING"
+	return
+}
+
+type ChildTwo struct {
+	Column2 string
+}
+
+func (model *ChildTwo) BeforeCreate(tx *gorm.DB) (err error) {
+	model.Column2 = "WORKING"
+	return
+}
