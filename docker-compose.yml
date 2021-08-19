@@ -18,7 +18,7 @@ services:
       - TZ=Asia/Shanghai
       - POSTGRES_DB=gorm
       - POSTGRES_USER=gorm
-      - POSTGRES_PASSWORD=gorm
+      - POSTGRES_PASSWORD=go^r/m
   mssql:
     image: 'mcmoe/mssqldocker:latest'
     ports:
