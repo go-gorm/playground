@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -13,8 +14,9 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
+	Name      string         `gorm:"default:'John'"`
+	Age       uint           `gorm:"default:20"`
+	Address   datatypes.JSON `gorm:"default:'{\"address\":{\"city\":\"Madrid\",\"street\":\"Rojas\"}}'" sql:"type:jsonb"`
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
