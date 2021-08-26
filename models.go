@@ -47,6 +47,7 @@ type Toy struct {
 	Name      string
 	OwnerID   string
 	OwnerType string
+	Cost      float32 `gorm:"type:float8"`
 }
 
 type Company struct {

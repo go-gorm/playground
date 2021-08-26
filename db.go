@@ -18,6 +18,8 @@ import (
 var DB *gorm.DB
 
 func init() {
+
+	_, noDropTables := os.LookupEnv("GORM_MIGRATE_NO_DROP_TABLES")
 	var err error
 	if DB, err = OpenTestConnection(); err != nil {
 		log.Printf("failed to connect database, got error %v\n", err)
@@ -32,11 +34,12 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
-		RunMigrations()
+		RunMigrations(!noDropTables)
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
 
+		DB = DB.Debug()
 		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
 }
@@ -55,7 +58,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info),
+		})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -81,17 +86,22 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	return
 }
 
-func RunMigrations() {
+func RunMigrations(dropTables bool) {
 	var err error
 	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
+	if dropTables {
+		log.Println("Dropping tables")
+		DB.Migrator().DropTable("user_friends", "user_speaks")
 
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
+		if err = DB.Migrator().DropTable(allModels...); err != nil {
+			log.Printf("Failed to drop table, got error %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		log.Println("Running migration without dropping tables")
 	}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {

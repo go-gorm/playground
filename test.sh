@@ -17,7 +17,11 @@ for dialect in "${dialects[@]}" ; do
     if [[ $(grep TEST_DRIVER main_test.go) =~ "${dialect}" ]]
     then
       echo "testing ${dialect}..."
-      GORM_DIALECT=${dialect} go test -race -count=1 -v ./...
+      GORM_DIALECT=${dialect} go test -race -count=1 -v ./... | tee ${EXPECT_MIGRATE}
+      if GORM_MIGRATE_NO_DROP_TABLES=1 GORM_DIALECT=${dialect} go test -race -count=1 -v ./... | grep -q "ALTER TABLE \"toys\" ALTER COLUMN \"cost\" TYPE float8"; then
+        echo "Schema migration executed twice against float8 column"
+        exit 1
+      fi
     else
       echo "skip ${dialect}..."
     fi
