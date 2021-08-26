@@ -20,7 +20,7 @@ var DB *gorm.DB
 func init() {
 	var err error
 	if DB, err = OpenTestConnection(); err != nil {
-		log.Printf("failed to connect database, got error %v\n", err)
+		log.Printf("failed to connect database, got error123123 %v\n", err)
 		os.Exit(1)
 	} else {
 		sqlDB, err := DB.DB()
