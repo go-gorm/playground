@@ -7,14 +7,20 @@ import (
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
-
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	tag := map[string]interface{}{}
+	tag["int_array"] = []int{1, 2, 3}
+	tag["bool"] = false
+	user := User{Name: "jinzhu", Tag: tag}
 
 	DB.Create(&user)
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if err := DB.Where(&result).Take(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
