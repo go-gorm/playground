@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -69,7 +69,7 @@ type BrokenUpdate struct {
 	UpdatedAt time.Time      `json:"-"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
-	JobName         string    `gorm:"uniqueIndex;->;type:varchar GENERATED ALWAYS AS ('thing-session-' || CAST(id as TEXT)) STORED;" json:"jobName"`
+	JobName         string    `gorm:"uniqueIndex;<-:create" json:"jobName"`
 	SecretToken     string    `gorm:"unique" json:"-"`
 	Code            Code      `gorm:"uniqueIndex" json:"code"`
 	LastCheckinTime time.Time `json:"-"`
@@ -84,14 +84,18 @@ type EmbeddedStruct struct {
 }
 
 func (s *BrokenUpdate) BeforeCreate(db *gorm.DB) (err error) {
-	s.SecretToken = "generated"
-	s.Code = "generated"
+	s.SecretToken = uuid.New().String()
+	s.Code = Code(uuid.New().String())
 	s.LastCheckinTime = time.Now()
+	s.JobName = uuid.New().String()
 	return nil
 }
 
 func (s *BrokenUpdate) AfterCreate(db *gorm.DB) (err error) {
-	s.JobName = fmt.Sprintf("thing-session-%d", s.ID)
+	// s.JobName = fmt.Sprintf("thing-session-%d", s.ID)
+	// if tx := db.Model(s).Updates(s); tx.Error != nil {
+	// 	return tx.Error
+	// }
 
 	return nil
 }
