@@ -41,6 +41,8 @@ func TestInsertInSqliteAsync(t *testing.T) {
 	defer db.Close()
 	errChannel := make(chan error)
 	for _, s := range sentences {
+		// Implemented waitgroups because i want to log all errors
+		// the channel will close after all the goroutines have run.
 		wg.Add(1)
 		go insert(conn, errChannel, Sentence{ActualSentence: s})
 	}
