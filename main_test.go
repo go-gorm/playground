@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/datatypes"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -19,8 +21,17 @@ func TestGORM(t *testing.T) {
 	}
 }
 
-func TestSaveJSON(t *testing.T) {
+func TestSaveJSONNil(t *testing.T) {
 	thing := ThingWithJSON{Data: nil}
+
+	err := DB.Save(&thing).Error
+	if err != nil {
+		t.Errorf("Failed to save thing with json, got error: %w", err)
+	}
+}
+
+func TestSaveJSON(t *testing.T) {
+	thing := ThingWithJSON{Data: datatypes.JSON(`{"foo": "bar"}`)}
 
 	err := DB.Save(&thing).Error
 	if err != nil {
