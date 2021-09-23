@@ -18,3 +18,12 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestSaveJSON(t *testing.T) {
+	thing := ThingWithJSON{Data: nil}
+
+	err := DB.Save(&thing).Error
+	if err != nil {
+		t.Errorf("Failed to save thing with json, got error: %w", err)
+	}
+}
