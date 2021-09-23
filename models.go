@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
@@ -57,4 +58,8 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type ThingWithJSON struct {
+	Data datatypes.JSON
 }
