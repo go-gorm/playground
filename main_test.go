@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -17,4 +18,16 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	iv := DB.
+		Table(`table_invoices`).
+		Select(`seller, SUM(total) as total, SUM(paid) as paid, SUM(balance) as balance`).
+		Group(`seller`)
+
+	tx := DB.
+		Table(`table_employees`).
+		Select(`id, name, iv.total, iv.paid, iv.balance`).
+		Joins(`LEFT JOIN (?) AS iv ON iv.seller = table_employees.id`, iv).
+		Scan(&user)
+	fmt.Println(tx.Error)
 }
