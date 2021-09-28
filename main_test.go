@@ -8,13 +8,13 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type TableA struct {
+	Name string `gorm:"size:100;-:migration"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&TableA{}); err != nil {
+		t.Errorf("failed migrate: %v", err)
+		return
 	}
 }
