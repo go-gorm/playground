@@ -29,9 +29,9 @@ func UserTable(u *NewUser) func(*gorm.DB) *gorm.DB {
 }
 
 // TableName which is cached
-func (u *NewUser) TableName() string {
-	return fmt.Sprintf("newuser_%s", u.Table)
-}
+// func (u *NewUser) TableName() string {
+// 	return fmt.Sprintf("newuser_%s", u.Table)
+// }
 
 func TestGORM(t *testing.T) {
 	tableName := []string{"a", "b", "c"}
@@ -39,7 +39,8 @@ func TestGORM(t *testing.T) {
 		nu := &NewUser{
 			Table: v,
 		}
-		DB.Scopes(UserTable(nu)).Migrator().AutoMigrate(&nu)
+		// DB.Scopes(UserTable(nu)).Migrator().AutoMigrate(&nu)
+		// DB.Migrator().AutoMigrate(&nu)
 		if err := DB.Scopes(UserTable(nu)).Migrator().AutoMigrate(&nu); err != nil {
 			t.Errorf("Failed, got error: %v", err)
 		}
