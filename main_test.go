@@ -24,14 +24,12 @@ func TestGORM(t *testing.T) {
 	var total int64
 	query.Count(&total)
 
-	var result User
+	var result []User
 
-	// Incorrectly generates a 'SELECT *' query which causes companies.id to overwrite users.id
-	if err := query.First(&result, user.ID).Error; err != nil {
+	if err := query.Find(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
-
-	if result.ID != user.ID {
-		t.Errorf("result's id, %d, doesn't match user's id, %d", result.ID, user.ID)
+	if result[0].Company.ID == 0 {
+		t.Errorf("Failed, expected Company to be preloaded")
 	}
 }
