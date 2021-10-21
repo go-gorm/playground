@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+// My Models
+type Event struct {
+	gorm.Model
+	Town string `gorm:"not null"`
+}
