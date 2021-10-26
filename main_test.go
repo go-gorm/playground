@@ -17,4 +17,8 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	if result.TestedAt != user.TestedAt {
+		t.Errorf("Empty time is not maintained. Actual time: %v", result.TestedAt)
+	}
 }
