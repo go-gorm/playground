@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 )
 
 var DB *gorm.DB
@@ -31,6 +32,10 @@ func init() {
 		if err != nil {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
+
+		DB.Use(dbresolver.Register(dbresolver.Config{
+			Replicas: []gorm.Dialector{postgres.Open("user=gorm password=gorm host=localhost dbname=gorm port=9921 sslmode=disable TimeZone=Asia/Shanghai")},
+		}))
 
 		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
@@ -55,7 +60,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Silent),
+		})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
