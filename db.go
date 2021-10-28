@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 )
 
 var DB *gorm.DB
@@ -31,6 +32,10 @@ func init() {
 		if err != nil {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
+
+		DB.Use(dbresolver.Register(dbresolver.Config{
+			Replicas: []gorm.Dialector{postgres.Open("user=gorm password=gorm host=localhost dbname=gorm port=9921 sslmode=disable TimeZone=Asia/Shanghai")},
+		}))
 
 		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
@@ -94,6 +99,10 @@ func RunMigrations() {
 		os.Exit(1)
 	}
 
+	if err = DB.AutoMigrate(allModels...); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
 	if err = DB.AutoMigrate(allModels...); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
 		os.Exit(1)
