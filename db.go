@@ -60,9 +60,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Silent),
-		})
+		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -101,6 +99,10 @@ func RunMigrations() {
 		os.Exit(1)
 	}
 
+	if err = DB.AutoMigrate(allModels...); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
 	if err = DB.AutoMigrate(allModels...); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
 		os.Exit(1)
