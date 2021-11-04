@@ -50,7 +50,7 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
+	gorm.Model
 	Name string
 }
 
