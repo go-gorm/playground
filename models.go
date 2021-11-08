@@ -58,3 +58,21 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Child struct {
+	ID int `gorm:"primaryKey"`
+	ParentID int `gorm:"index"`
+}
+
+func (Child) TableName() string {
+	return "children"
+}
+
+type Parent struct {
+	ID int `gorm:"primaryKey"`
+	Children []*Child `gorm:"foreignkey:ParentID;references:ID"`
+	UpdatedAt time.Time
+	CreatedAt time.Time
+	DeletedAt gorm.DeletedAt
+}
+
