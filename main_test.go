@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -8,42 +9,48 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	myValue, ok := tx.Get("my_value")
+	// ok => true
+	// myValue => 123
+	if ok {
+		u.MyValue = myValue.(string)
+	}
+
+	return nil
+}
+
+func (a *Account) BeforeCreate(tx *gorm.DB) error {
+	myValue, ok := tx.Get("my_value")
+	// ok => true
+	// myValue => 123
+	if ok {
+		a.MyValue = myValue.(string)
+	}
+
+	return nil
+}
 func TestGORM(t *testing.T) {
-	account := Account{Number: "77"}
-	DB.Create(&account)
+	myValue := "bar"
+	user := User{Name: "jinzhu", Account: Account{Number: "foo"}}
 
-	user := User{Name: "jinzhu", Account: account}
+	DB.Set("my_value", myValue).Create(&user)
 
-	DB.Create(&user)
-
-	var result, result2, result3, result4 User
-	if err := DB.Preload("Account").First(&result, user.ID).Error; err != nil {
+	var result User
+	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
-	if result.Account.ID != account.ID {
-		t.Fatalf("Failed using preload, Account should be valid")
-	}
-	if err := DB.Joins("Account").First(&result2, user.ID).Error; err != nil {
-		t.Fatalf("Failed, got error: %v", err)
-	}
-	if result2.Account.ID != account.ID {
-		t.Fatalf("Failed using joins, account should be valid")
+
+	if result.MyValue != myValue {
+		t.Errorf("Failed, user.MyValue: '%s' want: '%s'", result.MyValue, myValue)
 	}
 
-	// Delete the account
-	DB.Delete(&account)
-	if err := DB.Preload("Account").First(&result3, user.ID).Error; err != nil {
-		t.Fatalf("Failed, got error: %v", err)
-	}
-	if result3.Account.ID != 0 {
-		t.Errorf("Failed using preload, Account should be 0 got: %v", result3)
+	var accountResult Account
+	if err := DB.First(&result, user.Account.ID).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
 	}
 
-	if err := DB.Joins("Account").First(&result4, user.ID).Error; err != nil {
-		t.Fatalf("Failed, got error: %v", err)
+	if accountResult.MyValue != myValue {
+		t.Errorf("Failed, account.MyValue: '%s' want: '%s'", accountResult.MyValue, myValue)
 	}
-	if result4.Account.ID != 0 {
-		t.Errorf("Failed using joins, account should be 0, got: %v", result4)
-	}
-
 }

@@ -27,12 +27,14 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	MyValue   string
 }
 
 type Account struct {
 	gorm.Model
-	UserID sql.NullInt64
-	Number string
+	UserID  sql.NullInt64
+	Number  string
+	MyValue string
 }
 
 type Pet struct {
