@@ -19,6 +19,13 @@ services:
       - POSTGRES_DB=gorm
       - POSTGRES_USER=gorm
       - POSTGRES_PASSWORD=gorm
+  cockroach:
+    image: 'cockroachdb/cockroach:latest'
+    ports:
+      - 9940:26257
+    command: start-single-node --insecure
+    volumes:
+     - "${PWD}/cockroach-data/crdb:/cockroach/cockroach-data"
   mssql:
     image: 'mcmoe/mssqldocker:latest'
     ports:

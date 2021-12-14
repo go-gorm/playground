@@ -56,6 +56,18 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
 		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+	case "cockroach":
+		log.Println("testing cockroach...")
+		uri := "postgres://root:@localhost:9940/gorm?sslmode=disable"
+		db, err = gorm.Open(postgres.Open(uri), &gorm.Config{
+			SkipDefaultTransaction: true,
+			// NowFunc: func() time.Time {
+			// 	// utc, _ := time.LoadLocation("Europe/Rome")
+			// 	// return time.Now().In(utc)
+			// 	cet := time.FixedZone("CET", 3600)
+			// 	return time.Now().In(cet)
+			// },
+		})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -105,4 +117,5 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+
 }
