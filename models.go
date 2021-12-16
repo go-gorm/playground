@@ -58,3 +58,23 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+// Has two primary keys
+type CompositeKeyProduct struct {
+	ProductPointID int       `gorm:"primaryKey;autoIncrement:true;column:product_point_id"`
+	LanguageCode   int       `gorm:"primaryKey;autoIncrement:false;column:language_code"`
+	Code           string    `gorm:"column:code"`
+	Name           string    `gorm:"column:name"`
+	CreatedAt      time.Time `gorm:"column:created_at"`
+	UpdatedAt      time.Time `gorm:"column:updated_at"`
+}
+
+// Has one primary keys
+type SingleKeyProduct struct {
+	ProductPointID int       `gorm:"primaryKey;autoIncrement:true;column:product_point_id"`
+	LanguageCode   int       `gorm:"column:language_code"`
+	Code           string    `gorm:"column:code"`
+	Name           string    `gorm:"column:name"`
+	CreatedAt      time.Time `gorm:"column:created_at"`
+	UpdatedAt      time.Time `gorm:"column:updated_at"`
+}
