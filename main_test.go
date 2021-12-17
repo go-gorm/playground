@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -9,12 +10,16 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
+	user := User{}
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	pet := Pet{UserID: &user.ID, User: &user}
+	DB.Create(&pet)
+
+	user.FavPet = &pet
+	user.FavPetID = pet.ID
+	DB.Save(&user)
+
+	// This point is never reached as the above code hangs...
+	fmt.Println("Wohoo, you got here!!!")
 }
