@@ -72,7 +72,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{
 			NamingStrategy: schema.NamingStrategy{
-				TablePrefix:   "_w_test_",
+				TablePrefix:   DbTablePrefix,
 				SingularTable: true,
 			},
 		})
