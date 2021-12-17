@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm/schema"
 	"log"
 	"math/rand"
 	"os"
@@ -69,7 +70,12 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				TablePrefix:   "_w_test_",
+				SingularTable: true,
+			},
+		})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
