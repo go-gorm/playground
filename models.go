@@ -12,10 +12,15 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	// gorm.Model
+	ID        uint            `gorm:"primarykey"`
+	CreatedAt time.Time       `gorm:"type:timestamp"`
+	UpdatedAt time.Time       `gorm:"type:timestamp"`
+	DeletedAt *gorm.DeletedAt `gorm:"type:timestamp"`
+
 	Name      string
 	Age       uint
-	Birthday  *time.Time
+	Birthday  *time.Time `gorm:"type:timestamp"`
 	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
