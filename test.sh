@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-dialects=("cockroach") # "sqlite" "mysql" "postgres" "sqlserver"
+dialects=("postgres" "cockroach") # "sqlite" "mysql" "sqlserver"
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then

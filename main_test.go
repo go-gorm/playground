@@ -23,15 +23,18 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	str, _ := result.CreatedAt.Zone()
-	t.Logf("now: %v, createdAt: %v, Zone: %s", now, result.CreatedAt, str)
+	createdAtZone, CreatedAtOffset := result.CreatedAt.Zone()
+	nowZone, nowOffset := now.Zone()
+	t.Logf("NOW: %v, Created At: %v", now, result.CreatedAt)
+	t.Logf("Created At Zone name: %s, Created At Offset: %d", createdAtZone, CreatedAtOffset)
+	t.Logf("NOW Zone name: %s, NOW Offset: %d", nowZone, nowOffset)
 
 	timeNowString := now.Format("2006-01-02 15:04")
 	createdAtString := result.CreatedAt.Format("2006-01-02 15:04")
 
-	t.Logf("now: %s, createdAt: %s", timeNowString, createdAtString)
+	t.Logf("NOW: %s, Created At: %s", timeNowString, createdAtString)
 
-	if timeNowString == createdAtString {
+	if timeNowString == createdAtString && CreatedAtOffset != nowOffset {
 		t.Errorf("Failed, times cannot be the same with different time zones")
 	}
 }
