@@ -1,10 +1,9 @@
 package main
 
 import (
-	"database/sql"
-	"time"
-
-	"gorm.io/gorm"
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -12,49 +11,30 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	ID          int64           `json:"id"`
+	Description UserDescription `json:"description"`
 }
 
-type Account struct {
-	gorm.Model
-	UserID sql.NullInt64
-	Number string
+type UserDescription json.RawMessage
+
+func (j *UserDescription) Scan(value interface{}) error {
+	str, ok := value.(string)
+	if !ok {
+		return fmt.Errorf("Failed to unmarshal JSONB value: %+v", value)
+	}
+
+	result := json.RawMessage{}
+	err := json.Unmarshal([]byte(str), &result)
+	*j = UserDescription(result)
+
+	return err
 }
 
-type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
-}
-
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
-}
-
-type Company struct {
-	ID   int
-	Name string
-}
-
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+// 实现 driver.Valuer 接口，Value 返回 json value
+func (j UserDescription) Value() (driver.Value, error) {
+	if len(j) == 0 {
+		return nil, nil
+	}
+	str := string(j)
+	return str, nil
 }
