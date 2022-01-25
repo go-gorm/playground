@@ -28,14 +28,11 @@ func TestGORM(t *testing.T) {
 	DB.Create(&toy3)
 	DB.Create(&toy4)
 
-	pet1.FavToy = &toy1
+	pet1.FavToyID = toy1.ID
 	DB.Save(&pet1)
 
-	pet2.FavToy = &toy4
+	pet2.FavToyID = toy4.ID
 	DB.Save(&pet2)
-
-	user.Pets = []*Pet{&pet1}
-	DB.Save(&user)
 
 	userFromDB := &User{}
 	result := DB.

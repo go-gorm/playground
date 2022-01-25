@@ -11,10 +11,11 @@ type User struct {
 
 type Pet struct {
 	gorm.Model
-	Name   string
-	FavToy *Toy
-	UserID uint
-	User   *User
+	Name     string
+	FavToyID uint
+	FavToy   *Toy
+	UserID   uint
+	User     *User
 }
 
 type Toy struct {
