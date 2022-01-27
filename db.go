@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
@@ -83,15 +84,31 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&TableOne{}, &TableTwo{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Printf("failed to connect database, got error %v\n", err)
+	}
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
+	if _, err := sqlDB.ExecContext(
+		context.Background(),
+		"DROP SCHEMA IF EXISTS \"my_schema\"",
+	); err != nil {
+		log.Printf("failed to drop custom schema, got error %v\n", err)
+	}
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
 		os.Exit(1)
+	}
+
+	if _, err := sqlDB.ExecContext(
+		context.Background(),
+		"CREATE SCHEMA IF NOT EXISTS \"my_schema\"",
+	); err != nil {
+		log.Printf("failed to create custom schema, got error %v\n", err)
 	}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {
