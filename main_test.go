@@ -2,19 +2,25 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: postgres
+
+type Event struct {
+	gorm.Model
+	ID  string `gorm:"primaryKey"`
+	UID uint32 `gorm:"not null;autoIncrement"`
+}
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&Event{}); err != nil {
+		t.Errorf("Failed can't migrate pgx to gorm [1]")
+	}
+	if err := DB.AutoMigrate(&Event{}); err != nil {
+		t.Errorf("Failed can't migrate pgx to gorm [2]")
 	}
 }
