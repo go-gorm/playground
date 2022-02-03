@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
 	"gorm.io/gorm"
 )
 
@@ -17,10 +18,16 @@ type Event struct {
 }
 
 func TestGORM(t *testing.T) {
-	if err := DB.AutoMigrate(&Event{}); err != nil {
-		t.Errorf("Failed can't migrate pgx to gorm [1]")
-	}
-	if err := DB.AutoMigrate(&Event{}); err != nil {
-		t.Errorf("Failed can't migrate pgx to gorm [2]")
-	}
+	require.NoError(t, DB.Migrator().DropTable(&Event{}))
+	require.NoError(t, DB.AutoMigrate(&Event{}))
+	require.NoError(t, DB.AutoMigrate(&Event{}))
+
+	require.NoError(t, DB.Save(&Event{ID: "a"}).Error)
+	require.NoError(t, DB.Save(&Event{ID: "b"}).Error)
+
+	events := make([]*Event, 0, 2)
+	DB.Find(&events)
+
+	require.Equal(t, 2, len(events))
+	require.NotEqual(t, events[0].UID, events[1].UID)
 }
