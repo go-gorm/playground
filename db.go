@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -40,8 +39,6 @@ func init() {
 
 		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
-
-	fmt.Printf("init... %v\n", err)
 }
 
 func OpenTestConnection() (db *gorm.DB, err error) {
