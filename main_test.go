@@ -16,6 +16,8 @@ type Tag struct {
 }
 
 type Foo struct {
+	// An ID field solves the panic.
+	// ID uint
 	TagID uint
 	Tag Tag `gorm:"polymorphic:Owner;polymorphicValue:foo"`
 }
