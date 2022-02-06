@@ -1,20 +1,29 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
+
+type Tag struct {
+	gorm.Model
+	OwnerID uint
+	OwnerType string
+}
+
+type Foo struct {
+	// An ID field solves the panic.
+	// ID uint
+	TagID uint
+	Tag Tag `gorm:"polymorphic:Owner;polymorphicValue:foo"`
+}
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&Tag{}, &Foo{}); err != nil {
+		t.Error(err)
 	}
 }
