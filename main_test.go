@@ -13,15 +13,27 @@ func TestGORM(t *testing.T) {
 	account := Account{Number: "1"}
 	DB.Create(&account)
 
+	manager := User{Name: "jinzhu"}
+	DB.Create(&manager)
+
 	user := User{Name: "jinzhu"}
 	user.Account = account
+	user.Manager = &manager
 
-	// Causes this: INSERT INTO `accounts` VALUES() ON DUPLICATE KEY UPDATE `user_id`=VALUES(`user_id`)
-	// This will create an empty account
-	DB.Omit("Account.*").Create(&user)
+	// Causes this:
+	// 	INSERT INTO `accounts` VALUES() ON DUPLICATE KEY UPDATE `user_id`=VALUES(`user_id`)
+	//  INSERT INTO `users` VALUES() ON DUPLICATE KEY UPDATE `id`=`id`
+	// This will create an empty account and user
+	DB.Omit("Account.*,Manager.*").Create(&user)
 
 	var accounts []Account
 	DB.Find(&accounts)
+
+	var users []User
+	DB.Find(&users)
+
+	fmt.Println("LEN USERS: ")
+	fmt.Println(len(users))
 
 	if len(accounts) != 1 {
 		fmt.Print("Num Accounts")
@@ -32,6 +44,10 @@ func TestGORM(t *testing.T) {
 			fmt.Println(a.Number)
 		}
 		t.Error("unexpected accounts")
+		t.Fail()
+	}
+
+	if len(users) != 2 {
 		t.Fail()
 	}
 }
