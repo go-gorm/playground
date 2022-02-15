@@ -18,7 +18,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user2)
 
 	results := []User{}
-	if err := DB.Distinct("name").Select("name", "age").Scan(&results).Error; err != nil {
+	if err := DB.Model(&User{}).Distinct("name").Select("name", "age").Scan(&results).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	if len(results) != 1 {
