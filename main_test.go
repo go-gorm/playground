@@ -17,11 +17,19 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user1)
 	DB.Create(&user2)
 
-	results := []User{}
-	if err := DB.Model(&User{}).Distinct("name").Select("name", "age").Scan(&results).Error; err != nil {
+	correctResults := []User{}
+	if err := DB.Raw("SELECT DISTINCT(name), age FROM users").Scan(&correctResults).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	if len(results) != 1 {
-		t.Errorf("Expected 1 result, got %d. %#v", len(results), results)
+		t.Errorf("Expected 1 result, got %d. %v", len(correctResults), correctResults)
+	}
+
+	actualResults := []User{}
+	if err := DB.Model(&User{}).Distinct("name").Select("name", "age").Scan(&actualResults).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	if len(actualResults) != 1 {
+		t.Errorf("Expected 1 result, got %d. %v", len(actualResults), actualResults)
 	}
 }
