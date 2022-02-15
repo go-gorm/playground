@@ -21,7 +21,7 @@ func TestGORM(t *testing.T) {
 	if err := DB.Raw("SELECT DISTINCT(name), age FROM users").Scan(&correctResults).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
-	if len(results) != 1 {
+	if len(correctResults) != 1 {
 		t.Errorf("Expected 1 result, got %d. %v", len(correctResults), correctResults)
 	}
 
