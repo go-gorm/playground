@@ -92,9 +92,23 @@ func RunMigrations() {
 		log.Printf("failed to connect database, got error %v\n", err)
 	}
 
+	var createSchemaStatement string
+	var dropSchemaStatement string
+	switch DB.Dialector.Name() {
+	case "sqlite", "mysql":
+		// DB user doesn't have CREATE SCHEMA permissions for these DBs
+		return
+	case "postgres":
+		dropSchemaStatement = "DROP SCHEMA IF EXISTS \"my_schema\""
+		createSchemaStatement = "CREATE SCHEMA IF NOT EXISTS \"my_schema\""
+	case "sqlserver":
+		dropSchemaStatement = "DROP SCHEMA my_schema"
+		createSchemaStatement = "CREATE SCHEMA my_schema"
+	}
+
 	if _, err := sqlDB.ExecContext(
 		context.Background(),
-		"DROP SCHEMA IF EXISTS \"my_schema\"",
+		dropSchemaStatement,
 	); err != nil {
 		log.Printf("failed to drop custom schema, got error %v\n", err)
 	}
@@ -106,7 +120,7 @@ func RunMigrations() {
 
 	if _, err := sqlDB.ExecContext(
 		context.Background(),
-		"CREATE SCHEMA IF NOT EXISTS \"my_schema\"",
+		createSchemaStatement,
 	); err != nil {
 		log.Printf("failed to create custom schema, got error %v\n", err)
 	}
