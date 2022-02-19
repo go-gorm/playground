@@ -26,8 +26,10 @@ type User struct {
 	Team      []User     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
-	MyValue   string
+	Groups    []Group    `gorm:"many2many:group_members"`
+
+	Active  bool
+	MyValue string
 }
 
 type Account struct {
@@ -59,4 +61,19 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Group struct {
+	gorm.Model
+	Name    string
+	Members []*User `gorm:"many2many:group_members"`
+}
+
+type GroupMember struct {
+	gorm.Model
+	UserID  uint
+	User    *User
+	GroupID uint
+	Group   *Group
+	Role    string
 }
