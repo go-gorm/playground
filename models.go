@@ -7,12 +7,19 @@ import (
 	"gorm.io/gorm"
 )
 
+type Model struct {
+	ID        uint           `gorm:"primarykey"`
+	CreatedAt time.Time      `gorm:"type:TIMESTAMP WITHOUT TIME ZONE"`
+	UpdatedAt time.Time      `gorm:"type:TIMESTAMP WITHOUT TIME ZONE"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	Model
 	Name      string
 	Age       uint
 	Birthday  *time.Time
