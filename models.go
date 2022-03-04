@@ -58,3 +58,15 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Parent struct {
+	ID int `gorm:"primarykey"`
+	Name string
+	Children []Child
+}
+
+type Child struct{
+	ChildID int `gorm:"primarykey"`
+	ParentID int
+	ChildName string
+}
