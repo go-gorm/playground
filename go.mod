@@ -1,6 +1,6 @@
 module gorm.io/playground
 
-go 1.16
+go 1.15
 
 require (
 	github.com/jackc/pgx/v4 v4.15.0 // indirect
@@ -13,4 +13,4 @@ require (
 	gorm.io/gorm v1.23.0
 )
 
-replace gorm.io/gorm => ./gorm
+//replace gorm.io/gorm => ./gorm
