@@ -50,8 +50,19 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
+	gorm.Model
 	Name string
+}
+
+type Employee struct {
+	gorm.Model
+	Name string
+}
+
+type CompanyEmployeeJunction struct {
+	gorm.Model
+	CompanyID  uint `gorm:"primaryKey"`
+	EmployeeID uint `gorm:"primaryKey"`
 }
 
 type Language struct {
