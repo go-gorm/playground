@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/shopspring/decimal"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +11,29 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	transactions := []Transaction{
+		{Amount: decimal.NewFromFloat(17.99)},
+		{Amount: decimal.NewFromFloat(17.99)},
+		{Amount: decimal.NewFromFloat(17.99)},
+		{Amount: decimal.NewFromFloat(17.99)},
+		{Amount: decimal.NewFromFloat(17.99)},
+	}
 
-	DB.Create(&user)
+	for _, transaction := range transactions {
+		DB.Create(&transaction)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	var result decimal.Decimal
+
+	err := DB.Table("transactions").Select(
+		"SUM(amount)",
+	).Row().Scan(&result)
+
+	if err != nil {
+		t.Errorf("'SELECT SUM(amount)' Failed, got error: %v", err)
+	}
+
+	if !result.Equals(decimal.NewFromFloat(89.95)) {
+		t.Errorf("SUM(amount) is not 89.95, got %s", result)
 	}
 }
