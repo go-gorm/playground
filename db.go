@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -69,7 +70,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		dir := os.TempDir()
+		fmt.Println(dir)
+		db, err = gorm.Open(sqlite.Open(filepath.Join(dir, "gorm.db")), &gorm.Config{})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
