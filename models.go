@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"time"
 
 	"gorm.io/gorm"
 )
@@ -12,21 +11,11 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Id        uint64 `gorm:"primaryKey" json:"id"`
+	FirstName string `json:"first" binding:"required" gorm:"type:varchar(10)"`
+	LastName  string `json:"last" binding:"required" gorm:"type:varchar(10)"`
+	Email     string `json:"email" binding:"required" gorm:"type:varchar(10)"`
+	//Created   string `json:"-" gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 }
 
 type Account struct {

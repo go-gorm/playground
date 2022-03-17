@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -9,12 +10,18 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{FirstName: "jinzhu", LastName: "Dop", Email: "radnom@gmail.com", Id: 0}
+	fmt.Println("This is User ", user)
 
-	DB.Create(&user)
+	err1 := DB.Model(&User{}).Create(&user)
+	if err1 != nil {
+		fmt.Println("Error while saving")
+		t.Errorf("Failed, got error no 1: %v", err1)
+	}
 
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.First(&result, user.Id).Error; err != nil {
+		fmt.Println("Error while getting")
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
