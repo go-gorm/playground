@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -9,12 +10,21 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	add := make([]User, 0)
+	for i := 0; i < 100000; i++ {
+		user := User{Name: fmt.Sprintf("%d", i)}
+		add = append(add, user)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	DB.CreateInBatches(add, 1000)
+
+	fmt.Println("done")
+
+	res := make([]User, 0)
+
+	err := DB.Preload("Friends").Find(&res).Error
+	if err != nil {
+		t.Error(err)
 	}
 }
