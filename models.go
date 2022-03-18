@@ -17,7 +17,7 @@ type User struct {
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
-	Pets      []*Pet
+	Pets      []Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
 	Company   Company
