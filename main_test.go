@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -9,12 +10,15 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	if err := DB.Transaction(func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&User{})
+	}); err != nil {
+		t.Error(err)
+	}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.Transaction(func(tx *gorm.DB) error {
+		return tx.AutoMigrate(&User{})
+	}); err != nil {
+		t.Error(err)
 	}
 }
