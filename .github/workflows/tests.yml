@@ -26,7 +26,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: go mod pakcage cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
@@ -70,7 +70,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: go mod pakcage cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
@@ -114,7 +114,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: go mod pakcage cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
@@ -158,7 +158,7 @@ jobs:
       uses: actions/checkout@v2
 
     - name: go mod pakcage cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
