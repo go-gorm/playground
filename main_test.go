@@ -9,12 +9,15 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	var pets []*Pet
 
-	DB.Create(&user)
+	err := DB.
+		Joins("INNER JOIN users ON users.id = pets.user_id").
+		Where(&Pet{Name: "a"}).
+		Where(&User{Age: 10}).
+		Find(&pets).Error
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err != nil {
+		t.Fatalf("err: %v", err)
 	}
 }
