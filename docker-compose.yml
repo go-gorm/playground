@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysql:
-    image: 'mysql:latest'
+    image: 'mariadb:latest'
     ports:
       - 9910:3306
     environment:
