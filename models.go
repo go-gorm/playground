@@ -60,13 +60,13 @@ type Language struct {
 }
 
 type Parent struct {
-	ID int `gorm:"primarykey"`
+	ID string `gorm:"primarykey"`
 	Name string
-	Children []Child
+	Children []Child `gorm:"-:migration"`
 }
 
 type Child struct{
-	ChildID int `gorm:"primarykey"`
-	ParentID int
+	ID string `gorm:"primarykey"`
+	ParentID string `gorm:"size:191"`
 	ChildName string
 }
