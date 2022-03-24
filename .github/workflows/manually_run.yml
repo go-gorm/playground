@@ -1,4 +1,4 @@
-name: tests
+name: manually_run
 
 on: workflow_dispatch
 
