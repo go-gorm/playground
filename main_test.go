@@ -13,6 +13,7 @@ func TestGORM(t *testing.T) {
 	DB.AutoMigrate(&Product{})
 	DB.AutoMigrate(&ProductNG3{})
 
+	
 	var isImput int
 
 	isImput = 0 // v2 版本也存在此问题  不需要归集   巨坑: 字段默认值 IsImput 为 -1 (负数 -2 )  插入 0  插入的值仍然为 -1 (-2)
