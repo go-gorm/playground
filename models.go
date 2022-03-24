@@ -49,3 +49,17 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Product struct {
+	gorm.Model
+	Code string
+	Price uint
+	IsImput int `gorm:"type:int(2);not null;default:-10;index;"`
+}
+
+type ProductNG3 struct {
+	gorm.Model
+	Code string
+	Price uint
+	IsImput int `gorm:"type:int(2);not null;default:-3;index;"`
+}
