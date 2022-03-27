@@ -15,13 +15,13 @@ func TestGORM(t *testing.T) {
 
 	err1 := DB.Model(&User{}).Create(&user)
 	if err1 != nil {
-		fmt.Println("Error while saving")
+		fmt.Println("Error while saving", err1.Error)
 		t.Errorf("Failed, got error no 1: %v", err1)
 	}
 
 	var result User
 	if err := DB.First(&result, user.Id).Error; err != nil {
-		fmt.Println("Error while getting")
+		fmt.Println("Error while getting", err.Error())
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
