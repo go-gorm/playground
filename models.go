@@ -58,3 +58,17 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Article struct {
+	ID           uint64
+	Code         string `gorm:"index:idx_code,unique"`
+	ArticleNames []*ArticleName
+}
+
+type ArticleName struct {
+	ID        uint64
+	ArticleID uint64
+	Name      string `gorm:"index:idx_name,unique"`
+	Language  string
+	Article   *Article
+}
