@@ -2,19 +2,20 @@ package main
 
 import (
 	"testing"
+
+	"github.com/pioz/faker"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql, postgres
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	faker.SetSeed(1) // Get determinist output
+	products := make([]Product, 100)
+	faker.Build(&products)
+	err := DB.Create(&products).Error
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
