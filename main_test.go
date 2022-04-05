@@ -8,13 +8,17 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Crash struct {
+	WithDefault  string `gorm:"default:DEFAULT1"`
+	WithDefault2 string `gorm:"default:DEFAULT2"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.Migrator().DropTable(Crash{})
+	DB.Migrator().CreateTable(Crash{})
+	crashIt := Crash{}
 
-	DB.Create(&user)
+	DB.Create(&crashIt)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	DB.AutoMigrate(Crash{})
 }
