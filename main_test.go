@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -13,8 +15,15 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var u User
+
+	err := DB.
+		Select("max(id)").
+		Where("date(created_at) >= date(now()) - ?", 0).
+		Group("date(created_at)").
+		Find(&u)
+
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
