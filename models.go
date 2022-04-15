@@ -58,3 +58,13 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Vehicle struct {
+	VehicleID string `gorm:"primarykey"`
+}
+
+type ParkingSpot struct {
+	ID        string `gorm:"primarykey"`
+	VehicleID string
+	Vehicle   Vehicle `gorm:"foreignKey:VehicleID"`
+}
