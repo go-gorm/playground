@@ -25,7 +25,7 @@ func TestGORM(t *testing.T) {
 		t.Errorf("err is %v, expect : nil", err)
 	}
 	if len(languages1) != 1 {
-		t.Errorf("expect found one res get :%v", len(languages1))
+		t.Errorf("expect found one res but get :%v", len(languages1))
 	} else {
 		assert.Equal(t, l1.Code, languages1[0].Code)
 		assert.Equal(t, l1.Name, languages1[0].Name)
@@ -38,6 +38,6 @@ func TestGORM(t *testing.T) {
 		t.Errorf("err is %v, expect : nil", err)
 	}
 	if len(languages2) != 0 {
-		t.Errorf("expect found one res get :%v", len(languages2))
+		t.Errorf("expect found zeor res but get :%v", len(languages2))
 	}
 }
