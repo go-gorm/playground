@@ -19,7 +19,7 @@ func TestGORM(t *testing.T) {
 
 	var languages1 []Language
 	queryConds := []string{"Chinese"}
-	err := DB.Find(&languages1).Error // find language with code Chinese
+	err := DB.Find(&languages1, queryConds).Error // find language with code Chinese
 	if err != nil {
 		t.Errorf("err is %v, expect : nil", err)
 	}
