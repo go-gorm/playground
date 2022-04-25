@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -10,28 +11,32 @@ import (
 
 func TestGORM(t *testing.T) {
 	// Migrate the schema
-	DB.AutoMigrate(&Product{})
-	DB.AutoMigrate(&ProductNG3{})
+	_ = DB.AutoMigrate(&Language{})
+	l1 := &Language{Code: "Chinese", Name: "可能是中文"}
+	l2 := &Language{Code: "English", Name: "foo"}
+	DB.Create(l1)
+	DB.Create(l2)
 
-	
-	var isImput int
-
-	isImput = 0 // v2 版本也存在此问题  不需要归集   巨坑: 字段默认值 IsImput 为 -1 (负数 -2 )  插入 0  插入的值仍然为 -1 (-2)
-
-	// Create
-	DB.Create(&Product{Code: "L1212", Price: 1000, IsImput: isImput})
-	DB.Create(&ProductNG3{Code: "L1213", Price: 1000, IsImput: -1})
-
-	var product Product
-	DB.First(&product, "code = ?", "L1212") // find product with code l1212
-	if product.IsImput != 0 {
-		t.Errorf("product IsImput is %v, expect : 0", product.IsImput)
+	var languages1 []Language
+	queryConds := []string{"Chinese"}
+	err := DB.Find(&languages1).Error // find language with code Chinese
+	if err != nil {
+		t.Errorf("err is %v, expect : nil", err)
+	}
+	if len(languages1) != 1 {
+		t.Errorf("expect found one res get :%v", len(languages1))
+	} else {
+		assert.Equal(t, l1.Code, languages1[0].Code)
+		assert.Equal(t, l1.Name, languages1[0].Name)
 	}
 
-	var productng3 ProductNG3
-	DB.First(&productng3, "code = ?", "L1213") // find product with code l1213
-	if productng3.IsImput != -1 {
-		t.Errorf("product IsImput is %v, expect : -1", product.IsImput)
+	var languages2 []Language
+	queryConds = []string{}
+	err = DB.Find(&languages2, queryConds).Error // find language with code Chinese
+	if err != nil {
+		t.Errorf("err is %v, expect : nil", err)
 	}
-
+	if len(languages2) != 0 {
+		t.Errorf("expect found one res get :%v", len(languages1))
+	}
 }
