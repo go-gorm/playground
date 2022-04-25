@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -37,6 +38,6 @@ func TestGORM(t *testing.T) {
 		t.Errorf("err is %v, expect : nil", err)
 	}
 	if len(languages2) != 0 {
-		t.Errorf("expect found one res get :%v", len(languages1))
+		t.Errorf("expect found one res get :%v", len(languages2))
 	}
 }
