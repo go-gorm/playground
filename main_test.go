@@ -33,7 +33,7 @@ func TestGORM(t *testing.T) {
 
 	var languages2 []Language
 	queryConds = []string{}
-	err = DB.Where("code IN ?", queryConds).Find(languages2).Error // where find language with emptyConds
+	err = DB.Where("code IN ?", queryConds).Find(&languages2).Error // where find language with emptyConds
 	if err != nil {
 		t.Errorf("err is %v, expect : nil", err)
 	}
