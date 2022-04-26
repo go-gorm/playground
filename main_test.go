@@ -40,7 +40,7 @@ func TestGORM(t *testing.T) {
 	if len(languages2) != 0 {
 		t.Errorf("expect found zeor res but get :%v", len(languages2))
 	}
-}
+
 
 	var languages3 []Language
 	queryConds = []string{}
