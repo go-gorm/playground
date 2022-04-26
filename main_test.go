@@ -33,11 +33,22 @@ func TestGORM(t *testing.T) {
 
 	var languages2 []Language
 	queryConds = []string{}
-	err = DB.Find(&languages2, queryConds).Error // find language with code Chinese
+	err = DB.Where("code IN ?", queryConds).Find(languages2).Error // where find language with emptyConds
 	if err != nil {
 		t.Errorf("err is %v, expect : nil", err)
 	}
 	if len(languages2) != 0 {
 		t.Errorf("expect found zeor res but get :%v", len(languages2))
+	}
+}
+
+	var languages3 []Language
+	queryConds = []string{}
+	err = DB.Find(&languages3, queryConds).Error // find language with code Chinese
+	if err != nil {
+		t.Errorf("err is %v, expect : nil", err)
+	}
+	if len(languages3) != 0 {
+		t.Errorf("expect found zeor res but get :%v", len(languages3))
 	}
 }
