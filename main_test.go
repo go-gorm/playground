@@ -1,6 +1,8 @@
 package main
 
 import (
+	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -9,12 +11,31 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	var err error
+	DB.Migrator().DropTable("order_0", "order_1", "users")
+	err = DB.AutoMigrate(&User{})
+	if err != nil {
+		t.Error(err)
+	}
 
-	DB.Create(&user)
+	err = DB.Table("order_0").AutoMigrate(&Order{})
+	if err != nil {
+		t.Error(err)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// panic
+	err = DB.Table("order_1").AutoMigrate(&Order{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	tableList, _ := DB.Migrator().GetTables()
+
+	targetList := []string{"order_0", "order_1", "users"}
+	sort.Strings(targetList)
+	sort.Strings(tableList)
+
+	if !reflect.DeepEqual(tableList, targetList) {
+		t.Errorf("table list %s", tableList)
 	}
 }
