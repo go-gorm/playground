@@ -2,19 +2,26 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+func TestPreloadHooks(t *testing.T) {
+	u := User{Name: "caleb", Company: Company{Name: "company"}}
+	DB.Create(&u)
 
-	DB.Create(&user)
+	// Preload should be skipped
+	DB.Session(&gorm.Session{SkipHooks: true}).Model(&User{}).Preload(clause.Associations).First(&u, u.ID)
+	if u.Name != "caleb" {
+		t.Errorf("want caleb, Failed, got: %v", u.Name)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if u.Company.Name != "company" {
+		t.Errorf("want company, got: %v", u.Company.Name)
 	}
 }

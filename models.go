@@ -29,6 +29,11 @@ type User struct {
 	Active    bool
 }
 
+func (u *User) AfterFind(tx *gorm.DB) error {
+	u.Name = "preload"
+	return nil
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
@@ -57,4 +62,9 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+func (c *Company) AfterFind(tx *gorm.DB) error {
+	c.Name = "preload"
+	return nil
 }
