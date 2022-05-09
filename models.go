@@ -54,7 +54,20 @@ type Company struct {
 	Name string
 }
 
+func (Company) TableName() string {
+	return "company"
+}
+
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type CompanyNew struct {
+	ID   int
+	Name int
+}
+
+func (CompanyNew) TableName() string {
+	return "company"
 }

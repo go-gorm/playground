@@ -18,3 +18,9 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestGormAlterColumnDataType(t *testing.T) {
+	DB.AutoMigrate(Company{})
+
+	DB.Migrator().AlterColumn(CompanyNew{}, "name")
+}
