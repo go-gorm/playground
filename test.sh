@@ -17,7 +17,7 @@ for dialect in "${dialects[@]}" ; do
     if [[ $(grep TEST_DRIVER main_test.go) =~ "${dialect}" ]]
     then
       echo "testing ${dialect}..."
-      GORM_DIALECT=${dialect} go test -race -count=1 -tags purego -v ./...
+      GORM_DIALECT=${dialect} CGO_ENABLED=0 go test -race -count=1 -tags purego -v ./...
     else
       echo "skip ${dialect}..."
     fi
