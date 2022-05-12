@@ -15,7 +15,7 @@ type User struct {
 	gorm.Model
 	Name      string
 	Age       uint
-	Birthday  *time.Time
+	Birthday  *time.Time `gorm:"not null;<-:create;autoCreateTime;type:timestamptz(0)"`
 	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
