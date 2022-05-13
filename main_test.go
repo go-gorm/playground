@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"testing"
 )
 
@@ -10,11 +11,10 @@ import (
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
-
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	account := Account{UserID: sql.NullInt64{Int64: int64(user.ID), Valid: true}}
+	DB.Create(&account)
+
+	DB.Delete(&user)
 }
