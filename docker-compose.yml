@@ -2,7 +2,8 @@ version: '3'
 
 services:
   mysql:
-    image: 'mysql:latest'
+    # image: 'mysql:latest'
+    image: 'mysql/mysql-server:latest'
     ports:
       - 9910:3306
     environment:
@@ -29,4 +30,3 @@ services:
       - MSSQL_DB=gorm
       - MSSQL_USER=gorm
       - MSSQL_PASSWORD=LoremIpsum86
-
