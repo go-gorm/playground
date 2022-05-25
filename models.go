@@ -13,8 +13,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 // equals
 type User struct {
-	gorm.Model
-	ID        uint `gorm:"primaryKey"`
+	ID2        uint `gorm:"primaryKey"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	Name      string
