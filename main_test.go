@@ -20,7 +20,7 @@ func TestGORM(t *testing.T) {
 
 	var ups []UserPermission
 	queryConds := []string{"1"}
-	err := DB.Where("UserId IN ?", queryConds).Find(&ups).Error // find language with code Chinese
+	err := DB.Where("user_id IN ?", queryConds).Find(&ups).Error // find language with code Chinese
 	if err != nil {
 		t.Errorf("err is %v, expect : nil", err)
 	}
