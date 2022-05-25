@@ -18,11 +18,9 @@ func TestGORM(t *testing.T) {
 	//l1 := &UserPermission{UserId: "Chinese", Name: "可能是中文"}
 	//DB.Create(l1)
 
-	var ups []UserPermission
-	queryConds := []string{"1"}
-	err := DB.Where("user_id IN ?", queryConds).Find(&ups).Error // find language with code Chinese
+	var up UserPermission
+	err := DB.Where(&UserPermission{UserId: "jinzhu",} ).Find(&up).Error // find language with code Chinese
 	if err != nil {
 		t.Errorf("err is %v, expect : nil", err)
 	}
-	assert.Equal(t, 0, len(ups))
 }
