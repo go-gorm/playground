@@ -3,7 +3,6 @@ package main
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
