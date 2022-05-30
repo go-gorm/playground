@@ -18,6 +18,6 @@ func TestGORM(t *testing.T) {
 	}
 
 	if user.Age != 18 {
-		t.Errorf("Update Age Failed, got : %d", user.Age)
+		t.Errorf("Update Age Failed, got : %d , expected : %d", user.Age, 18)
 	}
 }
