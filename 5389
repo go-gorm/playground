@@ -1,0 +1,54 @@
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"gitlab.corp.qunar.com/fangyuan.qian/dubai_common/comm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
+
+type TT struct {
+	ID         int       `gorm:"not null;primaryKey;comment:id"`
+	Name       string    `gorm:"not null;default:'';comment:任务名"`
+	UpdateTime time.Time `gorm:"not null;default:current_timestamp(3);index:idx_update_time;comment:更新时间"`
+	CreateTime time.Time `gorm:"not null;default:current_timestamp(3);comment:创建时间"`
+}
+
+func main() {
+	var dsn = "xx:xx@tcp(xx:xx)/test?autocommit=true&charset=utf8mb4,utf8&loc=Local&parseTime=true&writeTimeout=30s&readTimeout=60s&timeout=10s"
+	dbConn, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if err := dbConn.AutoMigrate(&TT{}); err != nil {
+		fmt.Println(err)
+		return
+	}
+	var t = TT{
+		ID:         1,
+		Name:       "a",
+		CreateTime: time.Now(),
+		UpdateTime: time.Now(),
+	}
+	if err = dbConn.Clauses(clause.OnConflict{UpdateAll: true}).Create(&t).Error; err != nil {
+		fmt.Println(err)
+		return
+	}
+	t.UpdateTime = time.Now().Add(10 * time.Second)
+	if err = dbConn.Clauses(clause.OnConflict{UpdateAll: true}).Create(&t).Error; err != nil {
+		fmt.Println(err)
+		return
+	}
+	var t2 TT
+	if err = dbConn.First(&t2).Error; err != nil {
+		fmt.Println(err)
+		return
+	}
+	if t2.UpdateTime.Format(comm.TimeFormat) != t.UpdateTime.Format(comm.TimeFormat) {
+		fmt.Printf("expect %s but %s", t.UpdateTime.Format(comm.TimeFormat), t2.UpdateTime.Format(comm.TimeFormat))
+	}
+}
