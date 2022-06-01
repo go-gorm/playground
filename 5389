@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"gitlab.corp.qunar.com/fangyuan.qian/dubai_common/comm"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -48,7 +47,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	if t2.UpdateTime.Format(comm.TimeFormat) != t.UpdateTime.Format(comm.TimeFormat) {
-		fmt.Printf("expect %s but %s", t.UpdateTime.Format(comm.TimeFormat), t2.UpdateTime.Format(comm.TimeFormat))
+	if t2.UpdateTime.Format("2006-01-02 15:04:05") != t.UpdateTime.Format("2006-01-02 15:04:05") {
+		fmt.Printf("expect %s but %s", t.UpdateTime.Format("2006-01-02 15:04:05"), t2.UpdateTime.Format("2006-01-02 15:04:05"))
 	}
 }
