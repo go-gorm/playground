@@ -58,3 +58,11 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type TableNameWithDash struct {
+	gorm.Model
+}
+
+func (*TableNameWithDash) TableName() string {
+	return "test-dash"
+}
