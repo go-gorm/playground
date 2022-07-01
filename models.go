@@ -33,6 +33,7 @@ type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
 	Number string
+	Array  []string `gorm:"type:TEXT[] NOT NULL"`
 }
 
 type Pet struct {
