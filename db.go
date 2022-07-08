@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -83,9 +81,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+	allModels := []interface{}{&User{}}
 
 	DB.Migrator().DropTable("user_friends", "user_speaks")
 
