@@ -29,6 +29,11 @@ type User struct {
 	Active    bool
 }
 
+type UserFriends struct {
+	UserId   string `gorm:"primaryKey,priority=1;"`
+	FriendId string `gorm:"primaryKey,priority=2;index"`
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
