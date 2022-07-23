@@ -1,32 +1,34 @@
-version: '3'
+version: '3.9'
 
 services:
   mysql:
-    image: 'mysql:latest'
+    image: 'mariadb:latest'
     ports:
       - 9910:3306
+    networks:
+      - test
     environment:
       - MYSQL_DATABASE=gorm
       - MYSQL_USER=gorm
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
-  postgres:
-    image: 'postgres:latest'
-    ports:
-      - 9920:5432
-    environment:
-      - TZ=Asia/Shanghai
-      - POSTGRES_DB=gorm
-      - POSTGRES_USER=gorm
-      - POSTGRES_PASSWORD=gorm
-  mssql:
-    image: 'mcmoe/mssqldocker:latest'
-    ports:
-      - 9930:1433
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=LoremIpsum86
-      - MSSQL_DB=gorm
-      - MSSQL_USER=gorm
-      - MSSQL_PASSWORD=LoremIpsum86
-
+    volumes:
+      - .:/etc/mysql
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh", "--defaults-file=/etc/mysql/mariadb.config", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  app:
+    build:
+      context: .
+    networks:
+      - test
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+networks:
+  test:
+    driver: bridge
