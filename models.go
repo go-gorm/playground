@@ -1,7 +1,11 @@
 package main
 
 import (
+	"context"
 	"database/sql"
+	"errors"
+	"fmt"
+	"gorm.io/plugin/soft_delete"
 	"time"
 
 	"gorm.io/gorm"
@@ -57,4 +61,36 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+
+type BasicGorm struct {
+	ID        int64 `gorm:"primaryKey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt soft_delete.DeletedAt `gorm:"index"`
+}
+
+
+type PortalDb struct {
+	BasicGorm
+	Name        string
+	Description string
+	Creator     string
+}
+
+func (PortalDb) TableName() string {
+	return "pg_portals"
+}
+
+func (r *PortalDb) GetDb(ctx context.Context) *gorm.DB {
+	return DB.Unscoped().Where("deleted_at is null or deleted_at = 0").WithContext(ctx).Model(r)
+}
+
+func (r *PortalDb) Get(ctx context.Context) error {
+	if e := r.GetDb(ctx).Model(r).Where("id = ?", r.ID).First(r).Error; e != nil {
+		fmt.Println(r.TableName()+" Get error: %+v", e)
+		return errors.New("查询门户配置失败")
+	}
+	return nil
 }
