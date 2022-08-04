@@ -58,3 +58,11 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type ProcessTable struct {
+	ID         uint64    `gorm:"column:f_id;primaryKey;autoIncrement;not null;comment:'主键'"`
+	Index      string    `gorm:"column:f_index;type:char(36);uniqueIndex;not null;comment:'UUID4'"`
+	Name       string    `gorm:"column:f_name;type:varchar(128);uniqueIndex;not null;comment:''"`
+	CreateTime time.Time `gorm:"column:f_create_time;autoCreateTime;not null;comment:''"`
+	UpdateTime time.Time `gorm:"column:f_update_time;autoUpdateTime;not null;comment:''"`
+}
