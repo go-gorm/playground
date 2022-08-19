@@ -4,17 +4,18 @@ import (
 	"testing"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
-
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	var err error
 
-	DB.Create(&user)
+	p1 := &Product{Code: "D1", Price: 100, Author: Author{
+		Name: "chen",
+	}}
+	if err = DB.Create(p1).Error; err != nil {
+		t.Error(err)
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	p2 := &Product{Code: "D2", Price: 100}
+	if err = DB.Create(p2).Error; err != nil {
+		t.Error(err)
 	}
 }

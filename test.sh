@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-dialects=("sqlite" "mysql" "postgres" "sqlserver")
+dialects=("sqlite" "mysql" "postgres")
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then
@@ -10,6 +10,7 @@ fi
 [ -d gorm ] || (echo "git clone --depth 1 -b $(cat main_test.go | grep GORM_BRANCH | awk '{print $3}') $(cat main_test.go | grep GORM_REPO | awk '{print $3}')"; git clone --depth 1 -b $(cat main_test.go | grep GORM_BRANCH | awk '{print $3}') $(cat main_test.go | grep GORM_REPO | awk '{print $3}'))
 
 go get -u ./...
+go build --tags "sqlite_json1"  github.com/mattn/go-sqlite3
 
 for dialect in "${dialects[@]}" ; do
   if [ "$GORM_DIALECT" = "" ] || [ "$GORM_DIALECT" = "${dialect}" ]
