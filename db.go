@@ -10,7 +10,6 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
-	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -56,17 +55,6 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
 		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
-	case "sqlserver":
-		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
-		// CREATE DATABASE gorm;
-		// USE gorm;
-		// CREATE USER gorm FROM LOGIN gorm;
-		// sp_changedbowner 'gorm';
-		log.Println("testing sqlserver...")
-		if dbDSN == "" {
-			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
-		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
@@ -83,7 +71,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&Product{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
