@@ -12,7 +12,7 @@ jobs:
   sqlite:
     strategy:
       matrix:
-        go: ['1.14']
+        go: ['1.16']
         platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
 
