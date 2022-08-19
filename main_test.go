@@ -23,7 +23,19 @@ func TestGORM(t *testing.T) {
 
 func TestScanToArray(t *testing.T) {
 	var someUUID *uuid.UUID
-	if err := DB.Table("users").Select("some_uuid").Scan(&someUUID).Error; err != nil {
-		t.Errorf("Failed, go error: %v", err)
+
+	expectedUUID := uuid.New()
+	user := User{Name: "foo", SomeUUID: expectedUUID}
+	DB.Create(&user)
+
+	if err := DB.Table("users").Select("some_uuid").Where("name = ?", "foo").Scan(&someUUID).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if someUUID == nil {
+		t.Error("someUUID is nil")
+	}
+	if *someUUID != expectedUUID {
+		t.Errorf("someUUID (%v) != expectedUUID (%v)", *someUUID, expectedUUID)
 	}
 }
