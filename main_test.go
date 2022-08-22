@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 )
@@ -18,17 +19,20 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
 	updateName, updateAge := "test2", 22
 	err := DB.Exec("update users set name = ? and age = ? where id = ?", updateName, updateAge, user.ID).Error
 	if err == nil {
-		t.Error("Except err: Truncated incorrect DOUBLE value, but got nil")
-	}
+		t.Error("expect err: Truncated incorrect DOUBLE value, but got nil")
 
-	var updatedUser User
-	if err := DB.First(&updatedUser, user.ID).Error; err != nil {
-		t.Errorf("Failed, got new user error: %v", err)
-	}
-	if reflect.DeepEqual(result, updatedUser) {
-		t.Errorf("Failed, update new user failed! old: %v, new: %v", result, updatedUser)
+		var updatedUser User
+		if err := DB.First(&updatedUser, user.ID).Error; err != nil {
+			t.Errorf("Failed, got new user error: %v", err)
+		}
+		if reflect.DeepEqual(result, updatedUser) {
+			t.Errorf("Failed, update new user failed! old: %v, new: %v", result, updatedUser)
+		}
+	} else {
+		fmt.Printf("got expect error: %v\n", err)
 	}
 }
