@@ -9,12 +9,13 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	device := Device{Host: "111.111.111.111", Set: "NY14536", CpuUsage: 6.31}
 
-	DB.Create(&user)
+	DB.Create(&device)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	var result []map[string]interface{}
+	fields := []string{"host", "cpu_usage", "set"}
+	if err := DB.Debug().Table("devices").Select(fields).Find(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }

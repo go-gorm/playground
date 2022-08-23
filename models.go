@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Device struct {
+	Host     string  `gorm:"column:host"`
+	Set      string  `gorm:"column:set"`
+	CpuUsage float64 `gorm:"column:cpu_usage"`
+}
