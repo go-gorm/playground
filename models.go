@@ -58,3 +58,18 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Test struct {
+	gorm.Model
+	SomeStr string `gorm:"type:VARCHAR(15);NOT NULL"`
+}
+
+type Test2 struct {
+	gorm.Model
+	SomeStr string `gorm:"type:VARCHAR(15);default:NULL"`
+	SomeInt int64
+}
+
+func (*Test2) TableName() string {
+	return "tests"
+}
