@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/plugin/soft_delete"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -29,10 +30,22 @@ type User struct {
 	Active    bool
 }
 
+func (user *User) BeforeDelete(tx *gorm.DB) error {
+	account := Account{UserID: sql.NullInt64{Int64: int64(user.ID), Valid: true}}
+	DB.Find(&account)
+
+	return tx.Transaction(func(tx2 *gorm.DB) error {
+		return tx2.Delete(&account).Error
+	})
+}
+
 type Account struct {
-	gorm.Model
-	UserID sql.NullInt64
-	Number string
+	ID        uint `gorm:"primarykey"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt soft_delete.DeletedAt `gorm:"index"`
+	UserID    sql.NullInt64
+	Number    string
 }
 
 type Pet struct {
