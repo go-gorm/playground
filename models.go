@@ -58,3 +58,25 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Parent struct {
+	ID          uint `gorm:"primaryKey"`
+	EvalField   string
+	Children    []*Child      `gorm:"foreignKey:ParentID;references:ID"`
+	SemiParents []*SemiParent `gorm:"foreignKey:ParentID;references:ID"`
+}
+
+type SemiParent struct {
+	ID        uint `gorm:"primaryKey"`
+	EvalField string
+	ParentID  uint
+	Children  []*Child `gorm:"foreignKey:SemiParentID;references:ID"`
+}
+
+// Child can be part of a Parent and SemiParent
+type Child struct {
+	ID           uint `gorm:"primaryKey"`
+	EvalField    string
+	ParentID     *uint `gorm:"column:parent_id"`      //nullable
+	SemiParentID *uint `gorm:"column:semi_parent_id"` //nullable
+}
