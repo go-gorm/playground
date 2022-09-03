@@ -1,7 +1,6 @@
 package main
 
 import (
-	"gorm.io/gorm/clause"
 	"testing"
 )
 
@@ -37,20 +36,15 @@ func TestSave(t *testing.T) {
 	//check passes, but only one foreign key populated in DB
 
 	//So get saved entity from db and validate is all relations exists
-	dbPar := new(Parent)
-	err = DB.Debug().
-		Preload(clause.Associations).
-		Find(&dbPar, "parents.id = ?", parent.ID).Error
+	var parId, semiParId *uint
+	err = DB.Raw("select parent_id, semi_parent_id from children limit 1").Row().Scan(&parId, &semiParId)
 	if err != nil {
-		t.Error("Expect nil error")
+		t.Error("Doesn't expect error from raw query, but was: ", err)
 	}
-	if dbPar.SemiParents == nil || len(dbPar.SemiParents) != 1 { //one semi parent found
-		t.Error("Expect not nil and one element SemiParents collection")
+	if parId == nil {
+		t.Error("Expect parent id not nil; but retrieved nil")
 	}
-	if dbPar.Children == nil || len(dbPar.Children) != 1 { //one root child found
-		t.Error("Expect not nil and one element  Children collection")
-	}
-	if len(dbPar.SemiParents[0].Children) != 1 { //Fail here! cause foreign key wasn't populated
-		t.Error("Expect children collection populated with the one element; But found ", len(dbPar.SemiParents[0].Children))
+	if semiParId == nil {
+		t.Error("Expect semi parent id not nil; but retrieved nil")
 	}
 }
