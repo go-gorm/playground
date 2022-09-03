@@ -44,10 +44,10 @@ func TestSave(t *testing.T) {
 	if err != nil {
 		t.Error("Expect nil error")
 	}
-	if dbPar.SemiParents == nil || len(dbPar.SemiParents) == 1 { //one semi parent found
+	if dbPar.SemiParents == nil || len(dbPar.SemiParents) != 1 { //one semi parent found
 		t.Error("Expect not nil and one element SemiParents collection")
 	}
-	if dbPar.Children == nil || len(dbPar.Children) == 1 { //one root child found
+	if dbPar.Children == nil || len(dbPar.Children) != 1 { //one root child found
 		t.Error("Expect not nil and one element  Children collection")
 	}
 	if len(dbPar.SemiParents[0].Children) != 1 { //Fail here! cause foreign key wasn't populated
