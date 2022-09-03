@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/stretchr/testify/assert"
 	"gorm.io/gorm/clause"
 	"testing"
 )
@@ -25,10 +24,16 @@ func TestSave(t *testing.T) {
 	}
 	err := DB.Debug().Create(&parent).Error
 	//one of the queries INSERT INTO "children" ("eval_field","parent_id","semi_parent_id") VALUES ('ch',1,NULL)... - but both foreign keys must not be null
-	assert.Nil(t, err)
+	if err != nil {
+		t.Error("Expect nil error")
+	}
 	//Here both children foreign keys populated in the model
-	assert.NotNil(t, ch.ParentID)
-	assert.NotNil(t, ch.SemiParentID)
+	if ch.ParentID == nil {
+		t.Error("Expect parent foreign id not nil")
+	}
+	if ch.SemiParentID == nil {
+		t.Error("Expect semi parent foreign id not nil")
+	}
 	//check passes, but only one foreign key populated in DB
 
 	//So get saved entity from db and validate is all relations exists
@@ -36,11 +41,16 @@ func TestSave(t *testing.T) {
 	err = DB.Debug().
 		Preload(clause.Associations).
 		Find(&dbPar, "parents.id = ?", parent.ID).Error
-	assert.Nil(t, err)
-	assert.NotNil(t, dbPar.SemiParents)
-	assert.NotNil(t, dbPar.Children)
-	assert.NotEmpty(t, dbPar.SemiParents, dbPar.Children)   //both root 'has many' collections not empty
-	assert.True(t, len(dbPar.SemiParents) == 1)             //one semi parent found
-	assert.True(t, len(dbPar.Children) == 1)                //one root child found
-	assert.True(t, len(dbPar.SemiParents[0].Children) == 1) //Fail here! cause foreign key wasn't populated
+	if err != nil {
+		t.Error("Expect nil error")
+	}
+	if dbPar.SemiParents == nil || len(dbPar.SemiParents) == 1 { //one semi parent found
+		t.Error("Expect not nil and one element SemiParents collection")
+	}
+	if dbPar.Children == nil || len(dbPar.Children) == 1 { //one root child found
+		t.Error("Expect not nil and one element  Children collection")
+	}
+	if len(dbPar.SemiParents[0].Children) != 1 { //Fail here! cause foreign key wasn't populated
+		t.Error("Expect children collection populated with the one element; But found ", len(dbPar.SemiParents[0].Children))
+	}
 }
