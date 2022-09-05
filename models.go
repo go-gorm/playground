@@ -51,7 +51,7 @@ type Toy struct {
 
 type Company struct {
 	ID   int
-	Name string
+	Name string `gorm:"default:NULL"`
 }
 
 type Language struct {
