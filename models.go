@@ -58,3 +58,8 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Data struct {
+	StartTime string `gorm:"start_time"`
+	EndTime   string `gorm:"end_time"`
+}
