@@ -13,6 +13,7 @@ func TestGORM(t *testing.T) {
 	if err := DB.AutoMigrate(&GameUser{}); err != nil {
 		t.Fatal(err)
 	}
+
 	has := DB.Migrator().HasTable(&diff.GameUser{})
 	if !has {
 		t.Fatal("dont have table game_user")
