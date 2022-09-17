@@ -10,6 +10,10 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
+	if err := DB.AutoMigrate(&User{}); err != nil {
+		t.Fatal(err)
+	}
+
 	if err := DB.AutoMigrate(&diff.User{}); err != nil {
 		t.Fatal(err)
 	}
