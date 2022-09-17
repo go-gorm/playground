@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/playground/diff"
 	"testing"
 )
 
@@ -9,12 +10,14 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	if err := DB.AutoMigrate(&GameUser{}); err != nil {
+		t.Fatal(err)
+	}
 
-	DB.Create(&user)
+	t.Log("next migrate")
+	t.Log("just a simulator. actually two migrate use the same one struct")
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&diff.GameUser{}); err != nil {
+		t.Fatal(err)
 	}
 }
