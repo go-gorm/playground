@@ -14,21 +14,10 @@ func TestGORM(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	has := DB.Migrator().HasTable(&diff.GameUser{})
-	if !has {
-		t.Fatal("dont have table game_user")
-	}
-	tables, err := DB.Migrator().GetTables()
-	if err != nil {
-		t.Error(err)
-	}
 	t.Log("next migrate")
+	t.Log("just a simulator. actually two migrate use the same one struct")
 
 	if err := DB.AutoMigrate(&diff.GameUser{}); err != nil {
 		t.Fatal(err)
-	}
-	t.Log("all tables in database")
-	for _, table := range tables {
-		t.Log(table)
 	}
 }
