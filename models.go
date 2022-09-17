@@ -58,3 +58,36 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type GameUser struct {
+	gorm.Model
+	Nick         string `gorm:"uniqueIndex;size:255"`
+	Clan         string `gorm:"size:255"`
+	ClanUrl      string `gorm:"size:255"`
+	Banned       *bool
+	RegisterDate time.Time
+	Title        string `gorm:"size:255"`
+	Level        int
+	StatAb       UserStat `gorm:"embedded;embeddedPrefix:stat_ab_"`
+	StatRb       UserStat `gorm:"embedded;embeddedPrefix:stat_rb_"`
+	StatSb       UserStat `gorm:"embedded;embeddedPrefix:stat_sb_"`
+
+	TsABRate float64
+	TsRBRate float64
+	TsSBRate float64
+	AsABRate float64
+	AsRBRate float64
+	AsSBRate float64
+}
+
+type UserStat struct {
+	TotalMission         int
+	WinRate              float64
+	GroundDestroyCount   int
+	FleetDestroyCount    int
+	GameTime             string
+	AviationDestroyCount int
+	WinCount             int
+	SliverEagleEarned    int64
+	DeadCount            int
+}
