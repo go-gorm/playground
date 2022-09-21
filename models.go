@@ -58,3 +58,10 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Thing struct {
+	gorm.Model
+	SomeID  string `gorm:"index:,composite:something_idx"`
+	OtherID string `gorm:"index:,composite:something_idx"`
+	Data    string
+}
