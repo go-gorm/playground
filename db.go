@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm/schema"
 	"log"
 	"math/rand"
 	"os"
@@ -69,7 +70,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{SingularTable: true},
+		})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
@@ -83,11 +86,13 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	err = DB.SetupJoinTable(&User{}, "Languages", &UserLanguage{})
+	if err != nil {
+		panic(err)
+	}
+	allModels := []interface{}{&User{}, &Pet{}, &Language{}, &UserLanguage{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
