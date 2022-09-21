@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm/clause"
 	"testing"
 )
 
@@ -9,12 +10,34 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	thing := Thing{
+		SomeID:  "1234",
+		OtherID: "1234",
+		Data:    "something",
+	}
 
-	DB.Create(&user)
+	DB.Create(&thing)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	thing2 := Thing{
+		SomeID:  "1234",
+		OtherID: "1234",
+		Data:    "something else",
+	}
+
+	result := DB.Clauses(clause.OnConflict{
+		OnConstraint: "something_idx",
+		UpdateAll:    true,
+	}).Create(&thing2)
+	if result.Error != nil {
+		t.Errorf("creating second thing: %v", result.Error)
+	}
+
+	var things []Thing
+	if err := DB.Find(&things).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if len(things) > 1 {
+		t.Errorf("expected 1 thing got more")
 	}
 }
