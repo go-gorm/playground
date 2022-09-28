@@ -11,12 +11,15 @@ import (
 func TestGORM(t *testing.T) {
 	user := User{
 		Name: "jinzhu",
-		Age:  1,
+		Age:  2,
 	}
-	anotherUser := User{Name: "with-company", EmbeddedCompany: &Company{
-		ID:   2,
-		Name: "company",
-	}}
+	anotherUser := User{
+		Name: "with-company",
+		Age:  1,
+		EmbeddedCompany: &Company{
+			ID:   2,
+			Name: "company",
+		}}
 
 	DB.Create(&user)
 	DB.Create(&anotherUser)
@@ -31,6 +34,10 @@ func TestGORM(t *testing.T) {
 	}
 
 	foundUser := result[0]
+
+	if foundUser.Name != "jinzhu" {
+		t.Errorf("jhinzu should be loaded first because of the order by age DESC clause")
+	}
 
 	if foundUser.EmbeddedCompany != nil && foundUser.EmbeddedCompany.Name != "" {
 		t.Errorf("user jinzhu should not have embedded company: %+v", foundUser.EmbeddedCompany)
