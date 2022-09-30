@@ -18,3 +18,28 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestBeforeHookWorksWhenObjectIsLoaded(t *testing.T) {
+	company := Company{Name: "Gopherz"}
+
+	err := DB.Create(&company).Error
+	if err != nil {
+		t.Errorf("could not create new company: %v", err)
+	}
+
+	if err := DB.First(&Company{}, "id = ?", company.ID).Update("name", "Gophers").Error; err != nil {
+		t.Errorf("could not update company name: %v", err)
+	}
+}
+
+func TestBeforeSaveHookWithoutLoadingObject(t *testing.T) {
+	company := Company{Name: "Gopherz"}
+	err := DB.Create(&company).Error
+	if err != nil {
+		t.Errorf("could not create new company: %v", err)
+	}
+
+	if err := DB.Model(&Company{}).Where("id = ?", company.ID).Update("name", "Gophers"); err != nil {
+		t.Errorf("cannot update name to Gophers! %v", err)
+	}
+}
