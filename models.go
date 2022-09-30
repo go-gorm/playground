@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -52,6 +53,13 @@ type Toy struct {
 type Company struct {
 	ID   int
 	Name string
+}
+
+func (c *Company) BeforeSave(tx *gorm.DB) (err error) {
+	if c.Name == "" {
+		err = errors.New("can't save company with blank name")
+	}
+	return
 }
 
 type Language struct {
