@@ -10,18 +10,14 @@ GORM Playground can be used to play GORM and reports issues, if you encounter a 
 
 ##### 2. [Clone the forked repo to your local](https://docs.github.com/en/free-pro-team@latest/github/creating-cloning-and-archiving-repositories/cloning-a-repository)
 
-##### 3. Setup test database
+##### 3. Install docker-compose
 
-```bash
-# install docker-compose https://docs.docker.com/compose/install/
-
-# setup test databases
-docker-compose up
-```
+https://docs.docker.com/compose/install/
 
 ##### 4. Run tests with lastest GORM and all drivers
 
 ```bash
+# run tests (retry if failed due to preparing the testing database)
 ./test.sh
 
 # Run tests with cached GORM and latest drivers
