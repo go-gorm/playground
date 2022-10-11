@@ -36,10 +36,8 @@ type Account struct {
 }
 
 type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+	UserID *uint  `gorm:"uniqueIndex:uniq_user_id_name"`
+	Name   string `gorm:"uniqueIndex:uniq_user_id_name;size:256"`
 }
 
 type Toy struct {
