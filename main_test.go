@@ -6,7 +6,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
