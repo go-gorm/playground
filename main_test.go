@@ -1,6 +1,7 @@
 package main
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -16,5 +17,9 @@ func TestGORM(t *testing.T) {
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if ok := reflect.DeepEqual(&user, &result); !ok {
+		t.Errorf("Failed, object not match: \ncreate: %+v\nget: %+v", user, result)
 	}
 }
