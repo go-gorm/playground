@@ -13,8 +13,17 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	p := Pet{Name: "max", UserID: &user.ID}
+
+	DB.Create(&p)
+
+	var result Pet
+	if err := DB.First(&result, p.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	err := DB.Migrator().DropColumn(&User{}, "age")
+	if err != nil {
+		t.FailNow()
 	}
 }
