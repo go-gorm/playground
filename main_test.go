@@ -46,7 +46,7 @@ func TestGORM(t *testing.T) {
 			defer wg.Done()
 			err := DB.Model(&userCopy).Association("Languages").Append(&languageCopy)
 			if err != nil {
-				log.Printf("[!] Error white appending post to user, %s", err)
+				log.Printf("[!] Error white appending language to user, %s", err)
 				return
 			}
 			time.Sleep(time.Second) // Simulating task.
