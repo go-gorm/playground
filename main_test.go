@@ -34,9 +34,9 @@ func TestGORM(t *testing.T) {
 
 	user1 := User{}
 	if true { // If not preloading, the test passes.
-		DB.Preload(clause.Associations).First(&user1)
+		DB.Preload(clause.Associations).FirstOrCreate(&user1)
 	} else {
-		DB.First(&user1)
+		DB.FirstOrCreate(&user1)
 	}
 
 	var wg sync.WaitGroup
