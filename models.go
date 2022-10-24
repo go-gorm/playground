@@ -1,9 +1,6 @@
 package main
 
 import (
-	"database/sql"
-	"time"
-
 	"gorm.io/gorm"
 )
 
@@ -14,39 +11,11 @@ import (
 type User struct {
 	gorm.Model
 	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
 	Company   Company
 	ManagerID *uint
 	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
-}
-
-type Account struct {
-	gorm.Model
-	UserID sql.NullInt64
-	Number string
-}
-
-type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
-}
-
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
+	UserProps *UserProp `gorm:"foreignkey:CompanyID,ManagerID;references:CompanyID,ManagerID"`
 }
 
 type Company struct {
@@ -54,7 +23,23 @@ type Company struct {
 	Name string
 }
 
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+type UserProp struct {
+	ID        int
+	CompanyID int
+	ManagerID uint
+	Value     string
+}
+
+// use this model in migrator to prevent fk creation with user's model
+type UserPropMigration struct {
+	ID        int
+	CompanyID int
+	Company   Company
+	ManagerID uint
+	Manager   User
+	Value     string
+}
+
+func (r UserPropMigration) TableName() string {
+	return "user_props"
 }
