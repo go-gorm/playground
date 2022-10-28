@@ -1,0 +1,29 @@
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[0.927ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[0.759ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC LIMIT 1010
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[0.567ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[0.765ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[0.735ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[3.653ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC,completed ASC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[2.981ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC,completed ASC,completed ASC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[2.828ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC,completed ASC,completed ASC,completed ASC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[3.757ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC,completed ASC,completed ASC,completed ASC,completed ASC LIMIT 10
+10
+2022/10/27 21:25:32 C:/Documents/test/gorm-test/main.go:26
+[3.633ms] [rows:10] SELECT `to_do_items`.`created_at`,`to_do_items`.`updated_at`,`to_do_items`.`content`,`to_do_items`.`completed`,`to_do_items`.`id`,`to_do_items`.`author` FROM `to_do_items` WHERE `to_do_items`.`deleted_at` IS NULL ORDER BY id DESC,id DESC,id DESC,id DESC,id DESC,completed ASC,completed ASC,completed ASC,completed ASC,completed ASC LIMIT 10
+10
