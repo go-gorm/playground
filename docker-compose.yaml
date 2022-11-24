@@ -1,0 +1,28 @@
+services:
+
+  main:
+    image: golang:1.19-alpine
+    working_dir: /app
+    entrypoint: go run main.go
+    environment:
+      TZ: Europe/Kiev
+    volumes:
+      - ./main.go:/app/main.go
+      - ./go.mod:/app/go.mod
+      - ./go.sum:/app/go.sum
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: user
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: nc -z 127.0.0.1 5432
+      interval: 3s
+      retries: 5
