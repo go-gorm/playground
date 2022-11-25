@@ -20,7 +20,7 @@ type User struct {
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
-	Company   Company
+	Company   Company `gorm:"default:NULL"`
 	ManagerID *uint
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
