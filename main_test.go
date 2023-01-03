@@ -9,12 +9,40 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	item := Item{
+		Logo: "logo",
+		Contents: []ItemContent{
+			{
+				LanguageCode: "en",
+				Name:         "name",
+			},
+			{
+				LanguageCode: "ar",
+				Name:         "الاسم",
+			},
+		},
+	}
+	DB.Create(&item)
 
-	DB.Create(&user)
+	DB.Model(&item).Association("Contents").Replace([]ItemContent{
+		{
+			LanguageCode: "en",
+			Name:         "updated name",
+		},
+		{
+			LanguageCode: "ar",
+			Name:         "الاسم المحدث",
+		},
+		{
+			LanguageCode: "fr",
+			Name:         "le nom",
+		},
+	})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	var updatedItem Item
+	DB.Preload("Contents").First(&updatedItem, item.ID)
+
+	if len(updatedItem.Contents) != 3 {
+		t.Errorf("expected 3 contents, got %d", len(updatedItem.Contents))
 	}
 }
