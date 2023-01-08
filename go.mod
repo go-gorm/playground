@@ -1,4 +1,4 @@
-module gorm.io/playground
+module github.com/morremeyer/gorm-playground
 
 go 1.16
 

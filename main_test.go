@@ -8,7 +8,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: sqlite
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
@@ -16,14 +16,10 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 
 	var results []User
-	if err := DB.Where(&User{
-		Active: false,
-	}, "Active").Find(&results, user.ID).Error; err != nil {
+	if err := DB.Find(&results, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	// This must have 2 results since the first resource was created when the column did not exist yet
-	// I therefore assume that it should have the default value when using AutoMigrate.
-	// The second record is created when the column exits and therefore has the default value set.
-	assert.Len(t, results, 2)
+	// This must have 1 result since we have only created one resource.
+	assert.Len(t, results, 1)
 }
