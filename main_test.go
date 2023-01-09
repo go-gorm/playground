@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -9,9 +10,19 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	userID := uint(1024)
+	user := User{
+		Model: gorm.Model{
+			ID: userID,
+		},
+		Name: "jinzhu",
+		Pets: []*Pet{
+			{UserID: &userID, Name: "foo"},
+			{UserID: &userID, Name: "bar"},
+		},
+	}
 
-	DB.Create(&user)
+	DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(&user)
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
