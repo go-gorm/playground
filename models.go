@@ -13,6 +13,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
+	ID        uint `gorm:"primaryKey;<-:create"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
