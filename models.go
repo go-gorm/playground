@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -27,6 +28,11 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+}
+
+func (*User) BeforeUpdate(*gorm.DB) error {
+	fmt.Println("test")
+	return nil
 }
 
 type Account struct {
