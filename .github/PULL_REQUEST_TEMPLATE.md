@@ -1,1 +1,1 @@
-## Explain your user case and expected results
+## Explain your use case and expected results
