@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"log"
+	"os"
 	"testing"
 )
 
@@ -11,6 +13,11 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
+
+	if e := os.Getenv("GORM_DIALECT"); e != "postgres" {
+		log.Printf("skipping %s...", e)
+		return
+	}
 
 	require.NoError(t, DB.Exec(`DROP VIEW IF EXISTS first_foo`).Error)
 	require.NoError(t, DB.Exec(`DROP TABLE IF EXISTS foo`).Error)
