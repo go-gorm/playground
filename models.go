@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
@@ -14,6 +15,7 @@ import (
 type User struct {
 	gorm.Model
 	Name      string
+	Nickname  string     `gorm:"uniqueIndex"`
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
@@ -27,6 +29,22 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+}
+var BeforeCreate1, BeforeCreate2 bool
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+    if BeforeCreate1 {
+        tx.Statement.AddClause(clause.OnConflict{
+            Columns: []clause.Column{{Name: "nickname"}},
+            DoUpdates: clause.AssignmentColumns([]string{"updated_at"}),
+        })
+    }
+    if BeforeCreate2 {
+        tx.Statement.AddClause(clause.OnConflict{
+            Columns: []clause.Column{{Name: "id"}},
+            UpdateAll: true,
+        })
+    }
+    return nil
 }
 
 type Account struct {
