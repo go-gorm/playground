@@ -14,6 +14,7 @@ import (
 type User struct {
 	gorm.Model
 	Name      string
+	Nickname  string     `gorm:"uniqueIndex"`
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
