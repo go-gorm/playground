@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"github.com/google/uuid"
 	"time"
 
 	"gorm.io/gorm"
@@ -13,6 +14,7 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
+	ID        uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -55,6 +57,7 @@ type Company struct {
 }
 
 type Language struct {
-	Code string `gorm:"primarykey"`
+	gorm.Model
+	ID   uuid.UUID `gorm:"type:uuid;default:uuid_generate_v4()"`
 	Name string
 }
