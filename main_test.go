@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -11,7 +13,9 @@ import (
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	DB.Transaction(func(tx *gorm.DB) error {
+		return tx.CreateInBatches([]User{user}, 2).Error
+	})
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
