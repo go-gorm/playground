@@ -20,13 +20,6 @@ func TestGORM(t *testing.T) {
 	}
 	DB.Create(manager)
 
-	user := &User{
-		Name:      "jinzhu",
-		CompanyID: &company.ID,
-		ManagerID: &manager.ID,
-	}
-	DB.Create(user)
-
 	props := []*UserProp{
 		{
 			CompanyID: company.ID,
@@ -36,20 +29,41 @@ func TestGORM(t *testing.T) {
 	}
 	DB.Create(&props)
 
-	t.Run("user has props", testUser(user, "foo"))
-	t.Run("user without props", testUser(manager, "bar"))
+	user := &User{
+		Name:      "jinzhu",
+		CompanyID: &company.ID,
+		ManagerID: &manager.ID,
+	}
+	DB.Create(user)
+
+	value := "foo"
+	t.Run("user has props", testUser(user.ID, &value))
+	t.Run("user without props", testUser(manager.ID, nil))
 }
 
-func testUser(user *User, propValue string) func(*testing.T) {
+func testUser(userID uint, expectedValue *string) func(*testing.T) {
 	return func(t *testing.T) {
-		var resultUser User
-		if err := DB.Preload("UserProps").First(&resultUser, user.ID).Error; err != nil {
-			t.Errorf("Failed, got error: %v", err)
+		var actualUser User
+
+		err := DB.Preload("UserProps").First(&actualUser, userID).Error
+		if err != nil {
+			t.Fatalf("Failed, got error: %v", err)
 		}
-		if resultUser.UserProps == nil {
-			t.Errorf("Failed, expected: %v, got %v", propValue, nil)
-		} else if resultUser.UserProps.Value != propValue {
-			t.Errorf("Failed, expected: %v, got %v", propValue, resultUser.UserProps.Value)
+
+		if actualUser.UserProps == nil {
+			if expectedValue != nil {
+				t.Fatalf("Failed, expected: %v, got %v", *expectedValue, nil)
+			}
+		}
+
+		if expectedValue != nil {
+			if actualUser.UserProps.Value != *expectedValue {
+				t.Fatalf("Failed, expected: %v, got %v", *expectedValue, actualUser.UserProps.Value)
+			}
+		}
+
+		if actualUser.UserProps != nil && expectedValue == nil {
+			t.Fatalf("Failed, expected: %v, got %v", nil, actualUser.UserProps.Value)
 		}
 	}
 }
