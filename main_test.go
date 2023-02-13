@@ -16,4 +16,10 @@ func TestGORM(t *testing.T) {
 		Take(&user)
 	})
 	println(sql)
+	
+	sql = DB.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tx.Joins("Company", tx.Omit("Name")).
+		Take(&user)
+	})
+	println(sql)
 }
