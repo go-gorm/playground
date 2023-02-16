@@ -23,9 +23,9 @@ func TestClauseChaining(t *testing.T) {
 
 	var results []Company
 	DB.Clauses(&clause.Expr{
-		SQL: `id = 1 OR id = 2`,
+		SQL: `(id = 1 OR id = 2)`,
 	}, &clause.Expr{
-		SQL: `name = "bar"`,
+		SQL: `name = 'bar'`,
 	}).Find(&results)
 
 	if l := len(results); l != 1 {
