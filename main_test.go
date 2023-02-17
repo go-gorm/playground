@@ -11,6 +11,7 @@ import (
 type Post struct {
 	ID uint
 	Title string `gorm:"notnull"`
+	UserID uint `gorm:"notnull"`
 }
 
 func TestGORM(t *testing.T) {
