@@ -26,7 +26,7 @@ func TestGORM(t *testing.T) {
 		languages = append(languages, language)
 	}
 
-	////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	// When this is deleted, the test passes also when preloading.
 	whenThisIsDeletedTheTestPasses := User{}
 	DB.Create(&whenThisIsDeletedTheTestPasses)
