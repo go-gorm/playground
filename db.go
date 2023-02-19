@@ -1,16 +1,20 @@
 package main
 
 import (
+	"fmt"
+	"gorm.io/sharding"
+	"log"
+	"math/rand"
+	"os"
+	"path/filepath"
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"gorm.io/sharding"
-	"log"
-	"os"
-	"path/filepath"
 )
 
 var DB *gorm.DB
@@ -30,7 +34,7 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
-		//RunMigrations()
+		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
@@ -56,6 +60,13 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			ShardingKey:         "user_id",
 			NumberOfShards:      2,
 			PrimaryKeyGenerator: sharding.PKSnowflake,
+			ShardingSuffixs: func() (suffixes []string) {
+				numberOfShards := 2
+				for i := 0; i < numberOfShards; i++ {
+					suffixes = append(suffixes, fmt.Sprintf("_%02d", i%numberOfShards))
+				}
+				return
+			},
 		}, UserFollow{}))
 	case "postgres":
 		log.Println("testing postgres...")
@@ -86,4 +97,28 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	}
 
 	return
+}
+
+func RunMigrations() {
+	var err error
+	allModels := []interface{}{&UserFollow{}}
+	rand.Seed(time.Now().UnixNano())
+	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+
+	if err = DB.Migrator().DropTable(allModels...); err != nil {
+		log.Printf("Failed to drop table, got error %v\n", err)
+		os.Exit(1)
+	}
+
+	if err = DB.AutoMigrate(allModels...); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
+
+	for _, m := range allModels {
+		if !DB.Migrator().HasTable(m) {
+			log.Printf("Failed to create table for %#v\n", m)
+			os.Exit(1)
+		}
+	}
 }
