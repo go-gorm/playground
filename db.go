@@ -63,7 +63,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			ShardingSuffixs: func() (suffixes []string) {
 				numberOfShards := 2
 				for i := 0; i < numberOfShards; i++ {
-					suffixes = append(suffixes, fmt.Sprintf("_%02d", i%numberOfShards))
+					suffixes = append(suffixes, fmt.Sprintf("_%d", i%numberOfShards))
 				}
 				return
 			},
