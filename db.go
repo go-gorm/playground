@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"gorm.io/sharding"
 	"log"
 	"math/rand"
 	"os"
@@ -50,6 +52,22 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
 		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		if err != nil {
+			return nil, err
+		}
+		// sharding
+		err = db.Use(sharding.Register(sharding.Config{
+			ShardingKey:         "user_id",
+			NumberOfShards:      2,
+			PrimaryKeyGenerator: sharding.PKSnowflake,
+			ShardingSuffixs: func() (suffixes []string) {
+				numberOfShards := 2
+				for i := 0; i < numberOfShards; i++ {
+					suffixes = append(suffixes, fmt.Sprintf("_%d", i%numberOfShards))
+				}
+				return
+			},
+		}, UserFollow{}))
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
@@ -83,11 +101,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&UserFollow{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
