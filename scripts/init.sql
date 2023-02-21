@@ -1,6 +1,6 @@
 use gorm;
 
-CREATE TABLE `user_follow_0`
+CREATE TABLE `user_follows_0`
 (
     `id`           bigint NOT NULL,
     `user_id`      bigint NOT NULL DEFAULT '0' COMMENT '发起关注的人',
@@ -12,7 +12,7 @@ CREATE TABLE `user_follow_0`
     UNIQUE KEY `udx_uid_fuid` (`user_id`, `followed_uid`)
 ) COMMENT ='用户关注表';
 
-CREATE TABLE `user_follow_1`
+CREATE TABLE `user_follows_1`
 (
     `id`           bigint NOT NULL,
     `user_id`      bigint NOT NULL DEFAULT '0' COMMENT '发起关注的人',
@@ -24,4 +24,4 @@ CREATE TABLE `user_follow_1`
     UNIQUE KEY `udx_uid_fuid` (`user_id`, `followed_uid`)
 ) COMMENT ='用户关注表';
 
-INSERT INTO `user_follow_0` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`followed_uid`) VALUES ('2023-02-19 20:52:26.939','2023-02-19 20:52:26.939',NULL,79535114761158382,79542521267813869)
+INSERT INTO `user_follows_0` (`created_at`,`updated_at`,`deleted_at`,`user_id`,`followed_uid`) VALUES ('2023-02-19 20:52:26.939','2023-02-19 20:52:26.939',NULL,79535114761158382,79542521267813869)

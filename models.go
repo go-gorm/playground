@@ -9,7 +9,3 @@ type UserFollow struct {
 	UserID      int64
 	FollowedUID int64
 }
-
-func (UserFollow) TableName() string {
-	return "user_follow"
-}
