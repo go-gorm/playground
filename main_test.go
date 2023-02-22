@@ -10,6 +10,6 @@ import (
 
 func TestGORM(t *testing.T) {
 	DB.Create(&User{ID: "jinzhu1", IssuerID: ""})
-	
+
 	DB.Create(&User{ID: "jinzhu2", IssuerID: ""})
 }
