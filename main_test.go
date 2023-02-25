@@ -18,3 +18,14 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestNotFound(t *testing.T) {
+	user := User{Name: "jinzhu"}
+
+	DB.Create(&user)
+
+	var result User
+	if err := DB.Where("name = ?", "nobody").Find(&result).Error; !errors.Is(err, gorm.ErrRecordNotFound) {
+		t.Errorf("ErrRecordNotFound not return???????")
+	}
+}
