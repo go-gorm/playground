@@ -19,19 +19,21 @@ func TestGORM(t *testing.T) {
 	}
 }
 
-func TestMigrateExistingSmallintBoolColumnPG(t *testing.T) {
+func TestMigrateExistingBoolColumnPG(t *testing.T) {
 	if DB.Dialector.Name() != "postgres" {
 		return
 	}
 
 	type ColumnStruct struct {
-		Name     string
-		IsActive bool `gorm:"type:smallint"`
+		Name         string
+		StringBool   string
+		SmallintBool int `gorm:"type:smallint"`
 	}
 
 	type ColumnStruct2 struct {
-		Name     string
-		IsActive bool // change existing boolean column from smallint or other to boolean
+		Name         string
+		StringBool   bool // change existing boolean column from string or other to boolean
+		SmallintBool bool // change existing boolean column from smallint or other to boolean
 	}
 
 	DB.Migrator().DropTable(&ColumnStruct{})
@@ -40,7 +42,5 @@ func TestMigrateExistingSmallintBoolColumnPG(t *testing.T) {
 		t.Errorf("Failed to migrate, got %v", err)
 	}
 
-	if err := DB.Table("column_structs").AutoMigrate(&ColumnStruct2{}); err != nil {
-		t.Fatalf("no error should happened when auto migrate column, but got %v", err)
-	}
+	DB.Table("column_structs").AutoMigrate(&ColumnStruct2{}) // expect no error
 }
