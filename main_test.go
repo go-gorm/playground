@@ -17,4 +17,5 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	DB.Migrator().DropColumn("users", "age")
 }
