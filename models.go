@@ -58,3 +58,8 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Test struct {
+	ID       int `gorm:"primaryKey,column:test_id"`
+	Whatever string
+}
