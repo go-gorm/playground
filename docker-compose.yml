@@ -10,15 +10,15 @@ services:
       - MYSQL_USER=gorm
       - MYSQL_PASSWORD=gorm
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
-  postgres:
-    image: 'postgres:latest'
-    ports:
-      - 9920:5432
-    environment:
-      - TZ=Asia/Shanghai
-      - POSTGRES_DB=gorm
-      - POSTGRES_USER=gorm
-      - POSTGRES_PASSWORD=gorm
+  # postgres:
+  #   image: 'postgres:latest'
+  #   ports:
+  #     - 9920:5432
+  #   environment:
+  #     - TZ=Asia/Shanghai
+  #     - POSTGRES_DB=gorm
+  #     - POSTGRES_USER=gorm
+  #     - POSTGRES_PASSWORD=gorm
   mssql:
     image: '${MSSQL_IMAGE:-mcmoe/mssqldocker}:latest'
     ports:

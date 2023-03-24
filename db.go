@@ -58,6 +58,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{
 			PrepareStmt: true,
 		})
+		if err == nil {
+			panic("should error no postgres connection")
+		}
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
