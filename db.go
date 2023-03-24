@@ -55,7 +55,11 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		dialector := postgres.New(postgres.Config{
+			DSN: "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai",
+			PreferSimpleProtocol: true,
+		})
+		db, err = gorm.Open(dialector, &gorm.Config{})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
