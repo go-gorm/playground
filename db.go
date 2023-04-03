@@ -83,6 +83,8 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
+	DB.Exec("CREATE EXTENSION IF NOT EXISTS \"uuid-ossp\";")
+
 	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })

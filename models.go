@@ -1,7 +1,6 @@
 package main
 
 import (
-	"database/sql"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,7 +11,7 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	ID        string `gorm:"type:uuid;default:uuid_generate_v4();primaryKey"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -31,13 +30,13 @@ type User struct {
 
 type Account struct {
 	gorm.Model
-	UserID sql.NullInt64
+	UserID string
 	Number string
 }
 
 type Pet struct {
 	gorm.Model
-	UserID *uint
+	UserID *string
 	Name   string
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
