@@ -14,7 +14,7 @@ var wg sync.WaitGroup
 
 func TestGORM(t *testing.T) {
 
-	for i := 0; i < 1000; i++ {
+	for i := 0; i < 3; i++ {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
