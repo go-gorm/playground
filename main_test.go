@@ -14,6 +14,7 @@ var wg sync.WaitGroup
 
 func TestGORM(t *testing.T) {
 
+	tx := DB.Session(&gorm.Session{})
 	for i := 0; i < 3; i++ {
 		wg.Add(1)
 		go func() {
@@ -27,7 +28,7 @@ func TestGORM(t *testing.T) {
 			user := User{
 				Model: model,
 			}
-			if err := DB.FirstOrCreate(&user).Error; err != nil {
+			if err := tx.FirstOrCreate(&user).Error; err != nil {
 				t.Errorf("Failed, got error: %v", err)
 			}
 		}()
