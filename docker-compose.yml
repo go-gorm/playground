@@ -29,3 +29,9 @@ services:
       - MSSQL_DB=gorm
       - MSSQL_USER=gorm
       - MSSQL_PASSWORD=LoremIpsum86
+  clickhouse:
+    image: 'yandex/clickhouse-server:latest'
+    ports:
+      - 8123:8123
+      - 9000:9000
+
