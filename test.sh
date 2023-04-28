@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-dialects=("sqlite" "mysql" "postgres" "sqlserver")
+dialects=("clickhouse")
 
 if [ "$GORM_ENABLE_CACHE" = "" ]
 then
