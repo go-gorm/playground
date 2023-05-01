@@ -12,7 +12,9 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	// NOTE: If gorm.Model is used, tests will success
+	// gorm.Model
+	ID        uint `gorm:"primarykey"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -27,6 +29,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	Token     Token `gorm:"foreignkey:UserID"`
 }
 
 type Account struct {
@@ -57,4 +60,15 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Token struct {
+	UserID  uint `gorm:"primary_key"`
+	Content string
+}
+
+// This method should be called only once
+func (t *Token) BeforeSave(tx *gorm.DB) error {
+	t.Content += "_encrypted"
+	return nil
 }
