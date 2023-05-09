@@ -18,3 +18,25 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestMigrateExistingBoolColumnPG(t *testing.T) {
+	if DB.Dialector.Name() != "postgres" {
+		return
+	}
+
+	type ColumnStruct struct {
+		BooleanColumn int `gorm:"type:smallint;default:0"`
+	}
+
+	type ColumnStruct2 struct {
+		BooleanColumn bool `gorm:"default:false"` // change existing boolean column from smallint with default 0 to boolean with default false
+	}
+
+	DB.Migrator().DropTable(&ColumnStruct{})
+
+	if err := DB.AutoMigrate(&ColumnStruct{}); err != nil {
+		t.Errorf("Failed to migrate, got %v", err)
+	}
+
+	DB.Table("column_structs").AutoMigrate(&ColumnStruct2{}) // expect no error
+}
