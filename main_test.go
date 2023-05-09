@@ -25,15 +25,11 @@ func TestMigrateExistingBoolColumnPG(t *testing.T) {
 	}
 
 	type ColumnStruct struct {
-		Name         string
-		StringBool   string
-		SmallintBool int `gorm:"type:smallint"`
+		BooleanColumn int `gorm:"type:smallint;default:0"`
 	}
 
 	type ColumnStruct2 struct {
-		Name         string
-		StringBool   bool // change existing boolean column from string or other to boolean
-		SmallintBool bool // change existing boolean column from smallint or other to boolean
+		BooleanColumn bool `gorm:"default:false"` // change existing boolean column from smallint with default 0 to boolean with default false
 	}
 
 	DB.Migrator().DropTable(&ColumnStruct{})
