@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -57,4 +58,31 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Meeting struct {
+	gorm.Model
+	Id          string     `gorm:"type:uuid;primaryKey" json:"id"`
+	IsLive      bool       `json:"isLive"`
+	CompletedAt time.Time  `json:"completedAt"`
+	Familiars   []Familiar `gorm:"many2many:familiar_meetings;"`
+}
+
+func (m *Meeting) BeforeCreate(tx *gorm.DB) (err error) {
+	// UUID version 4
+	m.Id = uuid.NewString()
+	return
+}
+
+type Familiar struct {
+	gorm.Model
+	Id       string    `gorm:"type:uuid;primaryKey" json:"id"`
+	Meetings []Meeting `gorm:"many2many:familiar_meetings;"`
+	Name     string    `json:"name"`
+}
+
+func (f *Familiar) BeforeCreate(tx *gorm.DB) (err error) {
+	// UUID version 4
+	f.Id = uuid.NewString()
+	return
 }
