@@ -74,9 +74,6 @@ func (m *Meeting) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
-// Represents a Familiar. A Familiar is a user's avatar that can talk to other Familiars. Note that it has a Location in
-// addition to its owner having a Location. They can be separate if its left at home, hence the WithUser field, which
-// defaults to true.
 type Familiar struct {
 	gorm.Model
 	Id       string    `gorm:"type:uuid;primaryKey" json:"id"`
