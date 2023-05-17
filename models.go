@@ -58,3 +58,27 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Thing1 struct {
+	Id1  uint   `gorm:"primarykey"`
+	Name string `gorm:"size:20"`
+	One  int
+}
+
+type Thing2 struct {
+	Id2  uint   `gorm:"primarykey"`
+	Name string `gorm:"size:20"`
+	Two  int
+}
+
+type Thing3 struct {
+	Id3   uint   `gorm:"primarykey"`
+	Name  string `gorm:"size:20"`
+	Three int
+}
+
+type Composite struct {
+	Thing1
+	Thing2 Thing2 `gorm:"foreignKey:Id2;references:Id1"`
+	Thing3 Thing3 `gorm:"foreignKey:Id3;references:Id1"`
+}
