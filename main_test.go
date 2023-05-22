@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	"time"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +10,31 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	type TimeStamps struct {
+		CreatedAt time.Time `json:"created_at,omitempty"`
+		UpdatedAt time.Time `json:"updated_at,omitempty"`
+	}
 
-	DB.Create(&user)
+	type OrderBase struct {
+		TimeStamps
+		ID uint `json:"id,omitempty" gorm:"primarykey"`
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	type Order struct {
+		OrderBase
+		Reference string `json:"reference,omitempty"`
+	}
+
+	DB.Migrator().DropTable(&Order{})
+	DB.AutoMigrate(&Order{})
+
+	newOrder := Order{
+		OrderBase: OrderBase{},
+		Reference: "111",
+	}
+	DB.Save(&newOrder)
+
+	if newOrder.ID == 0 {
+		t.Errorf("order id should not be 0")
 	}
 }
