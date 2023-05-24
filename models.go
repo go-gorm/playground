@@ -13,20 +13,25 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Name     string
+	Age      uint
+	Birthday *time.Time
+	// Email has a default null value... which appears to be what keeps it from
+	// being properly set when reading the value from the db... but the inbound
+	// dest has Email set.
+	Email          string `gorm:"default:null"`
+	EmailNoDefault string
+	Account        Account
+	Pets           []*Pet
+	Toys           []Toy `gorm:"polymorphic:Owner"`
+	CompanyID      *int
+	Company        Company
+	ManagerID      *uint
+	Manager        *User
+	Team           []User     `gorm:"foreignkey:ManagerID"`
+	Languages      []Language `gorm:"many2many:UserSpeak"`
+	Friends        []*User    `gorm:"many2many:user_friends"`
+	Active         bool
 }
 
 type Account struct {
