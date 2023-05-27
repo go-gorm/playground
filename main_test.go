@@ -18,3 +18,19 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestSaveVeterinarian(t *testing.T) {
+	vet := Planet{
+		PlanetData: PlanetData{
+			Name:  "Jane",
+			Class: "5555555555",
+		},
+		IsBig: true,
+	}
+
+	DB.Create(&vet)
+
+	if vet.ID.String() == "00000000-0000-0000-0000-000000000000" {
+		t.Errorf("Failed. Planet Id is empty")
+	}
+}

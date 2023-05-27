@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -57,4 +58,15 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type Planet struct {
+	PlanetData
+	ID    uuid.UUID `gorm:"primaryKey,->"`
+	IsBig bool
+}
+
+type PlanetData struct {
+	Name  string
+	Class string
 }
