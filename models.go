@@ -55,6 +55,7 @@ type Company struct {
 }
 
 type Language struct {
-	Code string `gorm:"primarykey"`
+	gorm.Model
+	Code string `gorm:"size:64;uniqueIndex"`
 	Name string
 }
