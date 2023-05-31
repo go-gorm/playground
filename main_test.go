@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"github.com/google/uuid"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -19,18 +21,41 @@ func TestGORM(t *testing.T) {
 	}
 }
 
-func TestSaveVeterinarian(t *testing.T) {
-	vet := Planet{
-		PlanetData: PlanetData{
-			Name:  "Jane",
-			Class: "5555555555",
-		},
-		IsBig: true,
-	}
+func TestSavePlanet(t *testing.T) {
 
-	DB.Create(&vet)
+	t.Run("should get id from db", func(t *testing.T) {
+		planet := Planet{
+			PlanetData: PlanetData{
+				Name:  "Jane",
+				Class: "5555555555",
+			},
+			IsBig: true,
+		}
 
-	if vet.ID.String() == "00000000-0000-0000-0000-000000000000" {
-		t.Errorf("Failed. Planet Id is empty")
-	}
+		DB.Create(&planet)
+
+		if planet.ID.String() == "00000000-0000-0000-0000-000000000000" {
+			t.Errorf("Failed. Planet Id is empty")
+		}
+
+	})
+
+	t.Run("should save planet with given id", func(t *testing.T) {
+		expectedId := uuid.New()
+		planet := PlanetWithDefault{
+			ID: expectedId,
+			PlanetData: PlanetData{
+				Name:  "Jane",
+				Class: "5555555555",
+			},
+			IsBig: true,
+		}
+
+		DB.Create(&planet)
+
+		if planet.ID != expectedId {
+			t.Errorf("Failed. Id is not the expected")
+		}
+	})
+
 }

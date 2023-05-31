@@ -82,8 +82,19 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 }
 
 func RunMigrations() {
-	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &Planet{}}
+	var (
+		err               error
+		createPlanetTable = `CREATE TABLE IF NOT EXISTS "planets" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "name" TEXT NOT NULL,
+    "class" TEXT NOT NULL,
+    "is_big" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "planets_pkey" PRIMARY KEY ("id")
+);`
+		dropPlanetTable = `DROP TABLE IF EXISTS planets`
+	)
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
@@ -91,6 +102,11 @@ func RunMigrations() {
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
+		os.Exit(1)
+	}
+
+	if res := DB.Exec(dropPlanetTable); res.Error != nil {
+		log.Printf("Failed to drop table, got error %v\n", res.Error)
 		os.Exit(1)
 	}
 
@@ -104,5 +120,9 @@ func RunMigrations() {
 			log.Printf("Failed to create table for %#v\n", m)
 			os.Exit(1)
 		}
+	}
+	if res := DB.Exec(createPlanetTable); res.Error != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", res.Error)
+		os.Exit(1)
 	}
 }

@@ -62,11 +62,21 @@ type Language struct {
 
 type Planet struct {
 	PlanetData
-	ID    uuid.UUID `gorm:"primaryKey,->"`
+	ID    uuid.UUID `gorm:"->"`
 	IsBig bool
 }
 
 type PlanetData struct {
 	Name  string
 	Class string
+}
+
+type PlanetWithDefault struct {
+	PlanetData
+	ID    uuid.UUID `gorm:"->;default:generate_uuid_v4()"`
+	IsBig bool
+}
+
+func (c PlanetWithDefault) TableName() string {
+	return "planets"
 }
