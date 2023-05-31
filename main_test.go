@@ -42,7 +42,7 @@ func TestSavePlanet(t *testing.T) {
 
 	t.Run("should save planet with given id", func(t *testing.T) {
 		expectedId := uuid.New()
-		planet := PlanetWithDefault{
+		planet := Planet{
 			ID: expectedId,
 			PlanetData: PlanetData{
 				Name:  "Jane",

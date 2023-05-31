@@ -70,13 +70,3 @@ type PlanetData struct {
 	Name  string
 	Class string
 }
-
-type PlanetWithDefault struct {
-	PlanetData
-	ID    uuid.UUID `gorm:"->;default:generate_uuid_v4()"`
-	IsBig bool
-}
-
-func (c PlanetWithDefault) TableName() string {
-	return "planets"
-}
