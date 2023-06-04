@@ -6,15 +6,33 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: sqlite, mysql, postgres
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	company := Company{
+		Name: "Google",
+	}
 
-	DB.Create(&user)
+	DB.Create(&company)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	newUser := User{
+		Name:      "jinzhu",
+		CompanyID: company.ID,
+	}
+
+	DB.Create(&newUser)
+
+	var user User
+	DB.Preload("Company").First(&user, newUser.ID)
+
+	DB.Model(&user).Updates(User{
+		Name: "jinzhu 2",
+	})
+
+	var numCompanies int64
+	DB.Model(&Company{}).Count(&numCompanies)
+
+	if numCompanies != 1 {
+		t.Errorf("There is not 1 company, there are %d", numCompanies)
 	}
 }

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +20,7 @@ type User struct {
 	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
+	CompanyID uuid.UUID
 	Company   Company
 	ManagerID *uint
 	Manager   *User
@@ -50,8 +51,13 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
+	ID   uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name string
+}
+
+func (c *Company) BeforeCreate(tx *gorm.DB) error {
+	c.ID = uuid.New()
+	return nil
 }
 
 type Language struct {
