@@ -9,12 +9,23 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	db := DB
 
-	DB.Create(&user)
+	user1 := User{Name: "jinzhu"}
+	db.Create(&user1)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	user2 := User{Name: "bob", Description: "hello"}
+	db.Create(&user2)
+
+	db.Delete(&user2)
+
+	user3 := User{Name: "joe", Description: "hello"}
+	db.Create(&user3)
+
+	user4 := User{Name: "peter", Description: "hello"}
+	err := db.Create(&user4).Error
+	if err == nil {
+		t.Error("expected duplicate key error")
 	}
+
 }
