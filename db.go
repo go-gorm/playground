@@ -51,6 +51,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		}
 		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{
 			DisableForeignKeyConstraintWhenMigrating: true,
+			// IgnoreRelationshipsWhenMigrating: true, // TODO 默认应该启用这个功能
 			Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
 				Colorful:                  false,
 				LogLevel:                  logger.Info,
