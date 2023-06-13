@@ -2,31 +2,27 @@ package main
 
 import (
 	"database/sql"
-	"time"
 
 	"gorm.io/gorm"
 )
+
+type UserExt struct {
+	EyeColour string
+}
 
 // User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
-type User struct {
+type User[T any] struct {
 	gorm.Model
 	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Extension UserExt    `gorm:"embedded"`
+}
+
+func (User[T]) TableName() string {
+	return "users"
 }
 
 type Account struct {
