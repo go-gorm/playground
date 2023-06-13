@@ -58,3 +58,10 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Policy struct {
+	gorm.Model
+	Name      string
+	BoolFalse bool `gorm:"default:false"`
+	BoolTrue  bool `gorm:"default:true"`
+}
