@@ -18,3 +18,11 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestCountAndTables(t *testing.T) {
+	var cnt int64
+	if err := DB.Table("sessions AS s").
+		Table("users").Count(&cnt).Error; err != nil {
+		t.Errorf("got error on calling Count(): %v", err)
+	}
+}
