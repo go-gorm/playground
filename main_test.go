@@ -24,15 +24,19 @@ func TestGORM(t *testing.T) {
 	DB.Create(&userC)
 	DB.Create(&userD)
 
-	var result User
+	users := make([]*User, 0)
 	if err := DB.
 		Preload("Team").
-		Where("name = ?", "jinzhu1").
-		First(&result).Error; err != nil {
+		Where("age = ?", 2).
+		Find(&users).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 
-	assert.Equal(t, len(result.Team), 4)
+	slice := AnyToAnySlice(users)
+
+	assert.Equal(t, len(slice), 2)
+	assert.Equal(t, len(slice[0].(*User).Team), 4)
+
 }
 
 func TestGORMByUtil(t *testing.T) {
