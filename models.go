@@ -2,6 +2,9 @@ package main
 
 import (
 	"database/sql"
+	"database/sql/driver"
+	"encoding/json"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -57,4 +60,37 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type ValueDep struct {
+	gorm.Model
+
+	ID      int `gorm:"primarykey,autoIncrement"`
+	ValueID int
+	Name    string `gorm:"column:name; default:'default'"`
+	Params  Params `gorm:"column:params; type:jsonb; default:'{}'"`
+}
+
+type Value struct {
+	gorm.Model
+
+	ID   int         `gorm:"primarykey,autoIncrement"`
+	Deps []*ValueDep `gorm:"foreignKey:ValueID"`
+}
+
+type Params map[string]string
+
+func (p *Params) Scan(val interface{}) error {
+	switch v := val.(type) {
+	case []byte:
+		return json.Unmarshal(v, p)
+	case string:
+		return json.Unmarshal([]byte(v), p)
+	default:
+		return fmt.Errorf("unsupported type: %T", v)
+	}
+}
+
+func (p Params) Value() (driver.Value, error) {
+	return json.Marshal(p)
 }
