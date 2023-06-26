@@ -9,12 +9,13 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	var u User
 
-	DB.Create(&user)
+	DB.Model(&u).Create(map[string]interface{}{
+		"Name": "jinzhu", "Age": 18,
+	})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if u.ID != 0 {
+		t.Fatalf("should not fill back")
 	}
 }
