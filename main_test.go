@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -9,12 +10,15 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	row := NoDefaultID{Name: "test"}
+	row2 := NoDefaultID{Name: "test2"}
 
-	DB.Create(&user)
+	DB.Create(&row).Scan(&row)
+	DB.Create(&row2).Scan(&row2)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	fmt.Println(row.ID)
+	fmt.Println(row2.ID)
+	if row.ID != row2.ID {
+		t.Error("ID shouldn't be auto incremented")
 	}
 }
