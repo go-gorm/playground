@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -82,27 +80,64 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 }
 
 func RunMigrations() {
-	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
-
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
+	if err := DB.Migrator().DropTable(&Address{}, &User{}); err != nil {
+		log.Print("failed to drop tables", err)
 		os.Exit(1)
 	}
-
-	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
+	// run Address migration
+	err := DB.Migrator().AutoMigrate(&Address{})
+	if err != nil {
+		log.Printf("Failed to migrate address, got %v", err)
 		os.Exit(1)
 	}
-
-	for _, m := range allModels {
-		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
+	// Run User migration
+	err = DB.Migrator().AutoMigrate(&User{})
+	if err != nil {
+		log.Print("failed to migrate user", err)
+		os.Exit(1)
+	}
+	// run Address2 migration
+	if err := DB.Migrator().AutoMigrate(&Address2{}); err != nil {
+		log.Print("failed to migrate address 2: ", err)
+		os.Exit(1)
+	}
+	// check new address2 fields are there
+	foundSecondField := false
+	foundUserId := false
+	userIdUnique := false
+	columns, err := DB.Migrator().ColumnTypes(&Address2{})
+	if err != nil {
+		log.Print("could not get columns for address 2: ", err)
+		os.Exit(1)
+	}
+	for _, column := range columns {
+		if column.Name() == "user_id" {
+			foundUserId = true
+			isUnique, isOkay := column.Unique()
+			if !isOkay {
+				log.Print("found error checking is field is unique")
+				os.Exit(1)
+			}
+			userIdUnique = isUnique
+		} else if column.Name() == "second_field" {
+			foundSecondField = true
 		}
 	}
+	if !foundSecondField {
+		log.Print("could not find second field---did address2 affect the same table?")
+		os.Exit(1)
+	}
+	if !foundUserId {
+		log.Print("could not find second field---did address2 affect the same table?")
+		os.Exit(1)
+	}
+	// check column with userId does not have non-null conditional on it
+	if userIdUnique {
+		log.Print("found that user id was unique, which doesn't match what we saw before")
+		os.Exit(1)
+	}
+	// drop address table
+	// run just address2 migration
+	// check that column with user id is unique
+
 }
