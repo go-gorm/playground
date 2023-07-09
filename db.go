@@ -84,21 +84,15 @@ func RunMigrations() {
 		log.Print("failed to drop tables", err)
 		os.Exit(1)
 	}
-	// run Address migration
-	err := DB.Migrator().AutoMigrate(&Address{})
-	if err != nil {
-		log.Printf("Failed to migrate address, got %v", err)
-		os.Exit(1)
-	}
-	// Run User migration
-	err = DB.Migrator().AutoMigrate(&User{})
-	if err != nil {
-		log.Print("failed to migrate user", err)
-		os.Exit(1)
-	}
 	// run Address2 migration
 	if err := DB.Migrator().AutoMigrate(&Address2{}); err != nil {
 		log.Print("failed to migrate address 2: ", err)
+		os.Exit(1)
+	}
+	// Run User migration
+	err := DB.Migrator().AutoMigrate(&User{})
+	if err != nil {
+		log.Print("failed to migrate user", err)
 		os.Exit(1)
 	}
 	// check new address2 fields are there
