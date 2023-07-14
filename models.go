@@ -31,5 +31,5 @@ func (Address2) TableName() string {
 type User struct {
 	gorm.Model
 	Name    string
-	Address Address `gorm:"foreignKey:user_id"`
+	Address Address2 `gorm:"foreignKey:user_id"`
 }
