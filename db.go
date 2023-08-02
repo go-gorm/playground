@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/plugin/dbresolver"
 	"log"
 	"math/rand"
 	"os"
@@ -38,6 +39,21 @@ func init() {
 		}
 
 		DB.Logger = DB.Logger.LogMode(logger.Info)
+
+		dbDSN := os.Getenv("GORM_DSN")
+		if dbDSN == "" {
+			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+		}
+
+		err = DB.Use(
+			dbresolver.Register(dbresolver.Config{
+				Sources: []gorm.Dialector{postgres.Open(dbDSN)},
+			}, &Account{}),
+		)
+
+		if err != nil {
+			log.Printf("failed to register resolver, got error %v\n", err)
+		}
 	}
 }
 
