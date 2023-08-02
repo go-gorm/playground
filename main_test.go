@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +11,24 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	sql1 := DB.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Where(
+			tx.Where("pizza = ?", "pepperoni").Where(tx.Where("size = ?", "small").Or("size = ?", "medium")),
+		).Or(
+			tx.Where("pizza = ?", "hawaiian").Where("size = ?", "xlarge"),
+		).Find(&User{})
+	})
 
-	DB.Create(&user)
+	sql2 := DB.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tx = tx.Model(&User{}) // use db.Model!!!
+		return tx.Where(
+			tx.Where("pizza = ?", "pepperoni").Where(tx.Where("size = ?", "small").Or("size = ?", "medium")),
+		).Or(
+			tx.Where("pizza = ?", "hawaiian").Where("size = ?", "xlarge"),
+		).Find(&User{})
+	})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if sql1 != sql2 {
+		t.Errorf("Not equal!\n%s\n%s", sql1, sql2)
 	}
 }
