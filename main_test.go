@@ -3,23 +3,33 @@ package main
 import (
 	"testing"
 
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: sqlite
 
 func TestGORM(t *testing.T) {
-	// Migrate the schema
-	_ = DB.AutoMigrate(&User{})
-	_ = DB.AutoMigrate(&UserPermission{})
+	account := Account{
+		ID: "account1",
+		Network: Network{
+			ID: "network1",
+		},
+		Peers: []Peer{
+			{
+				ID: "peer1",
+			},
+		},
+	}
 
-	//l1 := &UserPermission{UserId: "Chinese", Name: "可能是中文"}
-	//DB.Create(l1)
+	DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(account)
 
-	var up UserPermission
-	err := DB.Where(&UserPermission{UserId: "jinzhu",} ).Find(&up).Error // find language with code Chinese
-	if err != nil {
-		t.Errorf("err is %v, expect : nil", err)
+	var peer Peer
+	if err := DB.First(&peer, "id = ?", account.Peers[0].ID).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	if peer.AccountID != account.ID {
+		t.Error("account id of the peer doesn't match account id")
 	}
 }
