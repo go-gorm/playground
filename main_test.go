@@ -9,7 +9,7 @@ import (
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite
-
+// some change
 func TestGORM(t *testing.T) {
 	account := Account{
 		ID: "account1",
