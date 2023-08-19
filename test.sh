@@ -32,7 +32,13 @@ for dialect in "${dialects[@]}" ; do
     if [[ $(grep TEST_DRIVER main_test.go) =~ "${dialect}" ]]
     then
       echo "testing ${dialect}..."
-      GORM_DIALECT=${dialect} go test -race -count=1 -v ./...
+      GOOS=linux GOARCM=amd64 CGO_ENABLED=0 go test -o ./generate -c ./
+      docker run --rm\
+        --add-host host.docker.internal:host-gateway\
+        -e GORM_DSN="gorm:gorm@tcp(host.docker.internal:9910)/gorm?charset=utf8&parseTime=True&loc=Local"\
+        -e GORM_DIALECT=mysql\
+        -v "$(pwd)":/playground golang\
+        /playground/generate -test.v
     else
       echo "skip ${dialect}..."
     fi
