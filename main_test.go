@@ -24,11 +24,11 @@ func TestGORM(t *testing.T) {
 	}
 
 	// Test passes when query.Q is used
-	tx := query.Q
+	// tx := query.Q
 
 	// But when using transactions it stops at `Replace`
-	// tx := query.Q.Begin()
-	// defer tx.Rollback()
+	tx := query.Q.Begin()
+	defer tx.Rollback()
 
 	if err := tx.User.Save(&user); err != nil {
 		t.Fatal(err)
