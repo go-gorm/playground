@@ -2,6 +2,9 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/playground/models"
+	"gorm.io/playground/query"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -9,12 +12,28 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	query.SetDefault(DB)
+	user := models.User{
+		Name: "jinzhu",
+		Pets: []*models.Pet{
+			{
+				Name: "my-pet",
+				Toy:  models.Toy{},
+			},
+		},
+	}
 
-	DB.Create(&user)
+	// Test passes when query.Q is used
+	// tx := query.Q
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// But when using transactions it stops at `Replace`
+	tx := query.Q.Begin()
+	defer tx.Rollback()
+
+	if err := tx.User.Save(&user); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.User.Pets.Model(&user).Replace(user.Pets...); err != nil {
+		t.Fatal(err)
 	}
 }
