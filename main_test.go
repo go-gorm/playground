@@ -13,6 +13,14 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
+	if err := DB.AutoMigrate(Toy{}); err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if err := DB.AutoMigrate(Toy{}); err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
