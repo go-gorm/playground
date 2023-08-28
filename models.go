@@ -44,9 +44,11 @@ type Pet struct {
 
 type Toy struct {
 	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
+	Name        string
+	NotMigrated string `gorm:"type:varchar"`
+	Migrated    string `gorm:"type:character varying"`
+	OwnerID     string
+	OwnerType   string
 }
 
 type Company struct {
