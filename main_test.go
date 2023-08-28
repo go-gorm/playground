@@ -133,7 +133,11 @@ func Test1(t *testing.T) {
 			}
 		}
 	}()*/
+	stop := make(chan struct{}, 1)
 	go func() {
+		defer func() {
+			stop <- struct{}{}
+		}()
 		var m2 Model1
 		m2.ID = 2
 		for i := 0; i < N; i++ {
@@ -145,5 +149,7 @@ func Test1(t *testing.T) {
 			}
 		}
 	}()
-	select {}
+	select {
+	case <-stop:
+	}
 }
