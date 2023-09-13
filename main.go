@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"gorm.io/gorm/schema"
+)
 
 func main() {
 	ns := schema.NamingStrategy{}
