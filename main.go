@@ -3,5 +3,11 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("vim-go")
+	ns := schema.NamingStrategy{}
+	// Results in http_s_certificates, should be https_certificates
+	fmt.Println(ns.TableName("HTTPSCertificate"))
+	// Results in fb_ipassports, should be fbi_passports
+	fmt.Println(ns.TableName("FBIPassport"))
+	// Works as intended, resulting in cia_passports
+	fmt.Println(ns.TableName("CIAPassport"))
 }
