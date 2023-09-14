@@ -8,7 +8,7 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite
+// TEST_DRIVERS: mysql
 // some change
 func TestGORM(t *testing.T) {
 	Name := "rediis"
