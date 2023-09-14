@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -11,25 +11,11 @@ import (
 // TEST_DRIVERS: sqlite
 // some change
 func TestGORM(t *testing.T) {
-	account := Account{
-		ID: "account1",
-		Network: Network{
-			ID: "network1",
-		},
-		Peers: []Peer{
-			{
-				ID: "peer1",
-			},
-		},
-	}
+	Name := "rediis"
+	Pwd := "12345"
+	assert.NotNil(t, DB.Exec("CREATE USER ? IDENTIFIED BY ?", Name, Pwd).Error)
 
-	DB.Session(&gorm.Session{FullSaveAssociations: true}).Create(account)
+	cmd := fmt.Sprintf("CREATE USER '%s' IDENTIFIED BY '%s'", Name, Pwd)
+	assert.Nil(t, DB.Exec(cmd).Error)
 
-	var peer Peer
-	if err := DB.First(&peer, "id = ?", account.Peers[0].ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
-	if peer.AccountID != account.ID {
-		t.Error("account id of the peer doesn't match account id")
-	}
 }

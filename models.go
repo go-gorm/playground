@@ -1,9 +1,9 @@
 package main
 
 type Account struct {
+	ID      string  `gorm:"primaryKey"`
 	Network Network `gorm:"embedded;embeddedPrefix:network_"`
 	Peers   []Peer  `json:"-" gorm:"foreignKey:AccountID;references:ID"`
-	ID      string  `gorm:"primaryKey"`
 }
 
 type Network struct {
