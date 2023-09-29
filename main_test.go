@@ -9,12 +9,16 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	if err := DB.Migrator().DropTable(&TestTable{}); err != nil {
+		t.Fatalf("failed to drop table: %v", err)
+	}
+	for i := 0; i < 10; i++ {
+		t.Run("test", func(t *testing.T) {
+			t.Parallel()
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+			if err := DB.AutoMigrate(&TestTable{}); err != nil {
+				t.Fatalf("failed to migrate: %v", err)
+			}
+		})
 	}
 }
