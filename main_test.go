@@ -9,12 +9,14 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	type config struct {
+		ID     uint                   `gorm:"primary_key"`
+		Config map[string]interface{} `gorm:"column:config;serializer:json"`
+	}
+	DB.AutoMigrate(&config{})
+	DB.Create(&config{Config: map[string]interface{}{"sss": "2#24"}})
+	var result map[string]interface{}
+	if err := DB.Model(&config{}).First(&result, 1).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
