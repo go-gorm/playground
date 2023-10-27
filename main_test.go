@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"testing"
+
+	"gorm.io/gorm/clause"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
