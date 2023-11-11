@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strings"
 	"testing"
 )
 
@@ -8,13 +9,34 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Gateway struct {
+	IP  string `gorm:"index:uniq_vip,unique"`
+	UIN string `gorm:"index:uniq_vip,unique"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	readLog() // clean history log
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// create not exist table first time
+	err := DB.AutoMigrate(Gateway{})
+	if err != nil {
+		t.Error(err)
 	}
+
+	readLog()
+
+	// should do noting
+	err = DB.AutoMigrate(Gateway{})
+	if err != nil {
+		t.Error(err)
+	}
+
+	migrateLog := readLog() // read this migration log
+
+	if strings.Contains(migrateLog, "CREATE") || strings.Contains(migrateLog, "DROP") {
+		t.Errorf("second migration should not do recreate table")
+		t.Errorf("migration log: %s", migrateLog)
+		t.FailNow()
+	}
+
 }
