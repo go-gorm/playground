@@ -1,16 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/driver/sqlserver"
+
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -72,6 +75,8 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
 	}
 
+	db.Logger = logger.New(customLogger, logger.Config{LogLevel: logger.Info})
+
 	if debug := os.Getenv("DEBUG"); debug == "true" {
 		db.Logger = db.Logger.LogMode(logger.Info)
 	} else if debug == "false" {
@@ -105,4 +110,18 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+}
+
+var logHistory strings.Builder
+var customLogger testLogger
+
+type testLogger struct{}
+
+func (testLogger) Printf(format string, a ...interface{}) {
+	logHistory.WriteString(fmt.Sprintf(format, a...))
+}
+
+func readLog() string {
+	defer logHistory.Reset()
+	return logHistory.String()
 }
