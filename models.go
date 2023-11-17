@@ -29,6 +29,15 @@ type User struct {
 	Active    bool
 }
 
+func (u User) TableName() string {
+	return "product"
+}
+
+func (u *User) BeforeSave(tx *gorm.DB) (err error) {
+	// nothing here
+	return
+}
+
 type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
