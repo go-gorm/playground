@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type UnionPkModel struct {
+	Pk1  int `gorm:"primaryKey"`
+	Pk2  int `gorm:"primaryKey"`
+	Data string
+}
