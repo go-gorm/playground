@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
 var DB *gorm.DB
@@ -41,7 +42,15 @@ func init() {
 	}
 }
 
+const (
+	skema = "my_schema"
+)
+
 func OpenTestConnection() (db *gorm.DB, err error) {
+	nameStrategy := schema.NamingStrategy{
+		TablePrefix: skema + "." + "custom__",
+	}
+
 	dbDSN := os.Getenv("GORM_DSN")
 	switch os.Getenv("GORM_DIALECT") {
 	case "mysql":
@@ -64,9 +73,12 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		// sp_changedbowner 'gorm';
 		log.Println("testing sqlserver...")
 		if dbDSN == "" {
-			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
+			dbDSN = "sqlserver://sa:LoremIpsum86@localhost:9930?database=gorm"
 		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{
+			NamingStrategy: nameStrategy,
+		})
+		db.Exec("CREATE SCHEMA my_schema")
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
