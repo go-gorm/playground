@@ -58,3 +58,7 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Test struct {
+	Data []float64 `gorm:"type:float8[]"`
+}
