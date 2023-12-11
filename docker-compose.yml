@@ -29,3 +29,4 @@ services:
       - MSSQL_DB=gorm
       - MSSQL_USER=gorm
       - MSSQL_PASSWORD=LoremIpsum86
+      - MSSQL_SA_PASSWORD=LoremIpsum86
