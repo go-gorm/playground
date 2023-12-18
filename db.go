@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -39,6 +40,7 @@ func init() {
 
 		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
+	SetSessionAttribute()
 }
 
 func OpenTestConnection() (db *gorm.DB, err error) {
@@ -105,4 +107,44 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+}
+
+const setTenantIdQuery = "SET myapp.current_tenant_id = '%s'"
+const getTenantIdQuery = "SELECT current_setting('myapp.current_tenant_id')"
+
+func SetSessionAttribute() {
+	var currentTenantId string
+	fmt.Printf("FATA-010 DB Ptr is [%p]\n", DB)
+	fmt.Printf("FATA-020 & DB Ptr is [%p]\n", &DB)
+
+	from1Session1 := getSession(DB, "TENANT1")
+	fmt.Printf("FATA-030 DB session 1 is [%p]\n", from1Session1)
+	fmt.Printf("FATA-040 &DB session 1 is [%p]\n", &from1Session1)
+
+	DB.Raw(getTenantIdQuery).Scan(&currentTenantId)
+	fmt.Printf("FATA-050 dbPtr1 tenantId is [%s]\n", currentTenantId)
+
+	currentTenantId = ""
+	from1Session1.Raw(getTenantIdQuery).Scan(&currentTenantId)
+	fmt.Printf("FATA-060 from1Session1 tenantId is [%s]\n", currentTenantId)
+
+	from1Session2 := getSession(DB, "TENANT2")
+	fmt.Printf("FATA-070 DB session 2 is [%p]\n", from1Session2)
+	fmt.Printf("FATA-080 &DB session 2 is [%p]\n", &from1Session2)
+
+	currentTenantId = ""
+	from1Session1.Raw(getTenantIdQuery).Scan(&currentTenantId)
+	fmt.Printf("FATA-120 from1Session1 tenantId is [%s]\n", currentTenantId)
+
+	currentTenantId = ""
+	from1Session2.Raw(getTenantIdQuery).Scan(&currentTenantId)
+	fmt.Printf("FATA-130 from1Session2 tenantId is [%s]\n", currentTenantId)
+
+	return
+}
+
+func getSession(dbPtr *gorm.DB, tenantId string) *gorm.DB {
+	sessionPtr := dbPtr.Exec(fmt.Sprintf(setTenantIdQuery, tenantId)).Session(&gorm.Session{})
+	return sessionPtr
+
 }
