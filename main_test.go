@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -9,12 +10,30 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	a := A{Name: "a"}
+	result := DB.FirstOrCreate(&a)
+	assert.NoError(t, result.Error)
+	b := B{Name: "b"}
+	result = DB.FirstOrCreate(&b)
+	assert.NoError(t, result.Error)
 
-	DB.Create(&user)
+	good := Good{A: a, B: b}
+	x := DB.Create(&good)
+	assert.NoError(t, x.Error)
+	good2 := Good{A: a, B: b}
+	// should get error because of primary key constraint
+	x = DB.Create(&good2)
+	assert.Error(t, x.Error)
+	x = DB.FirstOrCreate(&good2, good2)
+	assert.NoError(t, x.Error)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	bad := Bad{A: a, B: b}
+	x = DB.Create(&bad)
+	assert.NoError(t, x.Error)
+	bad2 := Bad{A: a, B: b}
+	// should get error because of primary key constraint, but doesn't, because primary key was not created
+	x = DB.Create(&bad2)
+	assert.Error(t, x.Error)
+	x = DB.FirstOrCreate(&bad2, bad2)
+	assert.NoError(t, x.Error)
 }
