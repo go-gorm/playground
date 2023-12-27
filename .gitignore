@@ -1,4 +1,4 @@
-gorm
+
 go.sum
 .*
 *.db
