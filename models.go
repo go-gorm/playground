@@ -13,8 +13,8 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
+	Name      string `gorm:"comment:double quotation marks \"\" are included in the comment!"`
+	Age       uint   `gorm:"comment:single quotation marks '' are included in the comment"`
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
