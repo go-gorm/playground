@@ -1,31 +1,14 @@
-version: '3'
+version: "3"
 
 services:
-  mysql:
-    image: 'mysql/mysql-server:latest'
+  mariadb:
+    image: "mariadb:10.11.3"
+    restart: 'always'
     ports:
-      - 9910:3306
+      - '13306:3306'
+    volumes:
+      - "/var/lib/mysql/data:/var/lib/mysql"
+      - "/var/lib/mysql/logs:/var/log/mysql"
+      - "/var/docker/mariadb/conf:/etc/mysql"
     environment:
-      - MYSQL_DATABASE=gorm
-      - MYSQL_USER=gorm
-      - MYSQL_PASSWORD=gorm
-      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
-  postgres:
-    image: 'postgres:latest'
-    ports:
-      - 9920:5432
-    environment:
-      - TZ=Asia/Shanghai
-      - POSTGRES_DB=gorm
-      - POSTGRES_USER=gorm
-      - POSTGRES_PASSWORD=gorm
-  mssql:
-    image: '${MSSQL_IMAGE:-mcmoe/mssqldocker}:latest'
-    ports:
-      - 9930:1433
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=LoremIpsum86
-      - MSSQL_DB=gorm
-      - MSSQL_USER=gorm
-      - MSSQL_PASSWORD=LoremIpsum86
+      MYSQL_ROOT_PASSWORD: "123456"
