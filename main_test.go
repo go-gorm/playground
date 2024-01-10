@@ -12,7 +12,9 @@ func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
 	tx := DB.Begin()
-	tx.Create(&user)
+	if err := tx.Create(&user).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
 	var result User
 	if err := tx.First(&result, user.ID).Error; err != nil {
@@ -37,11 +39,14 @@ func TestJoinsWithoutCount(t *testing.T) {
 		},
 	}
 	tx := DB.Begin()
-	tx.Create(&users)
+	if err := tx.Create(&users).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
 
-	tx.Model(&User{}).Joins("Company").Order("\"Company\".\"name\" ASC")
+	q := tx.Model(&User{})
+	q.Joins("Company").Order("\"Company\".\"name\" ASC")
 	var result []User
-	if err := tx.Find(&result).Error; err != nil {
+	if err := q.Find(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	if len(result) != 2 {
@@ -69,19 +74,21 @@ func TestJoinsWithCount(t *testing.T) {
 		},
 	}
 	tx := DB.Begin()
-	tx.Create(&users)
-	tx.Model(&User{}).Joins("Company").
-		Order("\"Company\".\"name\" ASC") // Order still works!
+	if err := tx.Create(&users).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+	q := tx.Model(&User{})
+	q.Joins("Company").Order("\"Company\".\"name\" ASC") // Order still works!
 
 	// --- Critical change
 	var count int64
-	if err := tx.Count(&count).Error; err != nil {
+	if err := q.Count(&count).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	// --- End critical change
 
 	var result []User
-	if err := tx.Find(&result).Error; err != nil {
+	if err := q.Find(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	if len(result) != 2 {
