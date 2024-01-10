@@ -15,7 +15,7 @@ func TestGORM(t *testing.T) {
 	tx.Create(&user)
 
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := tx.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 	tx.Rollback()
