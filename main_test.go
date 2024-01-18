@@ -8,13 +8,16 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Bar struct {
+	ID uint `gorm:"primarykey"`
+}
+
+type Foo struct {
+	ID    uint `gorm:"primarykey"`
+	BarID uint `gorm:"index;NOT NULL"`
+	Bar   Bar
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+	DB.Table("foo").AutoMigrate(&Foo{})
 }
