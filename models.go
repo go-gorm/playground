@@ -27,6 +27,9 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+
+	WorkAddress Address `gorm:"embedded;embeddedPrefix:work_address_"`
+	HomeAddress Address `gorm:"embedded;embeddedPrefix:home_address_"`
 }
 
 type Account struct {
@@ -56,5 +59,17 @@ type Company struct {
 
 type Language struct {
 	Code string `gorm:"primarykey"`
+	Name string
+}
+
+type Address struct {
+	City      string
+	Street    string
+	Country   Country
+	CountryID int
+}
+
+type Country struct {
+	ID   int
 	Name string
 }
