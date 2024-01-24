@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/shopspring/decimal"
 	"testing"
 )
 
@@ -9,12 +10,21 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	DB.Create(&Product{Price: decimal.NewFromFloat(10.05)})
+	DB.Create(&Product{Price: decimal.NewFromFloat(100.55)})
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	var price decimal.Decimal
+
+	DB.Model(&Product{}).Limit(1).Pluck("price", &price)
+	if price.IntPart() == 0 {
+		t.Error("Failed, got error")
+	}
+
+	var price2 decimal.Decimal
+
+	DB.Model(&Product{}).Limit(1).Select("price").Scan(&price2)
+	if price.IntPart() == 0 {
+		t.Error("Failed, got error")
 	}
 }
