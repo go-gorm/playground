@@ -2,10 +2,7 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"os"
-	"path/filepath"
-	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -37,6 +34,7 @@ func init() {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
 
+		// Info dumps all the commands => no good for perf testin
 		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
 }
@@ -69,7 +67,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
@@ -83,26 +81,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
-
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
+	if err = DB.AutoMigrate(&BenchTable{}); err != nil {
+		log.Printf("Failed to auto migrate bench table,  got error %v\n", err)
 		os.Exit(1)
-	}
-
-	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
-		os.Exit(1)
-	}
-
-	for _, m := range allModels {
-		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
-		}
 	}
 }

@@ -1,0 +1,22 @@
+
+FIX:
+
+
+goos: linux
+goarch: amd64
+pkg: gorm.io/playground/scantest
+cpu: AMD Ryzen 5 5600X 6-Core Processor
+BenchmarkFetchAll-12                  49          24409420 ns/op         8582221 B/op     199794 allocs/op
+BenchmarkScannerFetchAll-12           86          14140927 ns/op         8042719 B/op     189733 allocs/op
+PASS
+ok      gorm.io/playground/scantest     3.392s
+GORM_DIALECT=postgres go test -benchmem -run=^$ -cpuprofile cpu.prof -memprofile mem.prof -bench '^BenchmarkScannerFetchAll' gorm.io/playground/scantest
+2024/02/03 11:00:05 testing postgres...
+
+
+pre fix:
+BenchmarkFetchAll-12                  38          27267622 ns/op         9623002 B/op     329795 allocs/op
+
+
+10% perf increase
+10% memory decrease

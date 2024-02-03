@@ -1,0 +1,2 @@
+BenchmarkFetchAll-v1.25.6-12    	      40	  28268595 ns/op	 9621030 B/op	  329780 allocs/op
+BenchmarkFetchAll-fix    -12    	      49	  25139181 ns/op	 8577469 B/op	  199772 allocs/op

@@ -30,5 +30,3 @@ require (
 	golang.org/x/text v0.13.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace gorm.io/gorm => github.com/turip/gorm v0.0.0-20240203114523-6f1960017c3f

@@ -1,0 +1,3 @@
+[submodule "gorm"]
+	path = gorm
+	url = https://github.com/turip/gorm.git

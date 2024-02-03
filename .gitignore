@@ -1,4 +1,6 @@
-gorm
 go.sum
 .*
 *.db
+
+*.png
+*.prof
