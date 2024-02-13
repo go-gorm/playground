@@ -5,14 +5,17 @@ import (
 	"os"
 	"time"
 
+	"github.com/shopspring/decimal"
 	"gorm.io/driver/sqlite" // Sqlite driver based on CGO
+
 	// "github.com/glebarez/sqlite" // Pure go SQLite driver, checkout https://github.com/glebarez/sqlite for details
 	"gorm.io/gorm"
 )
 
 type Test struct {
-	ID    int
-	Value int
+	ID            int
+	Value         int
+	OptionalValue *decimal.Decimal
 }
 
 func main() {
@@ -24,7 +27,8 @@ func main() {
 
 	if err := db.Exec(`CREATE TABLE tests (
 		id int not null,
-		value int
+		value int,
+		optional_value int
 	)`).Error; err != nil {
 		panic(err)
 	}
@@ -34,7 +38,7 @@ func main() {
 		if i%2 == 0 {
 			value = i
 		}
-		db.Exec(`INSERT INTO tests (id, value) VALUES (?, ?)`, i, value)
+		db.Exec(`INSERT INTO tests (id, value, optional_value) VALUES (?, ?, ?)`, i, value, value)
 	}
 
 	// let's read the whole thing
@@ -59,9 +63,25 @@ func main() {
 				fmt.Printf("%s:MISSMATCH: id=%d value=%d expected_value=%d\n", os.Args[1], test.ID, test.Value, test.ID)
 				nrError++
 			}
+
+			if test.OptionalValue == nil {
+				fmt.Printf("%s:MISSMATCH: id=%d optional_value=null expected_value=%d\n", os.Args[1], test.ID, test.ID)
+				nrError++
+			} else {
+				if test.ID != int(test.OptionalValue.InexactFloat64()) {
+					fmt.Printf("%s:MISSMATCH: id=%d optional_value=%d expected_value=%d\n", os.Args[1], test.ID, int(test.OptionalValue.InexactFloat64()), test.ID)
+					nrError++
+				}
+			}
+
 		} else {
 			if test.Value != 0 {
 				fmt.Printf("%s:MISSMATCH: id=%d value=%d expected_value=0\n", os.Args[1], test.ID, test.Value)
+				nrError++
+			}
+
+			if test.OptionalValue != nil {
+				fmt.Printf("%s:MISSMATCH: id=%d optional_value=%f expected_value=0\n", os.Args[1], test.ID, test.OptionalValue.InexactFloat64())
 				nrError++
 			}
 		}
