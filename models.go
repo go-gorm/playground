@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	"github.com/google/uuid"
 	"time"
 
 	"gorm.io/gorm"
@@ -12,16 +12,16 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	ID        string `gorm:"type:varchar(100);primaryKey"` // A unique identifier for the rule
 	Name      string
 	Age       uint
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
+	CompanyID *string `gorm:"foreignKey:CompanyID"`
 	Company   Company
-	ManagerID *uint
+	ManagerID *string
 	Manager   *User
 	Team      []User     `gorm:"foreignkey:ManagerID"`
 	Languages []Language `gorm:"many2many:UserSpeak"`
@@ -29,15 +29,20 @@ type User struct {
 	Active    bool
 }
 
+func (q *User) BeforeCreate(tx *gorm.DB) (err error) {
+	q.ID = uuid.New().String()
+	return
+}
+
 type Account struct {
 	gorm.Model
-	UserID sql.NullInt64
+	UserID *string
 	Number string
 }
 
 type Pet struct {
 	gorm.Model
-	UserID *uint
+	UserID *string
 	Name   string
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
@@ -50,8 +55,13 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
+	ID   string `gorm:"type:varchar(100);primaryKey"` // A unique identifier for the rule
 	Name string
+}
+
+func (q *Company) BeforeCreate(tx *gorm.DB) (err error) {
+	q.ID = uuid.New().String()
+	return
 }
 
 type Language struct {
