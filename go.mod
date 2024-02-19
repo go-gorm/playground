@@ -3,6 +3,7 @@ module gorm.io/playground
 go 1.20
 
 require (
+	golang.org/x/sync v0.5.0
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/driver/sqlite v1.5.3
