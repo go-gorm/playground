@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"golang.org/x/sync/errgroup"
 	"gorm.io/gorm"
 	"testing"
@@ -34,13 +33,9 @@ func TestGORM(t *testing.T) {
 			g.Go(
 				func() error {
 
-					if i == 6000 {
-						return errors.New("fake error")
-					}
-
 					var userName string
 
-					result := session.
+					result := tx.
 						WithContext(ctx).
 						Table("users").
 						Where("id = ?", i).
@@ -72,7 +67,7 @@ func TestGORM(t *testing.T) {
 						return result.Error
 					}
 
-					result = session.Table("users").
+					result = tx.Table("users").
 						WithContext(ctx).
 						Where("active = ?", true).
 						Update("name", "new_name")
