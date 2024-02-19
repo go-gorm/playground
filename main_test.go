@@ -69,8 +69,8 @@ func TestGORM(t *testing.T) {
 
 					result = tx.Table("users").
 						WithContext(ctx).
-						Where("active = ?", true).
-						Update("name", "new_name")
+						Where("id = ?", i).
+						Update("active", true)
 					if result.Error != nil {
 						t.Errorf("Failed during update, got error: %v", result.Error)
 						return result.Error
