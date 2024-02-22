@@ -45,7 +45,7 @@ type Pet struct {
 type Toy struct {
 	gorm.Model
 	Name      string
-	OwnerID   string
+	OwnerID   uint
 	OwnerType string
 }
 
