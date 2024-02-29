@@ -8,13 +8,32 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type MultiTable struct {
+	Field1 string `gorm:"primarykey"`
+	Field2 string `gorm:"primarykey"`
+	Field3 string `gorm:"primarykey"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.AutoMigrate(&MultiTable{}); err != nil {
+		t.Fatalf("couldnt create multi_table")
 	}
+
+	DB.Exec("delete from multi_tables")
+
+	rec := MultiTable{
+		Field1: "val1",
+		Field2: "val2",
+		Field3: "val3",
+	}
+
+	if err := DB.Create(&rec).Error; err != nil {
+		t.Error(err)
+	}
+
+	if err := DB.Delete(&rec).Error; err != nil {
+		t.Error(err)
+	}
+
 }
