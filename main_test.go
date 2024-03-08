@@ -44,7 +44,7 @@ func TestGORM(t *testing.T) {
 
 	//var obj []*Obj
 	query := `
-	select * from objects where id in (?)
+	select * from objects where id in (?, ?, ?)
 	`
 	err := db.Exec(query, ids)
 	if err != nil {
