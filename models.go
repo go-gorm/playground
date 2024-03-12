@@ -42,6 +42,18 @@ type Pet struct {
 	Toy    Toy `gorm:"polymorphic:Owner;"`
 }
 
+type Aster struct {
+	gorm.Model
+	Name  string
+	Bolds *[]Bold `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+}
+
+type Bold struct {
+	gorm.Model
+	Tech    string
+	AsterID int
+}
+
 type Toy struct {
 	gorm.Model
 	Name      string
