@@ -58,3 +58,16 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type User2 struct {
+	ID     int
+	Name   string
+	UserID int //comment this ,the test will pass
+}
+
+type Profile struct {
+	ID          int
+	UserID      int
+	User        User2 `gorm:"foreignKey:UserID"`
+	Description string
+}
