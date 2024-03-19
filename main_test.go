@@ -8,13 +8,25 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
+func TestInnerJoin(t *testing.T) {
+	manager := User{
+		Name: "mom",
+		Toys: []Toy{
+			{
+				Name: "t1",
+			},
+			{
+				Name: "t2",
+			},
+		},
+	}
+	DB.Create(&manager)
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.Model(&User{}).Where("users.name = ?", "mom").InnerJoins("Toys", &Toy{Name: "t1"}).Take(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+	//if err := DB.Model(&User{}).Where("users.name = ?", "mom").InnerJoins("Toys").Where("toys.name = ?", "t1").Take(&result).Error; err != nil {
+	//              t.Errorf("Failed, got error: %v", err)
+	//      }
+
 }
