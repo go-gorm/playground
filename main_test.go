@@ -1,20 +1,41 @@
 package main
 
 import (
+	"fmt"
 	"testing"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	//type User struct {
+	//	gorm.Model
+	//	Name string `gorm:"uniqueIndex;size:100" json:"name"`
+	//}
+	user1 := &User{
+		Name: "user1",
+	}
+	user2 := &User{
+		Name: "user2",
+	}
+	users1 := []*User{user1, user2}
+	DB.Save(users1)
+	fmt.Println(user1.ID, user2.ID)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	user2Copy := &User{
+		Name: "user2",
+	}
+	user3 := &User{
+		Name: "user3",
+	}
+	users2 := []*User{user2Copy, user3}
+	DB.Save(users2)
+	fmt.Println(user2Copy.ID, user3.ID)
+
+	if user2Copy.ID != user2.ID {
+		t.Errorf("Failed, got error: %v", "err")
 	}
 }
