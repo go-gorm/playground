@@ -2,7 +2,8 @@ package main
 
 import (
 	"gorm.io/gen"
-	"gorm.io/gen/examples/dal"
+	"gorm.io/playground/model"
+	// "gorm.io/gen/examples/dal"
 )
 
 func generate() {
@@ -12,10 +13,17 @@ func generate() {
 
 		WithUnitTest: true,
 	})
-	g.UseDB(dal.DB)
+	// g.UseDB(dal.DB)
 
-	g.ApplyBasic(Company{}, Language{}) // Associations
-	g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
+	g.ApplyBasic(
+		model.Company{},
+		model.Language{},
+		model.Account{},
+		model.Pet{},
+		model.Toy{},
+		model.User{},
+	) // Associations
+	// g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
 
 	g.Execute()
 }
