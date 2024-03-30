@@ -58,3 +58,11 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type TenantWithoutPrimaryKey struct {
+	TenantID string
+}
+
+type TenantWithPrimaryKey struct {
+	TenantID string `gorm:"primaryKey"`
+}
