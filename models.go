@@ -60,9 +60,9 @@ type Language struct {
 }
 
 type TenantWithoutPrimaryKey struct {
-	TenantID string `gorm:"type:VARCHAR(36)"`
+	TenantID string
 }
 
 type TenantWithPrimaryKey struct {
-	TenantID string `gorm:"type:VARCHAR(36);primaryKey"`
+	TenantID string `gorm:"primaryKey"`
 }

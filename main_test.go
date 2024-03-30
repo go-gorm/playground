@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -20,21 +21,17 @@ func TestGORM(t *testing.T) {
 	}
 }
 
-// I think second TestCase should pass but fails
+// second TestCase should pass but fails
 func Test_primaryKey(t *testing.T) {
 	tests := []struct {
-		name     string
-		prepare  func() error
-		wantType string
-		wantKey  string
+		name    string
+		prepare func() error
 	}{
 		{
 			name: "ok: TenantID to be Primary Key in init AutoMigrate",
 			prepare: func() error {
 				return DB.Table("tenant").AutoMigrate(&TenantWithPrimaryKey{})
 			},
-			wantType: "varchar(36)",
-			wantKey:  "PRI",
 		},
 		{
 			name: "should be ok but fails: TenantID to be Primary Key in second AutoMigrate",
@@ -44,8 +41,6 @@ func Test_primaryKey(t *testing.T) {
 				}
 				return DB.Table("tenant").AutoMigrate(&TenantWithPrimaryKey{})
 			},
-			wantType: "varchar(36)",
-			wantKey:  "PRI",
 		},
 	}
 
@@ -60,25 +55,61 @@ func Test_primaryKey(t *testing.T) {
 				}
 			}()
 
-			type column struct {
-				Type string
-				Key  string
+			driver, found := os.LookupEnv("GORM_DIALECT")
+			if !found {
+				t.Fatalf("GORM_DIALECT should not be empty")
 			}
 
-			var c column
-			if err := DB.Raw("SHOW COLUMNS FROM tenant").First(&c).Error; err != nil {
+			isPrimaryKey, err := isTenantIDPrimaryKey(driver)
+			if err != nil {
 				t.Fatal(err)
 			}
 
-			fmt.Println(c)
-
-			gotType, gotKey := c.Type, c.Key
-			if gotType != tt.wantType {
-				t.Fatalf("gotType = %s, wantType = %s", gotType, tt.wantType)
-			}
-			if gotKey != tt.wantKey {
-				t.Fatalf("gotKey = %s, wantKey = %s", gotKey, tt.wantKey)
+			if !isPrimaryKey {
+				t.Fatal("tenant_id should be the primary key")
 			}
 		})
 	}
+}
+
+func isTenantIDPrimaryKey(driverName string) (bool, error) {
+	switch driverName {
+	case "mysql":
+		type column struct {
+			Key string
+		}
+		var c column
+		if err := DB.Raw("SHOW COLUMNS FROM tenant").First(&c).Error; err != nil {
+			return false, err
+		}
+		return c.Key == "PRI", nil
+	case "postgres":
+		type column struct {
+			ConstraintName string
+		}
+		var c column
+		if err := DB.Raw("SELECT constraint_name FROM information_schema.key_column_usage WHERE table_name = 'tenant'").First(&c).Error; err != nil {
+			if err.Error() == "record not found" {
+				return false, nil
+			}
+			return false, err
+		}
+		return c.ConstraintName == "tenant_pkey", nil
+	case "sqlite":
+		type column struct {
+			PK bool
+		}
+		var c column
+		if err := DB.Raw("PRAGMA table_info('tenant')").First(&c).Error; err != nil {
+			return false, err
+		}
+		return c.PK, nil
+	case "sqlserver":
+		var hasPK bool
+		if err := DB.Raw("SELECT OBJECTPROPERTY(object_id, 'TableHasPrimaryKey') FROM sys.tables WHERE name=tenant").First(&hasPK).Error; err != nil {
+			return false, err
+		}
+		return hasPK, nil
+	}
+	return false, fmt.Errorf("invalid driver name %s", driverName)
 }
