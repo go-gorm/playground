@@ -58,3 +58,28 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type C struct {
+	gorm.Model
+	ID string `gorm:"primarykey"`
+}
+type B struct {
+	gorm.Model
+	ID  string `gorm:"primarykey"`
+	CID string
+	C   C `gorm:"foreignKey:CID;references:ID"`
+}
+
+type A struct {
+	gorm.Model
+	ID  string `gorm:"primarykey"`
+	BID string
+	B   B `gorm:"foreignKey:BID;references:ID"`
+}
+
+type Base struct {
+	gorm.Model
+	ID  string `gorm:"primarykey"`
+	AID string
+	A   *A `gorm:"foreignKey:AID;references:ID"`
+}
