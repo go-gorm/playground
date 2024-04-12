@@ -58,3 +58,25 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type BasePost struct {
+	Id    int64
+	Title string
+	URL   string
+}
+
+type Address string
+
+type Author struct {
+	ID      string
+	Name    string
+	Email   string
+	Age     int
+	Address Address
+}
+
+type HNPost struct {
+	*BasePost
+	Upvotes int32
+	*Author `gorm:"EmbeddedPrefix:user_"` // Embedded struct
+}
