@@ -9,28 +9,6 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	type BasePost struct {
-		Id    int64
-		Title string
-		URL   string
-	}
-
-	type Address string
-
-	type Author struct {
-		ID      string
-		Name    string
-		Email   string
-		Age     int
-		Address Address
-	}
-
-	type HNPost struct {
-		*BasePost
-		Upvotes int32
-		*Author `gorm:"EmbeddedPrefix:user_"` // Embedded struct
-	}
-
 	DB.Migrator().DropTable(&HNPost{})
 	if err := DB.Migrator().AutoMigrate(&HNPost{}); err != nil {
 		t.Fatalf("failed to auto migrate, got error: %v", err)
