@@ -2,7 +2,6 @@ package main
 
 import (
 	"gorm.io/gen"
-	"gorm.io/gen/examples/dal"
 )
 
 func generate() {
@@ -12,7 +11,7 @@ func generate() {
 
 		WithUnitTest: true,
 	})
-	g.UseDB(dal.DB)
+	// g.UseDB(dal.DB)
 
 	g.ApplyBasic(Company{}, Language{}) // Associations
 	g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
