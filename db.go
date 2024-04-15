@@ -31,6 +31,7 @@ func init() {
 		}
 
 		RunMigrations()
+		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
 		}
