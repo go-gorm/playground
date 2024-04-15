@@ -8,7 +8,7 @@ require (
 	gorm.io/driver/sqlite v1.5.3
 	gorm.io/driver/sqlserver v1.5.1
 	gorm.io/gen v0.3.25
-	gorm.io/gorm v1.25.4
+	gorm.io/gorm v1.25.9
 )
 
 require (
