@@ -58,3 +58,16 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Conversation struct {
+	ConversationId string `gorm:"primaryKey"`
+	StartTime      *time.Time
+	EndTime        *time.Time
+	Title          string
+	Status         string // Created、Activate、Idle、Expired、Abandoned、Renewed、Terminated、Invalidated、Migrated
+	CreatedBy      string
+	LastActive     *time.Time
+	MessageCount   int
+	Language       string
+	TokensConsumed int64
+}
