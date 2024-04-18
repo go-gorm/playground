@@ -9,12 +9,21 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+
+	type TestUser struct {
+		gorm.Model
+		Name      string `gorm:"index:name-idx"`
+	}
+	
+	user := TestUser{
+		Name: "jinzhu"
+	}
 
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	indexes, err := DB.Migrator().GetIndexes(&user)
+	if err != nil {
 		t.Errorf("Failed, got error: %v", err)
+		return
 	}
 }
