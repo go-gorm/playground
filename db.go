@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
@@ -16,6 +17,54 @@ import (
 )
 
 var DB *gorm.DB
+
+var queries = make([]string, 0)
+var customLogger *gormLogger
+
+type gormLogger struct {
+	def    logger.Interface
+	record bool
+}
+
+func (l *gormLogger) LogMode(level logger.LogLevel) logger.Interface {
+	l.def = l.def.LogMode(level)
+	return l
+}
+
+func (l *gormLogger) Info(ctx context.Context, s string, i ...interface{}) {
+	if l.record {
+		queries = append(queries, s)
+	}
+
+	l.def.Info(ctx, s, i...)
+}
+
+func (l *gormLogger) Warn(ctx context.Context, s string, i ...interface{}) {
+	if l.record {
+		queries = append(queries, s)
+	}
+
+	l.def.Warn(ctx, s, i...)
+}
+
+func (l *gormLogger) Error(ctx context.Context, s string, i ...interface{}) {
+	if l.record {
+		queries = append(queries, s)
+	}
+
+	l.def.Error(ctx, s, i...)
+}
+
+func (l *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (sql string, rowsAffected int64), err error) {
+	l.def.Trace(ctx, begin, func() (string, int64) {
+		sql, rowsAffected := fc()
+		if l.record {
+			queries = append(queries, sql)
+		}
+
+		return sql, rowsAffected
+	}, err)
+}
 
 func init() {
 	var err error
@@ -43,19 +92,26 @@ func init() {
 
 func OpenTestConnection() (db *gorm.DB, err error) {
 	dbDSN := os.Getenv("GORM_DSN")
+	customLogger = &gormLogger{
+		def: logger.Default,
+	}
+
+	cfg := gorm.Config{
+		Logger: customLogger,
+	}
 	switch os.Getenv("GORM_DIALECT") {
 	case "mysql":
 		log.Println("testing mysql...")
 		if dbDSN == "" {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dbDSN), &cfg)
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
 			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(postgres.Open(dbDSN), &cfg)
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -66,10 +122,10 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(sqlserver.Open(dbDSN), &cfg)
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &cfg)
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
@@ -83,11 +139,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}, &Company{}, Addresses{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
