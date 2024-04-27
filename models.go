@@ -58,3 +58,14 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+type Artist struct {
+	gorm.Model // 删除时间
+	Photo      string
+	Name       string
+}
+
+type SongArtist struct {
+	gorm.Model
+	SongID   string
+	ArtistID string
+}

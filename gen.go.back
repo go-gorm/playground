@@ -14,8 +14,8 @@ func generate() {
 	})
 	g.UseDB(dal.DB)
 
-	g.ApplyBasic(Company{}, Language{}) // Associations
-	g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
+	g.ApplyBasic(Artists{}, SongArtist{}) // Associations
+	// g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
 
 	g.Execute()
 }

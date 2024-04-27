@@ -6,15 +6,29 @@ import (
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	songID := "003dc512121c4dfb898184565b92e8e8"
 
-	DB.Create(&user)
+	artistsNameArr := make([]string, 0)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	artistModel := &Artist{}
+	err := DB.Debug().Model(artistModel).
+		Select([]string{"artists.name"}).
+		Joins("left join song_artists on artists.id = song_artists.artist_id").
+		Where("song_artists.song_id = ?", songID).
+		Scan(artistsNameArr).Error
+	if err != nil {
+		panic(err)
 	}
+	// user := User{Name: "jinzhu"}
+
+	// DB.Create(&user)
+
+	// var result User
+	// if err := DB.First(&result, user.ID).Error; err != nil {
+	// 	t.Errorf("Failed, got error: %v", err)
+	// }
+
 }
