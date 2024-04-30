@@ -93,6 +93,50 @@ func TestGORM(t *testing.T) {
 			wantLen:           1,
 			wantAccountNumber: "AC67890",
 		},
+
+		// More passing tests to ensure other types like int and string work
+		{
+			name:              "single arrow with int arg",
+			inputQuery:        "config->'$.bar' = ?",
+			inputArgs:         []any{123},
+			wantLen:           1,
+			wantAccountNumber: "AC12345",
+		},
+		{
+			name:              "double arrow with int arg",
+			inputQuery:        "config->>'$.bar' = ?",
+			inputArgs:         []any{123},
+			wantLen:           1,
+			wantAccountNumber: "AC12345",
+		},
+		{
+			name:              "single arrow with string arg",
+			inputQuery:        "config->'$.foo' = ?",
+			inputArgs:         []any{"abc"},
+			wantLen:           1,
+			wantAccountNumber: "AC12345",
+		},
+		{
+			name:              "double arrow with string arg",
+			inputQuery:        "config->>'$.foo' = ?",
+			inputArgs:         []any{"abc"},
+			wantLen:           1,
+			wantAccountNumber: "AC12345",
+		},
+
+		// More passing tests expecting 0 results
+		{
+			name:       "single arrow with int arg zero results",
+			inputQuery: "config->'$.bar' = ?",
+			inputArgs:  []any{987},
+			wantLen:    0,
+		},
+		{
+			name:       "single arrow with int arg zero results",
+			inputQuery: "config->'$.foo' = ?",
+			inputArgs:  []any{"xyz"},
+			wantLen:    0,
+		},
 	}
 
 	for _, tc := range tests {
@@ -104,6 +148,10 @@ func TestGORM(t *testing.T) {
 
 			if len(results) != tc.wantLen {
 				t.Fatalf("Failed, len(results) want=%d got=%d", tc.wantLen, len(results))
+			}
+
+			if tc.wantLen == 0 {
+				return
 			}
 
 			if results[0].Number != tc.wantAccountNumber {
