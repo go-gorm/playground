@@ -12,6 +12,7 @@ require (
 	gorm.io/gen v0.3.25
 	gorm.io/gorm v1.25.7
 	gorm.io/hints v1.1.2
+	gorm.io/sharding v0.6.1
 )
 
 require (
@@ -30,15 +31,14 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
 	github.com/microsoft/go-mssqldb v1.7.1 // indirect
 	golang.org/x/crypto v0.22.0 // indirect
-	golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 // indirect
-	golang.org/x/mod v0.14.0 // indirect
+	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
+	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.15.0 // indirect
+	golang.org/x/tools v0.20.0 // indirect
 	gorm.io/datatypes v1.1.1-0.20230130040222-c43177d3cf8c // indirect
 	gorm.io/plugin/dbresolver v1.5.0 // indirect
-	gorm.io/sharding v0.6.1 // indirect
 )
 
 replace gorm.io/gorm => ./gorm
