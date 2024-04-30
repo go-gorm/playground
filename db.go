@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"gorm.io/sharding"
 	"log"
 	"math/rand"
 	"os"
@@ -38,6 +40,11 @@ func init() {
 		}
 
 		DB.Logger = DB.Logger.LogMode(logger.Info)
+
+		if err := setupSharding(); err != nil {
+			log.Printf("Failed, got error: %v", err)
+			os.Exit(1)
+		}
 	}
 }
 
@@ -83,7 +90,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &Message1{}, &Message2{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
@@ -105,4 +112,25 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+}
+
+func setupSharding() error {
+	var shards uint = 2
+	msgShardingAlgorithm := func(value interface{}) (suffix string, err error) {
+		if content, ok := value.(string); ok {
+			shard := uint(len(content))%shards + 1
+			return fmt.Sprintf("_%02d", shard), nil
+		}
+		return "", fmt.Errorf("invalid content")
+	}
+	shardingConfig := sharding.Config{
+		ShardingAlgorithm: msgShardingAlgorithm,
+		ShardingKey:       "content",
+		NumberOfShards:    shards,
+	}
+	if err := DB.Use(sharding.Register(shardingConfig, "message")); err != nil {
+		return err
+	}
+
+	return nil
 }

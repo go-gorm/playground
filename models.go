@@ -58,3 +58,29 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Message struct {
+	Id      uint
+	Content string `gorm:"index:idx_content"`
+}
+
+func (Message) TableName() string {
+	return "message"
+}
+
+// Message1 and Message2 are used for creating sharding table of Message
+type Message1 struct {
+	*Message
+}
+
+func (Message1) TableName() string {
+	return "message_01"
+}
+
+type Message2 struct {
+	*Message
+}
+
+func (Message2) TableName() string {
+	return "message_02"
+}
