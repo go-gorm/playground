@@ -12,7 +12,7 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	Email     string `gorm:"primary_key;check:Email <> 'someName'"`
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -27,6 +27,9 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt sql.NullTime `gorm:"index"`
 }
 
 type Account struct {
