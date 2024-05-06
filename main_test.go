@@ -14,7 +14,7 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 
 	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	if err := DB.First(&result, user.Email).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
