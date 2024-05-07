@@ -18,3 +18,20 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestGORMDelete(t *testing.T) {
+	user := User{Name: "jinzhu"}
+
+	DB.Create(&user)
+
+	var users []User
+	if err := DB.Find(&users).Error; err != nil {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
+	for _, userItem := range users {
+		if err := DB.Delete(&userItem, userItem.ID).Error; err != nil {
+			t.Errorf("Failed, got error: %v", err)
+		}
+	}
+}

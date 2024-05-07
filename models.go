@@ -12,7 +12,7 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	UUIDModel
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -57,4 +57,15 @@ type Company struct {
 type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
+}
+
+type BaseModel struct {
+	CreatedAt int64          `gorm:"autoCreateTime:nano"`
+	UpdatedAt int64          `gorm:"autoUpdateTime:nano"`
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+type UUIDModel struct {
+	BaseModel
+	ID string `gorm:"primarykey;type:varchar(36);not null;uniqueIndex;comment:主键ID;colum:id"`
 }
