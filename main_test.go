@@ -27,7 +27,7 @@ func TestGORM(t *testing.T) {
 type TableColumnWithoutDefault struct {
 	gorm.Model
 
-	Type int `gorm:"column:type;"`
+	Type TinyInt `gorm:"column:type"`
 }
 
 func (TableColumnWithoutDefault) TableName() string {
@@ -37,7 +37,7 @@ func (TableColumnWithoutDefault) TableName() string {
 type TableColumnWithDefault struct {
 	gorm.Model
 
-	Type int `gorm:"column:type;default:1;"`
+	Type TinyInt `gorm:"column:type;default:1"`
 }
 
 func (TableColumnWithDefault) TableName() string {
