@@ -49,7 +49,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{
+			DisableForeignKeyConstraintWhenMigrating: true,
+		})
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
