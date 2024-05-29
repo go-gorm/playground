@@ -1,60 +1,41 @@
 package main
 
 import (
-	"database/sql"
-	"time"
-
+	"database/sql/driver"
 	"gorm.io/gorm"
+	"log"
 )
 
-// User has one `Account` (has one), many `Pets` (has many) and `Toys` (has many - polymorphic)
-// He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
-// He speaks many languages (many to many) and has many friends (many to many - single-table)
-// His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Name  string
+	State CustomType
 }
 
-type Account struct {
-	gorm.Model
-	UserID sql.NullInt64
-	Number string
+type CustomType struct {
+	Machine *Machine
 }
 
-type Pet struct {
-	gorm.Model
-	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+type Machine string
+
+func NewCustomType(state Machine) CustomType {
+	return CustomType{&state}
 }
 
-type Toy struct {
-	gorm.Model
-	Name      string
-	OwnerID   string
-	OwnerType string
+// Implement scanner and value interfaces as described in tests https://gorm.io/docs/data_types.html#Scanner-x2F-Valuer
+// https://github.com/go-gorm/gorm/blob/master/tests/scanner_valuer_test.go
+
+func (sm *CustomType) Scan(value interface{}) error {
+	log.Printf("Scanning state %v", value)
+	switch vt := value.(type) {
+	case string:
+		state := vt
+		*sm = NewCustomType(Machine(state))
+	}
+	return nil
 }
 
-type Company struct {
-	ID   int
-	Name string
-}
-
-type Language struct {
-	Code string `gorm:"primarykey"`
-	Name string
+func (sm CustomType) Value() (driver.Value, error) {
+	log.Printf("Value of state %v", sm)
+	return &sm.Machine, nil
 }
