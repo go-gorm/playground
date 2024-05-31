@@ -3,6 +3,7 @@ module gorm.io/playground
 go 1.20
 
 require (
+	github.com/DATA-DOG/go-sqlmock v1.5.2
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/driver/postgres v1.5.2
 	gorm.io/driver/sqlite v1.5.3
@@ -31,5 +32,3 @@ require (
 	gorm.io/hints v1.1.0 // indirect
 	gorm.io/plugin/dbresolver v1.5.0 // indirect
 )
-
-replace gorm.io/gorm => ./gorm
