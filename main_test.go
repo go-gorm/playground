@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	gormLogger "gorm.io/gorm/logger"
 	"os"
 	"sync"
 	"testing"
@@ -128,6 +129,7 @@ func initDB() {
 const grantSQL = "grant delete, insert, references, select, trigger, truncate, update on %s to %s;"
 const policySQL = "CREATE POLICY %s ON %s using (tenant_id = current_setting('myapp.current_tenant_id')) WITH CHECK (tenant_id = current_setting('myapp.current_tenant_id'));"
 const rlsSQL = "ALTER TABLE %s ENABLE ROW LEVEL SECURITY;"
+const setTenantIDSQL = "SET myapp.current_tenant_id = '%s'"
 
 func initConstraints() error {
 	aDB, err := getDB("")
@@ -178,23 +180,34 @@ func getDB(tenantID string) (*gorm.DB, error) {
 	}
 	tDB, ok := db.tDB[tenantID]
 	if ok {
-		return tDB, nil
+		return getDBSession(tDB, tenantID)
 	}
 	lock.Lock()
 	defer lock.Unlock()
 	tDB, ok = db.tDB[tenantID]
 	if ok {
-		return tDB, nil
+		return getDBSession(tDB, tenantID)
 	}
 	var err error
 	tDB, err = gorm.Open(postgres.Open(os.Getenv("TDSN")), &gorm.Config{})
 	if err != nil {
 		return nil, err
 	}
-	setQuery := fmt.Sprintf("SET myapp.current_tenant_id = '%s'", tenantID)
-	dbConn := tDB.Exec(setQuery)
-	db.tDB[tenantID] = dbConn
+	db.tDB[tenantID] = tDB
 
 	tDB = db.tDB[tenantID]
-	return tDB, nil
+	return getDBSession(tDB, tenantID)
+}
+
+func getDBSession(conn *gorm.DB, tenantID string) (*gorm.DB, error) {
+	session := conn.Session(&gorm.Session{
+		// TODO add more attributes https://gorm.io/docs/session.html if necessary
+		Logger: gormLogger.Default.LogMode(gormLogger.Info),
+	}).
+		Exec(fmt.Sprintf(setTenantIDSQL, tenantID))
+	if session.Error != nil {
+		return nil, session.Error
+	}
+	return session, nil
+
 }
