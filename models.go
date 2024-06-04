@@ -55,6 +55,40 @@ type Company struct {
 }
 
 type Language struct {
-	Code string `gorm:"primarykey"`
+	Code string `gorm:"primaryKey"`
 	Name string
+}
+
+type Department struct {
+	TenantID       string     `gorm:"size:50;primaryKey"`
+	DepartmentID   string     `gorm:"size:50;primaryKey"`
+	DepartmentName string     `gorm:"size:255"`
+	Employees      []Employee `gorm:"foreignKey:TenantID,DepartmentID;references:TenantID,DepartmentID"`
+}
+
+type Employee struct {
+	TenantID     string `gorm:"size:50;primaryKey"`
+	EmployeeID   string `gorm:"size:50;primaryKey"`
+	EmployeeName string `gorm:"size:255"`
+	DepartmentID string `gorm:"size:50"`
+}
+
+type Audit struct {
+	AuditID   string `gorm:"size:50;primaryKey"`
+	AuditDesc string `gorm:"size:255"`
+}
+
+// TableName setting
+func (Employee) TableName() string {
+	return "employee"
+}
+
+// TableName setting
+func (Department) TableName() string {
+	return "department"
+}
+
+// TableName setting
+func (Audit) TableName() string {
+	return "audit"
 }
