@@ -38,8 +38,8 @@ type Account struct {
 type Pet struct {
 	gorm.Model
 	UserID *uint
-	Name   string
-	Toy    Toy `gorm:"polymorphic:Owner;"`
+	Name   string `gorm:"default:null"`
+	Toy    Toy    `gorm:"polymorphic:Owner;"`
 }
 
 type Toy struct {
