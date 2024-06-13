@@ -1,20 +1,32 @@
 package main
 
 import (
+	"log"
+	"os"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+type M struct {
+	ID uint64 `gorm:"primarykey"`
+	I  string `gorm:"uniqueIndex:idx_name"`
+	I2 string `gorm:"uniqueIndex:idx_name"`
+}
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+func Test(t *testing.T) {
+	r := require.New(t)
+	db, err := gorm.Open(sqlite.Open("test.sqlite3?_journal=WAL"), &gorm.Config{
+		Logger: logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags),
+			logger.Config{
+				LogLevel: logger.Info,
+			},
+		),
+	})
+	r.NoError(err)
+	db.AutoMigrate(&M{})
 }
