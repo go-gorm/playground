@@ -39,6 +39,7 @@ func main() {
 	u := &User{
 		Name: "test_name",
 	}
+	// db.Create sets UpdatedAt to the current time, shouldn't it be null?
 	err = db.Create(u).Error
 	if err != nil {
 		panic(err)
@@ -52,6 +53,7 @@ func main() {
 		ID:   u.ID,
 		Name: "update_name",
 	}
+	// db.Save updates UpdatedAt with a zero value. Then throws an error.
 	err = db.Save(u).Error
 	if err != nil {
 		panic(err)
