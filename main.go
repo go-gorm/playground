@@ -53,7 +53,7 @@ func main() {
 		ID:   u.ID,
 		Name: "update_name",
 	}
-	// db.Save updates UpdatedAt with a zero value. Then throws an error.
+	// db.Save updates CreatedAt with a zero value. Then throws an error.
 	err = db.Save(u).Error
 	if err != nil {
 		panic(err)
