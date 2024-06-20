@@ -8,13 +8,50 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Part struct {
+	PartID  int    `gorm:"column:part_id;not null"`
+	Variant string `gorm:"not null"`
+}
+
+type Batch struct {
+	Part
+	ProdCode string `gorm:"primarykey;not null"`
+	ProdDate string `gorm:"not null"`
+}
+
+type PartCatalog struct {
+	IndustryCode string `gorm:"not null"`
+	IndustryName string `gorm:"not null"`
+	InternalPart Part   `gorm:"embedded;primarykey;not null"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.AutoMigrate(&PartCatalog{}, &Batch{})
 
-	DB.Create(&user)
+	part1 := &PartCatalog{
+		IndustryCode: "RE189",
+		IndustryName: "Rotary Expulsion System",
+		InternalPart: Part{
+			PartID: 19,
+			Variant: "3-WH46"
+		},
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	part2 := &PartCatalog{
+		IndustryCode: "AC177",
+		IndustryName: "Titanium Ball Bearing",
+		InternalPart: Part{
+			PartID: 120,
+			Variant: "1-BE47"
+		},
+	}
+
+	DB.Create(&part1, &part2)
+
+	first := &PartCatalog{}
+	if err := DB.First(&first); err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	} else if first.InternalPart.PartID != 19 {
+		t.Errorf("Failed, this should not be first by primary key: %v", first.InternalPart.PartID)
 	}
 }
