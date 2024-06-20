@@ -44,7 +44,7 @@ type Pet struct {
 
 type Toy struct {
 	gorm.Model
-	Name      string
+	Name      string `gorm:"type:varchar;default:''"`
 	OwnerID   string
 	OwnerType string
 }
