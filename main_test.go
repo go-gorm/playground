@@ -8,13 +8,26 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+//func TestGORM(t *testing.T) {
+//	user := User{Name: "jinzhu"}
+//
+//	DB.Create(&user)
+//
+//	var result User
+//	if err := DB.First(&result, user.ID).Error; err != nil {
+//		t.Errorf("Failed, got error: %v", err)
+//	}
+//}
 
+func TestGORMorCondition(t *testing.T) {
+	user := User{Name: "jinzhu"}
 	DB.Create(&user)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	ret := make([]*User, 0)
+	id := []uint32{1}
+	db := DB
+	for _, id := range id {
+		db = db.Or("id = ?", id)
 	}
+	db.Find(&ret)
 }
