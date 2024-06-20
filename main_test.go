@@ -1,6 +1,7 @@
 package main
 
 import (
+	"strconv"
 	"testing"
 )
 
@@ -9,12 +10,23 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	positiveInf, _ := strconv.ParseFloat("+Inf", 64)
+	negativeInf, _ := strconv.ParseFloat("-Inf", 64)
 
-	DB.Create(&user)
+	testCases := []User{
+		{Point: 0.0},         // Will pass
+		{Point: positiveInf}, // Fail
+		{Point: negativeInf}, // Fail
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	for _, tc := range testCases {
+		if err := DB.Create(&tc).Error; err != nil {
+			t.Errorf("Failed, got error: %v", err)
+		}
+
+		var result User
+		if err := DB.First(&result, tc.ID).Error; err != nil {
+			t.Errorf("Failed, got error: %v", err)
+		}
 	}
 }
