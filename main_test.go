@@ -15,7 +15,7 @@ func TestGORM(t *testing.T) {
 
 	var result User
 
-	if err := DB.Where("id = ?", user.ID).First(&result).Update("name", "jinzhu 2").Error; err != nil {
+	if err := DB.First(&result, user.ID).Update("name", "jinzhu 2").Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
