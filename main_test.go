@@ -2,6 +2,8 @@ package main
 
 import (
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -11,7 +13,7 @@ import (
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
+	DB.Session(&gorm.Session{}).Create(&user)
 
 	var result User
 
