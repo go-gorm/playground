@@ -16,7 +16,6 @@ type User struct {
 	Name      string
 	Age       uint
 	Birthday  *time.Time
-	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
 	CompanyID *int
@@ -27,12 +26,26 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	DepotID   *uint
+	Depot     Depot
+	Account   Account
 }
 
 type Account struct {
 	gorm.Model
-	UserID sql.NullInt64
-	Number string
+	UserID  sql.NullInt64
+	Number  string
+	User    *User
+	DepotID *uint
+	Depot   Depot
+}
+
+type Depot struct {
+	ID        int
+	Name      string
+	User      *User
+	CompanyID *int
+	Company   Company
 }
 
 type Pet struct {
@@ -50,8 +63,10 @@ type Toy struct {
 }
 
 type Company struct {
-	ID   int
-	Name string
+	ID     int
+	Name   string
+	UserID *int
+	User   *User
 }
 
 type Language struct {
