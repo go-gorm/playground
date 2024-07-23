@@ -1,20 +1,23 @@
 package main
 
 import (
-	"testing"
+    "testing"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Author struct {
+    ID      string `gorm:"primaryKey"`
+    Books []Book   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;unique"`
+}
+
+type Book struct {
+    ID       string `gorm:"primaryKey"`
+    AuthorID string
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+    DB.AutoMigrate(&Author{}, &Book{})
 }
