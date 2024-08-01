@@ -2,3 +2,4 @@ gorm
 go.sum
 .*
 *.db
+vendor
