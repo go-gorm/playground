@@ -37,10 +37,11 @@ func TestGORM(t *testing.T) {
 		)
 	}).First(&out)
 
-	mock.ExpectQuery(regexp.QuoteMeta(`SELECT * FROM "users" WHERE "active" = $1 AND ("id" = $2 or "name" = $3) AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`)).
-		WithArgs(true, id, name).
-		WillReturnRows(sqlmock.NewRows([]string{"id"}).
-			AddRow(id))
+	mock.ExpectQuery(
+		regexp.QuoteMeta(
+			`SELECT * FROM "users" WHERE "active" = $1 AND ("id" = $2 or "name" = $3) AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`,
+		),
+	).WithArgs(true, id, name)
 
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Fatal(err)
