@@ -39,9 +39,9 @@ func TestGORM(t *testing.T) {
 
 	mock.ExpectQuery(
 		regexp.QuoteMeta(
-			`SELECT * FROM "users" WHERE "active" = $1 AND ("id" = $2 or "name" = $3) AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT 1`,
+			`SELECT * FROM "users" WHERE "active" = $1 AND ("id" = $2 or "name" = $3) AND "users"."deleted_at" IS NULL ORDER BY "users"."id" LIMIT $7`,
 		),
-	).WithArgs(true, id, name)
+	).WithArgs(true, id, name, 1)
 
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Fatal(err)
