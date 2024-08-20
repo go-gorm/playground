@@ -8,13 +8,25 @@ import (
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
+type Book struct {
+	BookID int    `gorm:"column:book_id;autoIncrement:true;autoIncrementIncrement:10"`
+	Name   string `gorm:"column:name;type:varchar(255)"`
+}
+
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	err := DB.AutoMigrate(&Book{})
+	if err != nil {
+		t.Error(err.Error())
+	}
+	var increment int
+	err = DB.Raw(`select increment from information_schema.sequences where sequence_name = 'books_book_id_seq'`).
+		Scan(&increment).Error
+	if err != nil {
+		t.Error(err.Error())
+	}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// should be 10, but actually get 1
+	if increment != 10 {
+		t.Error("auto increment should be 10, but get", increment)
 	}
 }
