@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
@@ -105,4 +106,12 @@ func RunMigrations() {
 			os.Exit(1)
 		}
 	}
+}
+
+func Transaction(ctx context.Context, db *gorm.DB, apply func(ctx context.Context, db *gorm.DB) error) error {
+	return db.
+		WithContext(ctx).
+		Transaction(func(db *gorm.DB) error {
+			return apply(ctx, db)
+		})
 }
