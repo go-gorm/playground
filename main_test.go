@@ -28,7 +28,7 @@ func TestGORM(t *testing.T) {
 		err := Transaction(ctx, tx, func(ctx context.Context, tx *gorm.DB) error {
 			user := User{Name: "jinzhu"}
 			var account Account
-			err := DB.Create(&user).Error
+			err := tx.Create(&user).Error
 			if err != nil {
 				return err
 			}
