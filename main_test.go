@@ -13,16 +13,15 @@ import (
 
 func TestGORM(t *testing.T) {
 	// Create a wrapping transaction
-	user := User{Name: "jinzhu"}
 
-	DB.Create(&user)
-	var account Account
 	err := Transaction(context.Background(), DB, func(ctx context.Context, tx *gorm.DB) error {
 		// Within this, create a transaction that retrieves a user, and then
 		// creates another transaction that retrieves the account, but errors,
 		// and bubble that error up.
-		return Transaction(ctx, tx, func(ctx context.Context, tx *gorm.DB) error {
-			err := tx.First(&user, 1).Error
+		_ = Transaction(ctx, tx, func(ctx context.Context, tx *gorm.DB) error {
+			user := User{Name: "jinzhu"}
+			var account Account
+			err := DB.Create(&user).Error
 			if err != nil {
 				return err
 			}
@@ -43,9 +42,16 @@ func TestGORM(t *testing.T) {
 				return nil
 			})
 		})
+		// We discard the inner transaction error, which allows us to commit this outer
+		// transaction (which does nothing), even if the inner fails.
+		return nil
 	})
 
-	if err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	// Since we have rolled back the inner transaction, we expect that
+	// no user was created, since we should have rolled that back.
+	var user User
+	err = DB.First(&user, "name = ?", "jinzhu").Error
+	if err == nil {
+		t.Errorf("User was created, despite erroring inside the transaction")
 	}
 }
