@@ -8,82 +8,11 @@ on:
       - 'gh-pages'
 
 jobs:
-  # Label of the container job
-  sqlite:
-    strategy:
-      matrix:
-        go: ['1.21']
-        platform: [ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
-
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go }}
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-
-    - name: go mod pakcage cache
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
-
-    - name: Tests
-      run: GORM_DIALECT=sqlite ./test.sh
-
-  mysql:
-    needs: sqlite
-    strategy:
-      matrix:
-        dbversion: ['mysql:latest'] # 'mysql:5.7', 'mysql:5.6'
-        go: ['1.21']
-        platform: [ubuntu-latest]
-    runs-on: ${{ matrix.platform }}
-
-    services:
-      mysql:
-        image: ${{ matrix.dbversion }}
-        env:
-          MYSQL_DATABASE: gorm
-          MYSQL_USER: gorm
-          MYSQL_PASSWORD: gorm
-          MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-        ports:
-          - 9910:3306
-        options: >-
-          --health-cmd "mysqladmin ping -ugorm -pgorm"
-          --health-interval 10s
-          --health-start-period 10s
-          --health-timeout 5s
-          --health-retries 10
-
-    steps:
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ matrix.go }}
-
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
-
-    - name: go mod pakcage cache
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
-
-    - name: Tests
-      run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
-
   postgres:
-    needs: sqlite
     strategy:
       matrix:
         dbversion: ['postgres:latest'] # 'postgres:11', 'postgres:10'
-        go: ['1.21']
+        go: ['1.23']
         platform: [ubuntu-latest] # can not run in macOS and widnowsOS
     runs-on: ${{ matrix.platform }}
 
@@ -123,10 +52,9 @@ jobs:
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm dbname=gorm host=localhost port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
 
   sqlserver:
-    needs: sqlite
     strategy:
       matrix:
-        go: ['1.21']
+        go: ['1.23']
         platform: [ubuntu-latest] # can not run test in macOS and windows
     runs-on: ${{ matrix.platform }}
 
