@@ -72,11 +72,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
 	}
 
-	if debug := os.Getenv("DEBUG"); debug == "true" {
-		db.Logger = db.Logger.LogMode(logger.Info)
-	} else if debug == "false" {
-		db.Logger = db.Logger.LogMode(logger.Silent)
-	}
+	db.Logger = db.Logger.LogMode(logger.Info)
 
 	return
 }
