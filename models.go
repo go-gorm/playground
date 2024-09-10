@@ -15,6 +15,7 @@ type User struct {
 	gorm.Model
 	Name      string
 	Age       uint
+	Emails    []string
 	Birthday  *time.Time
 	Account   Account
 	Pets      []*Pet
