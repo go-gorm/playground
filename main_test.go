@@ -27,10 +27,10 @@ func TestGORM(t *testing.T) {
 	assert.False(t, results[0].IsExample)
 	assert.Equal(t, results[0].Age, 30)
 
-	// This time, an ampersand character is used in the select string
+	// This time, an at-sign character is used in the select string. This causes the "age" string to not be included
+	// as a column in select, thus resulting in age being a default zero.
 	err = DB.Table("users").Select("name, name = 'test@example.com' as is_example", "age").Scan(&results).Error
 	assert.False(t, results[0].IsExample)
-	// Fails, because the @ causes the Select statement to ignore
 	assert.Equal(t, results[0].Age, 30)
 
 	require.NoError(t, err)
