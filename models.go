@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"time"
 
+	"gopkg.in/guregu/null.v3"
+
 	"gorm.io/gorm"
 )
 
@@ -13,20 +15,21 @@ import (
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
 	gorm.Model
-	Name      string
-	Age       uint
-	Birthday  *time.Time
-	Account   Account
-	Pets      []*Pet
-	Toys      []Toy `gorm:"polymorphic:Owner"`
-	CompanyID *int
-	Company   Company
-	ManagerID *uint
-	Manager   *User
-	Team      []User     `gorm:"foreignkey:ManagerID"`
-	Languages []Language `gorm:"many2many:UserSpeak"`
-	Friends   []*User    `gorm:"many2many:user_friends"`
-	Active    bool
+	Name       string
+	Age        uint
+	Birthday   *time.Time
+	Account    Account
+	Pets       []*Pet
+	Toys       []Toy `gorm:"polymorphic:Owner"`
+	CompanyID  *int
+	Company    Company
+	ManagerID  *uint
+	Manager    *User
+	Team       []User     `gorm:"foreignkey:ManagerID"`
+	Languages  []Language `gorm:"many2many:UserSpeak"`
+	Friends    []*User    `gorm:"many2many:user_friends"`
+	Active     bool
+	OptionalID null.String
 }
 
 type Account struct {
