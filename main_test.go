@@ -22,14 +22,14 @@ func TestGORM(t *testing.T) {
 		Age       int
 	}
 	var results []result
-	err := DB.Table("users").Select("name", "name = 'test example.com' as is_example", "age").Scan(&results).Error
+	err := DB.Table("users").Select("name = 'test example.com' as is_example", "age").Scan(&results).Error
 	require.NoError(t, err)
 	assert.False(t, results[0].IsExample)
 	assert.Equal(t, results[0].Age, 30)
 
 	// This time, an at-sign character is used in the select string. This causes the "age" string to not be included
 	// as a column in select, thus resulting in age being a default zero.
-	err = DB.Table("users").Select("name", "name = 'test@example.com' as is_example", "age").Scan(&results).Error
+	err = DB.Table("users").Select("name = 'test@example.com' as is_example", "age").Scan(&results).Error
 	assert.False(t, results[0].IsExample)
 	assert.Equal(t, results[0].Age, 30)
 
