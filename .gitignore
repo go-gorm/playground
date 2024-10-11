@@ -1,4 +1,5 @@
 gorm
+gen
 go.sum
 .*
 *.db
