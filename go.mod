@@ -33,3 +33,4 @@ require (
 )
 
 replace gorm.io/gorm => ./gorm
+replace gorm.io/gen => ./gen
