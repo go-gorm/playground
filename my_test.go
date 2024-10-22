@@ -3,35 +3,7 @@ package main
 import (
 	"fmt"
 	"testing"
-
-	gomysql "github.com/go-sql-driver/mysql"
 )
-
-func getDatabaseSourceName() string {
-	username := "gorm"
-	password := "gorm"
-	host := "127.0.0.1"
-	port := "9910"
-	name := "gorm"
-
-    cfg := gomysql.Config{
-        User:   username,
-        Passwd: password,
-        Net:    "tcp",
-        Addr:   host + ":" + port,
-        DBName: name,
-        Params: map[string]string{
-            "charset": "utf8mb4",
-            "parseTime": "True",
-            "loc": "Local",
-            "multiStatements": "true",
-        },
-    }
-
-    url := cfg.FormatDSN()
-
-	return url
-}
 
 type Organisation2 struct {
     ID    string `gorm:"primaryKey"`
