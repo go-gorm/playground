@@ -3,6 +3,7 @@ package main
 import (
 	"gorm.io/gen"
 	"gorm.io/gen/examples/dal"
+	"playground/model"
 )
 
 func generate() {
@@ -14,8 +15,11 @@ func generate() {
 	})
 	g.UseDB(dal.DB)
 
-	g.ApplyBasic(Company{}, Language{}) // Associations
-	g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
+	g.ApplyBasic(model.User{})
+	g.ApplyBasic(model.UserExt{})
+	g.ApplyBasic(model.UserAccountRelation{})
+	g.ApplyBasic(model.Account{})
+	g.ApplyBasic(model.Company{})
 
 	g.Execute()
 }
