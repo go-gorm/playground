@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Entity struct {
+	gorm.Model
+	Name           string
+	AdditionalInfo interface{} `gorm:"serializer:json"`
+}
