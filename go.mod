@@ -5,6 +5,7 @@ go 1.22.0
 toolchain go1.23.3
 
 require (
+	ariga.io/atlas-provider-gorm v0.5.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.10
 	gorm.io/driver/sqlite v1.5.6
@@ -14,6 +15,7 @@ require (
 )
 
 require (
+	ariga.io/atlas-go-sdk v0.6.4 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
@@ -30,7 +32,6 @@ require (
 	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/mod v0.22.0 // indirect
 	golang.org/x/sync v0.9.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
 	golang.org/x/text v0.20.0 // indirect
 	golang.org/x/tools v0.27.0 // indirect
 	gorm.io/datatypes v1.2.4 // indirect
