@@ -33,6 +33,13 @@ type Account struct {
 	gorm.Model
 	UserID sql.NullInt64
 	Number string
+	Config AccountConfig `gorm:"type:json;serializer:json"`
+}
+
+type AccountConfig struct {
+	Enabled bool   `json:"enabled"`
+	Foo     string `json:"foo"`
+	Bar     int64  `json:"bar"`
 }
 
 type Pet struct {
