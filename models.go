@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type UniqueUser struct {
+	gorm.Model
+	Name string `gorm:"unique;type:varchar(32)"`
+	Age  uint
+}
