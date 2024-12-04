@@ -11,8 +11,8 @@ import (
 
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu"}
-	if err := DB.Raw("SET @@GLOBAL.wait_timeout=2"); err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	if err := DB.Raw("SET @@GLOBAL.wait_timeout=2").Error; err != nil {
+		t.Errorf("Failed, got error: %+v", err)
 	}
 	time.Sleep(3 * time.Second)
 

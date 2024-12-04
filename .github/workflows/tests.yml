@@ -76,7 +76,7 @@ jobs:
         key: ${{ runner.os }}-go-${{ matrix.go }}-${{ hashFiles('go.mod') }}
 
     - name: Tests
-      run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
+      run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="root:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
 
   postgres:
     needs: sqlite
