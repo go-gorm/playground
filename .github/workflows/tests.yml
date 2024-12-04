@@ -50,7 +50,7 @@ jobs:
           MYSQL_DATABASE: gorm
           MYSQL_USER: gorm
           MYSQL_PASSWORD: gorm
-          MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+          MYSQL_ROOT_PASSWORD: gorm
         ports:
           - 9910:3306
         options: >-
