@@ -39,3 +39,4 @@ require (
 )
 
 replace gorm.io/gorm => ./gorm
+replace gorm.io/driver/postgres => github.com/dashrews78/postgres dashrews-fix-concurrent-index
