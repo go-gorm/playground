@@ -47,6 +47,7 @@ type Toy struct {
 	Name      string
 	OwnerID   string `gorm:"index:owner_id,type:btree,option:CONCURRENTLY"`
 	OwnerType string
+	Extra     string `gorm:"index:,unique,option:NULLS NOT DISTINCT"`
 }
 
 type Company struct {
