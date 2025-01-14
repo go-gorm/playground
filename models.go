@@ -58,3 +58,32 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type A struct {
+	gorm.Model
+	Name string
+}
+
+func (A) TableName() string {
+	return "a"
+}
+
+type B struct {
+	gorm.Model
+	AID  uint `gorm:"a_id"`
+	Name string
+}
+
+func (B) TableName() string {
+	return "b"
+}
+
+type C struct {
+	gorm.Model
+	AID  uint `gorm:"a_id"`
+	Name *string
+}
+
+func (C) TableName() string {
+	return "c"
+}
