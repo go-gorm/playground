@@ -32,6 +32,8 @@ func init() {
 			log.Printf("failed to connect database, got error %v\n", err)
 		}
 
+		sqlDB.SetMaxOpenConns(1)
+
 		RunMigrations()
 		if DB.Dialector.Name() == "sqlite" {
 			DB.Exec("PRAGMA foreign_keys = ON")
@@ -69,7 +71,9 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
 	default:
 		log.Println("testing sqlite3...")
-		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
+		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{
+			PrepareStmt: true, // set this to false and the test passes
+		})
 	}
 
 	if debug := os.Getenv("DEBUG"); debug == "true" {
