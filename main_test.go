@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/netip"
 	"testing"
 )
 
@@ -9,7 +10,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{Name: "jinzhu", NetAddr: netip.MustParseAddr("1.2.3.4")}
 
 	DB.Create(&user)
 
