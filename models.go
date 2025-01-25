@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"net/netip"
 	"time"
 
 	"gorm.io/gorm"
@@ -27,6 +28,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	NetAddr   netip.Addr `gorm:"inet"`
 }
 
 type Account struct {
