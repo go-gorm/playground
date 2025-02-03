@@ -11,9 +11,11 @@ import (
 func TestGORM(t *testing.T) {
 	user := User{Name: "jinzhu", UserType: ADMIN}
 	user2 := User{Name: "jinzhu2", UserType: USER}
+	user3 := User{Name: "jinzhu2", UserType: VIEWER}
 
 	DB.Create(&user)
 	DB.Create(&user2)
+	DB.Create(&user3)
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
