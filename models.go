@@ -11,6 +11,13 @@ import (
 // He works in a Company (belongs to), he has a Manager (belongs to - single-table), and also managed a Team (has many - single-table)
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
+type UserType string
+
+const (
+	ADMIN UserType = "admin"
+	USER UserType = "user"
+)
+
 type User struct {
 	gorm.Model
 	Name      string
@@ -27,6 +34,7 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+	UserType  UserType `gorm:"type:enum('admin', 'user');default:'user'"`
 }
 
 type Account struct {
