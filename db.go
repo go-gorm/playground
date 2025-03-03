@@ -43,7 +43,8 @@ func init() {
 
 func OpenTestConnection() (db *gorm.DB, err error) {
 	dbDSN := os.Getenv("GORM_DSN")
-	switch os.Getenv("GORM_DIALECT") {
+	dialect := os.Getenv("GORM_DIALECT")
+	switch dialect {
 	case "mysql":
 		log.Println("testing mysql...")
 		if dbDSN == "" {
