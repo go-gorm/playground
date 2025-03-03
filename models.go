@@ -19,6 +19,7 @@ type User struct {
 	Account   Account
 	Pets      []*Pet
 	Toys      []Toy `gorm:"polymorphic:Owner"`
+	Area      []int `gorm:"column:area;type:json;not null;comment:数据地址" json:"area"`
 	CompanyID *int
 	Company   Company
 	ManagerID *uint

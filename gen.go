@@ -12,10 +12,10 @@ func generate() {
 
 		WithUnitTest: true,
 	})
-	// g.UseDB(dal.DB)
+	g.UseDB(DB)
 
 	// g.ApplyBasic(Company{}, Language{}) // Associations
-	g.ApplyBasic(g.GenerateModel("user"), g.GenerateModelAs("account", "AccountInfo"))
+	g.ApplyBasic(g.GenerateModel("users"), g.GenerateModelAs("accounts", "AccountInfo"))
 
 	g.Execute()
 }
