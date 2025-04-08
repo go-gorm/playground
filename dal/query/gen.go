@@ -16,54 +16,34 @@ import (
 )
 
 var (
-	Q                   = new(Query)
-	Account             *account
-	Company             *company
-	User                *user
-	UserAccountRelation *userAccountRelation
-	UserExt             *userExt
+	Q    = new(Query)
+	User *user
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
-	Account = &Q.Account
-	Company = &Q.Company
 	User = &Q.User
-	UserAccountRelation = &Q.UserAccountRelation
-	UserExt = &Q.UserExt
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:                  db,
-		Account:             newAccount(db, opts...),
-		Company:             newCompany(db, opts...),
-		User:                newUser(db, opts...),
-		UserAccountRelation: newUserAccountRelation(db, opts...),
-		UserExt:             newUserExt(db, opts...),
+		db:   db,
+		User: newUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Account             account
-	Company             company
-	User                user
-	UserAccountRelation userAccountRelation
-	UserExt             userExt
+	User user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:                  db,
-		Account:             q.Account.clone(db),
-		Company:             q.Company.clone(db),
-		User:                q.User.clone(db),
-		UserAccountRelation: q.UserAccountRelation.clone(db),
-		UserExt:             q.UserExt.clone(db),
+		db:   db,
+		User: q.User.clone(db),
 	}
 }
 
@@ -77,30 +57,18 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:                  db,
-		Account:             q.Account.replaceDB(db),
-		Company:             q.Company.replaceDB(db),
-		User:                q.User.replaceDB(db),
-		UserAccountRelation: q.UserAccountRelation.replaceDB(db),
-		UserExt:             q.UserExt.replaceDB(db),
+		db:   db,
+		User: q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Account             *accountDo
-	Company             *companyDo
-	User                *userDo
-	UserAccountRelation *userAccountRelationDo
-	UserExt             *userExtDo
+	User *userDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Account:             q.Account.WithContext(ctx),
-		Company:             q.Company.WithContext(ctx),
-		User:                q.User.WithContext(ctx),
-		UserAccountRelation: q.UserAccountRelation.WithContext(ctx),
-		UserExt:             q.UserExt.WithContext(ctx),
+		User: q.User.WithContext(ctx),
 	}
 }
 

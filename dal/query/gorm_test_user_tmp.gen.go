@@ -31,76 +31,8 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.CreatedAt = field.NewTime(tableName, "created_at")
 	_user.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_user.DeletedAt = field.NewField(tableName, "deleted_at")
-	_user.UserMainID = field.NewUint(tableName, "user_main_id")
 	_user.Username = field.NewString(tableName, "username")
-	_user.UserExtInfo = userHasOneUserExtInfo{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("UserExtInfo", "model.UserExt"),
-		UserInfo: struct {
-			field.RelationField
-			UserExtInfo struct {
-				field.RelationField
-			}
-			UserAccountRelationInfo struct {
-				field.RelationField
-				UserInfo struct {
-					field.RelationField
-				}
-				AccountInfo struct {
-					field.RelationField
-					CompanyInfo struct {
-						field.RelationField
-					}
-				}
-			}
-		}{
-			RelationField: field.NewRelation("UserExtInfo.UserInfo", "model.User"),
-			UserExtInfo: struct {
-				field.RelationField
-			}{
-				RelationField: field.NewRelation("UserExtInfo.UserInfo.UserExtInfo", "model.UserExt"),
-			},
-			UserAccountRelationInfo: struct {
-				field.RelationField
-				UserInfo struct {
-					field.RelationField
-				}
-				AccountInfo struct {
-					field.RelationField
-					CompanyInfo struct {
-						field.RelationField
-					}
-				}
-			}{
-				RelationField: field.NewRelation("UserExtInfo.UserInfo.UserAccountRelationInfo", "model.UserAccountRelation"),
-				UserInfo: struct {
-					field.RelationField
-				}{
-					RelationField: field.NewRelation("UserExtInfo.UserInfo.UserAccountRelationInfo.UserInfo", "model.User"),
-				},
-				AccountInfo: struct {
-					field.RelationField
-					CompanyInfo struct {
-						field.RelationField
-					}
-				}{
-					RelationField: field.NewRelation("UserExtInfo.UserInfo.UserAccountRelationInfo.AccountInfo", "model.Account"),
-					CompanyInfo: struct {
-						field.RelationField
-					}{
-						RelationField: field.NewRelation("UserExtInfo.UserInfo.UserAccountRelationInfo.AccountInfo.CompanyInfo", "model.Company"),
-					},
-				},
-			},
-		},
-	}
-
-	_user.UserAccountRelationInfo = userHasOneUserAccountRelationInfo{
-		db: db.Session(&gorm.Session{}),
-
-		RelationField: field.NewRelation("UserAccountRelationInfo", "model.UserAccountRelation"),
-	}
+	_user.Status = field.NewInt(tableName, "status")
 
 	_user.fillFieldMap()
 
@@ -110,16 +42,13 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 type user struct {
 	userDo userDo
 
-	ALL         field.Asterisk
-	ID          field.Uint
-	CreatedAt   field.Time
-	UpdatedAt   field.Time
-	DeletedAt   field.Field
-	UserMainID  field.Uint
-	Username    field.String
-	UserExtInfo userHasOneUserExtInfo
-
-	UserAccountRelationInfo userHasOneUserAccountRelationInfo
+	ALL       field.Asterisk
+	ID        field.Uint
+	CreatedAt field.Time
+	UpdatedAt field.Time
+	DeletedAt field.Field
+	Username  field.String
+	Status    field.Int
 
 	fieldMap map[string]field.Expr
 }
@@ -140,8 +69,8 @@ func (u *user) updateTableName(table string) *user {
 	u.CreatedAt = field.NewTime(table, "created_at")
 	u.UpdatedAt = field.NewTime(table, "updated_at")
 	u.DeletedAt = field.NewField(table, "deleted_at")
-	u.UserMainID = field.NewUint(table, "user_main_id")
 	u.Username = field.NewString(table, "username")
+	u.Status = field.NewInt(table, "status")
 
 	u.fillFieldMap()
 
@@ -166,14 +95,13 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 8)
+	u.fieldMap = make(map[string]field.Expr, 6)
 	u.fieldMap["id"] = u.ID
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
 	u.fieldMap["deleted_at"] = u.DeletedAt
-	u.fieldMap["user_main_id"] = u.UserMainID
 	u.fieldMap["username"] = u.Username
-
+	u.fieldMap["status"] = u.Status
 }
 
 func (u user) clone(db *gorm.DB) user {
@@ -184,167 +112,6 @@ func (u user) clone(db *gorm.DB) user {
 func (u user) replaceDB(db *gorm.DB) user {
 	u.userDo.ReplaceDB(db)
 	return u
-}
-
-type userHasOneUserExtInfo struct {
-	db *gorm.DB
-
-	field.RelationField
-
-	UserInfo struct {
-		field.RelationField
-		UserExtInfo struct {
-			field.RelationField
-		}
-		UserAccountRelationInfo struct {
-			field.RelationField
-			UserInfo struct {
-				field.RelationField
-			}
-			AccountInfo struct {
-				field.RelationField
-				CompanyInfo struct {
-					field.RelationField
-				}
-			}
-		}
-	}
-}
-
-func (a userHasOneUserExtInfo) Where(conds ...field.Expr) *userHasOneUserExtInfo {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a userHasOneUserExtInfo) WithContext(ctx context.Context) *userHasOneUserExtInfo {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a userHasOneUserExtInfo) Session(session *gorm.Session) *userHasOneUserExtInfo {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a userHasOneUserExtInfo) Model(m *model.User) *userHasOneUserExtInfoTx {
-	return &userHasOneUserExtInfoTx{a.db.Model(m).Association(a.Name())}
-}
-
-type userHasOneUserExtInfoTx struct{ tx *gorm.Association }
-
-func (a userHasOneUserExtInfoTx) Find() (result *model.UserExt, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a userHasOneUserExtInfoTx) Append(values ...*model.UserExt) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a userHasOneUserExtInfoTx) Replace(values ...*model.UserExt) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a userHasOneUserExtInfoTx) Delete(values ...*model.UserExt) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a userHasOneUserExtInfoTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a userHasOneUserExtInfoTx) Count() int64 {
-	return a.tx.Count()
-}
-
-type userHasOneUserAccountRelationInfo struct {
-	db *gorm.DB
-
-	field.RelationField
-}
-
-func (a userHasOneUserAccountRelationInfo) Where(conds ...field.Expr) *userHasOneUserAccountRelationInfo {
-	if len(conds) == 0 {
-		return &a
-	}
-
-	exprs := make([]clause.Expression, 0, len(conds))
-	for _, cond := range conds {
-		exprs = append(exprs, cond.BeCond().(clause.Expression))
-	}
-	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
-	return &a
-}
-
-func (a userHasOneUserAccountRelationInfo) WithContext(ctx context.Context) *userHasOneUserAccountRelationInfo {
-	a.db = a.db.WithContext(ctx)
-	return &a
-}
-
-func (a userHasOneUserAccountRelationInfo) Session(session *gorm.Session) *userHasOneUserAccountRelationInfo {
-	a.db = a.db.Session(session)
-	return &a
-}
-
-func (a userHasOneUserAccountRelationInfo) Model(m *model.User) *userHasOneUserAccountRelationInfoTx {
-	return &userHasOneUserAccountRelationInfoTx{a.db.Model(m).Association(a.Name())}
-}
-
-type userHasOneUserAccountRelationInfoTx struct{ tx *gorm.Association }
-
-func (a userHasOneUserAccountRelationInfoTx) Find() (result *model.UserAccountRelation, err error) {
-	return result, a.tx.Find(&result)
-}
-
-func (a userHasOneUserAccountRelationInfoTx) Append(values ...*model.UserAccountRelation) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Append(targetValues...)
-}
-
-func (a userHasOneUserAccountRelationInfoTx) Replace(values ...*model.UserAccountRelation) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Replace(targetValues...)
-}
-
-func (a userHasOneUserAccountRelationInfoTx) Delete(values ...*model.UserAccountRelation) (err error) {
-	targetValues := make([]interface{}, len(values))
-	for i, v := range values {
-		targetValues[i] = v
-	}
-	return a.tx.Delete(targetValues...)
-}
-
-func (a userHasOneUserAccountRelationInfoTx) Clear() error {
-	return a.tx.Clear()
-}
-
-func (a userHasOneUserAccountRelationInfoTx) Count() int64 {
-	return a.tx.Count()
 }
 
 type userDo struct{ gen.DO }
