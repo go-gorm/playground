@@ -58,3 +58,7 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Change struct {
+	RecID int64 `gorm:"column:recid;type:decimal(9,0);not null;autoIncrement:false" json:"recid"`
+}
