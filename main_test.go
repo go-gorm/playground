@@ -15,13 +15,24 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&categories)
 
+	var counter int
 	var categorys []Category
+	counter = 0
 	result := DB.Unscoped().Debug().
 		FindInBatches(&categorys, 5, func(tx *gorm.DB, batch int) error {
+			for _, category := range categorys {
+				if category.CategoryID > 0 {
+					counter = counter + 1
+				}
+			}
 			return nil
 		})
 	if result.Error != nil {
 		t.Errorf("FindInBatches Error = %s", result.Error)
+		t.Fail()
+	}
+	if counter != len(categories) {
+		t.Errorf("number of records returned incorrect, expected %d received %d", len(categories), counter)
 		t.Fail()
 	}
 }
