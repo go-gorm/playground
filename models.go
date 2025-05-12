@@ -58,3 +58,8 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Category struct {
+	LabelID    uint `gorm:"primaryKey;autoIncrement:false"`
+	CategoryID uint `gorm:"primaryKey;autoIncrement:false"`
+}
