@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -42,6 +46,8 @@ func init() {
 }
 
 func OpenTestConnection() (db *gorm.DB, err error) {
+	config := &gorm.Config{PrepareStmt: true}
+
 	dbDSN := os.Getenv("GORM_DSN")
 	switch os.Getenv("GORM_DIALECT") {
 	case "mysql":
@@ -49,13 +55,23 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
 		}
-		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(mysql.Open(dbDSN), config)
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
-			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai pool_max_conns=2"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
+		var poolConfig *pgxpool.Config
+		if poolConfig, err = pgxpool.ParseConfig(dbDSN); err != nil {
+			break
+		}
+		var pool *pgxpool.Pool
+		if pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig); err != nil {
+			break
+		}
+		conn := stdlib.OpenDBFromPool(pool)
+		dialector := postgres.New(postgres.Config{Conn: conn})
+		db, err = gorm.Open(dialector, config)
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
@@ -66,7 +82,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(sqlserver.Open(dbDSN), config)
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
