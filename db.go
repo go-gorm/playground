@@ -1,11 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -55,9 +59,19 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
-			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
+			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai pool_max_conns=2"
 		}
-		db, err = gorm.Open(postgres.Open(dbDSN), config)
+		var poolConfig *pgxpool.Config
+		if poolConfig, err = pgxpool.ParseConfig(dbDSN); err != nil {
+			break
+		}
+		var pool *pgxpool.Pool
+		if pool, err = pgxpool.NewWithConfig(context.Background(), poolConfig); err != nil {
+			break
+		}
+		conn := stdlib.OpenDBFromPool(pool)
+		dialector := postgres.New(postgres.Config{Conn: conn})
+		db, err = gorm.Open(dialector, config)
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
 		// CREATE DATABASE gorm;
