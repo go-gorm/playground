@@ -18,3 +18,13 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+func TestAutoMigrateDecimal(t *testing.T) {
+	err := DB.AutoMigrate(Change{})
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	err = DB.AutoMigrate(Change{})
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+}
