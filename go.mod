@@ -37,4 +37,4 @@ require (
 	gorm.io/plugin/dbresolver v1.6.0 // indirect
 )
 
-replace gorm.io/gorm => ./gorm
+// replace gorm.io/gorm => ./gorm
