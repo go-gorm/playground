@@ -58,3 +58,17 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type App struct {
+	ID   int
+	Name string
+
+	Envs []*Env `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+type Env struct {
+	ID    int
+	AppID int    `gorm:"uniqueIndex:idx_app_id_key"`
+	Key   string `gorm:"size:64; uniqueIndex:idx_app_id_key"`
+	Value string
+}
