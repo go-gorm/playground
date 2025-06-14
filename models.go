@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Man struct {
+	Id   int `gorm:"primaryKey"`
+	Name string
+	Age  int
+}
