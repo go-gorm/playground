@@ -44,3 +44,4 @@ We are using the following configuration run your code (GORM's latest master bra
 We have prepared some structs with relationships in [https://github.com/go-gorm/playground/blob/master/models.go](https://github.com/go-gorm/playground/blob/master/models.go) that you can use for your tests
 
 ## Happy Hacking!
+

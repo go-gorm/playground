@@ -35,7 +35,7 @@ jobs:
       run: GORM_DIALECT=sqlite ./test.sh
 
   mysql:
-    needs: sqlite
+    # needs: sqlite
     strategy:
       matrix:
         dbversion: ['mysql:latest'] # 'mysql:5.7', 'mysql:5.6'
@@ -79,7 +79,7 @@ jobs:
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=mysql GORM_DSN="gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True" ./test.sh
 
   postgres:
-    needs: sqlite
+    # needs: sqlite
     strategy:
       matrix:
         dbversion: ['postgres:latest'] # 'postgres:11', 'postgres:10'
@@ -123,7 +123,7 @@ jobs:
       run: GORM_ENABLE_CACHE=true GORM_DIALECT=postgres GORM_DSN="user=gorm password=gorm dbname=gorm host=localhost port=9920 sslmode=disable TimeZone=Asia/Shanghai" ./test.sh
 
   sqlserver:
-    needs: sqlite
+    # needs: sqlite
     strategy:
       matrix:
         go: ['1.24']
