@@ -1,20 +1,42 @@
 package main
 
 import (
+	"math/rand"
 	"testing"
+
+	"gorm.io/gorm"
 )
+
+func (x *User) BeforeCreate(tx *gorm.DB) error {
+	if x.ID == 0 {
+		x.ID = uint(rand.Uint32())
+	}
+
+	return nil
+}
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
-
+// TEST_DRIVERS: sqlserver
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	manager := &User{
+		Name: "Manager",
+	}
+	user1 := User{
+		Name:    "jinzhu1",
+		Manager: manager,
+	}
+	user2 := User{
+		Name:    "jinzhu2",
+		Manager: manager,
+	}
+	user3 := User{
+		Name:    "jinzhu3",
+		Manager: manager,
+	}
 
-	DB.Create(&user)
-
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	tx := DB.Create([]*User{&user1, &user2, &user3})
+	if tx.Error != nil {
+		t.Errorf("Failed, got error: %v", tx.Error)
 	}
 }
