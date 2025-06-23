@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"math/rand"
 	"os"
@@ -83,15 +84,45 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+	allModels := []interface{}{&TableOne{}, &TableTwo{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Printf("failed to connect database, got error %v\n", err)
+	}
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
+	var createSchemaStatement string
+	var dropSchemaStatement string
+	switch DB.Dialector.Name() {
+	case "sqlite", "mysql":
+		// DB user doesn't have CREATE SCHEMA permissions for these DBs
+		return
+	case "postgres":
+		dropSchemaStatement = "DROP SCHEMA IF EXISTS \"my_schema\""
+		createSchemaStatement = "CREATE SCHEMA IF NOT EXISTS \"my_schema\""
+	case "sqlserver":
+		dropSchemaStatement = "DROP SCHEMA my_schema"
+		createSchemaStatement = "CREATE SCHEMA my_schema"
+	}
+
+	if _, err := sqlDB.ExecContext(
+		context.Background(),
+		dropSchemaStatement,
+	); err != nil {
+		log.Printf("failed to drop custom schema, got error %v\n", err)
+	}
 
 	if err = DB.Migrator().DropTable(allModels...); err != nil {
 		log.Printf("Failed to drop table, got error %v\n", err)
 		os.Exit(1)
+	}
+
+	if _, err := sqlDB.ExecContext(
+		context.Background(),
+		createSchemaStatement,
+	); err != nil {
+		log.Printf("failed to create custom schema, got error %v\n", err)
 	}
 
 	if err = DB.AutoMigrate(allModels...); err != nil {
