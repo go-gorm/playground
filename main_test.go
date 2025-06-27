@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
 	"testing"
+
+	"gorm.io/gorm"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -17,4 +20,15 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	DB.Model(user).Select([]string{"name", "age"}).Updates(User{
+		Name: "test",
+		Age:  22,
+	})
+
+	// only update name field, how to change age
+	gorm.G[User](DB).Select("name").Updates(context.TODO(), User{
+		Name: "test",
+		Age:  0,
+	})
 }
