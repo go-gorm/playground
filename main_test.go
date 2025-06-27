@@ -9,7 +9,7 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	user := User{Name: "jinzhu", Emails: []string{"dummy-email"}}
 
 	DB.Create(&user)
 
