@@ -15,19 +15,19 @@ func TestGORM(t *testing.T) {
 	DB.Create(&user)
 
 	if user.ID != 0 {
-		fmt.Printf("User '%s': User (%d) was created", user.Name, user.ID)
+		fmt.Printf("User '%s': User (%d) was created\n", user.Name, user.ID)
 	} else {
-		t.Errorf("User '%s': User creation failed", user.Name)
+		t.Errorf("User '%s': User creation failed\n", user.Name)
 	}
 
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+		t.Errorf("Failed, got error: %v\n", err)
 	}
 
 	if result.ID != 0 {
-		fmt.Printf("User (%d): User (%d) was fetched", user.ID, result.ID)
+		fmt.Printf("User (%d): User (%d) was fetched\n", user.ID, result.ID)
 	} else {
-		t.Errorf("User (%d): User could not be fetched", user.ID)
+		t.Errorf("User (%d): User could not be fetched\n", user.ID)
 	}
 }
