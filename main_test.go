@@ -1,7 +1,8 @@
 package main
 
-import (
+import (	
 	"testing"
+	"fmt"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
@@ -13,8 +14,20 @@ func TestGORM(t *testing.T) {
 
 	DB.Create(&user)
 
+	if user.ID != 0 {
+		fmt.Printf("User '%s': User (%d) was created", user.Name, user.ID)
+	} else {
+		t.Errorf("Failed, got error: %v", err)
+	}
+
 	var result User
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
+	}
+
+	if result.ID != 0 {
+		fmt.Printf("User (%d): User (%d) was fetched", user.ID, result.ID)
+	} else {
+		t.Errorf("User (%d): User could not be fetched", user.ID)
 	}
 }
