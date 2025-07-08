@@ -17,7 +17,7 @@ func TestGORM(t *testing.T) {
 	if user.ID != 0 {
 		fmt.Printf("User '%s': User (%d) was created", user.Name, user.ID)
 	} else {
-		t.Errorf("Failed, got error: %v", err)
+		t.Errorf("User '%s': User creation failed", user.Name)
 	}
 
 	var result User
