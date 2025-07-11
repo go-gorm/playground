@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,9 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	// Replaced default ID with UUID.
+	ID uuid.UUID `gorm:"type:uuid;default:gen_random_uuid();primaryKey"`
+
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -27,6 +30,10 @@ type User struct {
 	Languages []Language `gorm:"many2many:UserSpeak"`
 	Friends   []*User    `gorm:"many2many:user_friends"`
 	Active    bool
+
+	// Add self referential UUID foreign key.
+	CreatedBy uuid.UUID `gorm:"type:uuid;not null"`
+	Creator   *User     `gorm:"foreignKey:CreatedBy;references:ID"`
 }
 
 type Account struct {
