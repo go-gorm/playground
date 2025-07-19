@@ -47,7 +47,7 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	case "mysql":
 		log.Println("testing mysql...")
 		if dbDSN == "" {
-			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
+			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8mb4"
 		}
 		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
 	case "postgres":
