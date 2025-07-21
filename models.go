@@ -65,7 +65,3 @@ type TestStruct struct {
 	UpdatedAt time.Time
 	Value     string
 }
-
-func (TestStruct) TableName() string {
-	return "test_schema.test_structs"
-}
