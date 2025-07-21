@@ -58,3 +58,10 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type TestStruct struct {
+	ID        uint `gorm:"primarykey,autoIncrement"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	Value     string
+}

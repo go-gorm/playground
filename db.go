@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"gorm.io/gorm/schema"
 )
 
 var DB *gorm.DB
@@ -22,23 +23,24 @@ func init() {
 	if DB, err = OpenTestConnection(); err != nil {
 		log.Printf("failed to connect database, got error %v\n", err)
 		os.Exit(1)
-	} else {
-		sqlDB, err := DB.DB()
-		if err == nil {
-			err = sqlDB.Ping()
-		}
-
-		if err != nil {
-			log.Printf("failed to connect database, got error %v\n", err)
-		}
-
-		RunMigrations()
-		if DB.Dialector.Name() == "sqlite" {
-			DB.Exec("PRAGMA foreign_keys = ON")
-		}
-
-		DB.Logger = DB.Logger.LogMode(logger.Info)
 	}
+
+	sqlDB, err := DB.DB()
+	if err == nil {
+		err = sqlDB.Ping()
+	}
+
+	if err != nil {
+		log.Printf("failed to connect database, got error %v\n", err)
+	}
+
+	RunMigrations()
+	if DB.Dialector.Name() == "sqlite" {
+		DB.Exec("PRAGMA foreign_keys = ON")
+	}
+
+	DB.Logger = DB.Logger.LogMode(logger.Info)
+
 }
 
 func OpenTestConnection() (db *gorm.DB, err error) {
@@ -66,7 +68,17 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		if dbDSN == "" {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
-		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{
+			NamingStrategy: schema.NamingStrategy{TablePrefix: "testing_schema."},
+		})
+		db.Exec(`
+			IF NOT EXISTS(
+				SELECT * FROM sys.schemas WHERE name = 'testing_schema'
+			)
+			BEGIN
+				EXEC('CREATE SCHEMA testing_schema')
+			END
+		`)
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
@@ -83,7 +95,8 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+
+	allModels := []interface{}{&Company{}, &TestStruct{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
