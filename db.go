@@ -67,6 +67,14 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 			dbDSN = "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
 		}
 		db, err = gorm.Open(sqlserver.Open(dbDSN), &gorm.Config{})
+		db.Exec(`
+			IF NOT EXISTS(
+				SELECT * FROM sys.schemas WHERE name = 'test_schema'
+			)
+			BEGIN
+				EXEC('CREATE SCHEMA test_schema')
+			END
+		`)
 	default:
 		log.Println("testing sqlite3...")
 		db, err = gorm.Open(sqlite.Open(filepath.Join(os.TempDir(), "gorm.db")), &gorm.Config{})
@@ -83,7 +91,8 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 
 func RunMigrations() {
 	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+
+	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}, &TestStruct{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
