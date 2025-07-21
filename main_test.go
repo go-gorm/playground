@@ -12,7 +12,6 @@ import (
 
 func TestGORM(t *testing.T) {
 	var result *gorm.DB
-	var ts TestStruct
 
 	// Try inserting into DB without manually specifying identity column value
 	workTestStruct := TestStruct{Value: "hello"}
@@ -21,7 +20,8 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed to create workTestStruct: %+v", err)
 	}
 
-	if err := DB.First(&ts, workTestStruct.ID).Error; err != nil {
+	var ts1 TestStruct
+	if err := DB.First(&ts1, workTestStruct.ID).Error; err != nil {
 		t.Errorf("Failed to read workTestStruct, got error: %v", err)
 	}
 
@@ -33,7 +33,8 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed to create failTestStruct: %+v", err)
 	}
 
-	if err := DB.First(&ts, failTestStruct.ID).Error; err != nil {
+	var ts2 TestStruct
+	if err := DB.First(&ts2, failTestStruct.ID).Error; err != nil {
 		t.Errorf("Failed to read failTestStruct, got error: %v", err)
 	}
 }
