@@ -88,13 +88,6 @@ func RunMigrations() {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
-
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
-	}
-
 	if err = DB.AutoMigrate(allModels...); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
 		os.Exit(1)
