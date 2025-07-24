@@ -43,7 +43,7 @@ func TestUserAccountWithCompanyCreate(t *testing.T) {
 		t.Errorf("Company '%s': Company creation failed\n", company.Name)
 	}
 
-	user := User{Name: "Test User No. 3", CompanyID: company.ID, Company: company}
+	user := User{Name: "Test User No. 3", CompanyID: &company.ID, Company: company}
 
 	DB.Create(&user)
 
@@ -55,12 +55,12 @@ func TestUserAccountWithCompanyCreate(t *testing.T) {
 
 	account := Account{Number: "UserAccount-3", UserID: user.ID}
 
-	DB.Create(&user)
+	DB.Create(&account)
 
-	if user.ID != 0 {
+	if account.ID != 0 {
 		fmt.Printf("Account '%s': Account (%d) was created\n", Account.Number, Account.ID)
 	} else {
-		t.Errorf("Account '%s': Account creation failed\n", user.Name)
+		t.Errorf("Account '%s': Account creation failed\n", Account.Number)
 	}
 
 	var fetchedUser User
