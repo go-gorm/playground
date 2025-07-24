@@ -88,6 +88,11 @@ func RunMigrations() {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
+	if err = DB.AutoMigrate(&Company{}, &Language{}, &User{}); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
+		os.Exit(1)
+	}
+
 	if err = DB.AutoMigrate(allModels...); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
 		os.Exit(1)
