@@ -59,9 +59,9 @@ func TestUserAccountWithCompanyCreate(t *testing.T) {
 	DB.Create(&account)
 
 	if account.ID != 0 {
-		fmt.Printf("Account '%s': Account (%d) was created\n", Account.Number, Account.ID)
+		fmt.Printf("Account '%s': Account (%d) was created\n", account.Number, account.ID)
 	} else {
-		t.Errorf("Account '%s': Account creation failed\n", Account.Number)
+		t.Errorf("Account '%s': Account creation failed\n", account.Number)
 	}
 
 	var fetchedUser User
