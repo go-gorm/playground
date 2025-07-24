@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	"database/sql"
 	"fmt"
 )
 
@@ -53,7 +54,7 @@ func TestUserAccountWithCompanyCreate(t *testing.T) {
 		t.Errorf("User '%s': User creation failed\n", user.Name)
 	}
 
-	account := Account{Number: "UserAccount-3", UserID: user.ID}
+	account := Account{Number: "UserAccount-3", UserID: sql.NullInt64{Int64: int64(user.ID), Valid: true}}
 
 	DB.Create(&account)
 
