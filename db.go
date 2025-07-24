@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"fmt"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -47,9 +48,10 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	case "mysql":
 		log.Println("testing mysql...")
 		if dbDSN == "" {
-			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
+			dbDSN = "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8mb4"
 		}
 		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
+		log.Printf("db dmp: %#v\n", db)
 	case "postgres":
 		log.Println("testing postgres...")
 		if dbDSN == "" {
@@ -87,10 +89,10 @@ func RunMigrations() {
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
 
-	DB.Migrator().DropTable("user_friends", "user_speaks")
+	fmt.Println("Model Migrations: Migrations starting ...")
 
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
+	if err = DB.AutoMigrate(&Company{}, &Language{}, &User{}); err != nil {
+		log.Printf("Failed to auto migrate, but got error %v\n", err)
 		os.Exit(1)
 	}
 
