@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"fmt"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -87,6 +88,8 @@ func RunMigrations() {
 	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
 	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+
+	fmt.Println("Model Migrations: Migrations starting ...")
 
 	if err = DB.AutoMigrate(&Company{}, &Language{}, &User{}); err != nil {
 		log.Printf("Failed to auto migrate, but got error %v\n", err)
