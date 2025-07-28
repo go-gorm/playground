@@ -26,13 +26,17 @@ func TestUpdateTime(t *testing.T) {
 		{ProductId: 2, Price: 150, SomeTime: time.Now()},
 	}
 
-	DB.Save(prices)
+	if err := DB.Save(prices).Error; err != nil {
+		t.Errorf("Failed to save: %v", err)
+	}
 
 	// Change time for the second model, and persist models
 	tim := time.Now().Add(-10000 * time.Hour)
 	prices[1].SomeTime = tim
 
-	DB.Save(prices)
+	if err := DB.Save(prices).Error; err != nil {
+		t.Errorf("Failed to save: %v", err)
+	}
 
 	var p Price
 	if err := DB.First(&p, 2).Error; err != nil {
