@@ -58,3 +58,9 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+type Price struct {
+	ProductId int       `gorm:"primaryKey"`
+	Price     int       `gorm:"default:1"`
+	SomeTime  time.Time `gorm:"default:'2015-10-22T14:00:00Z'"`
+}
