@@ -18,3 +18,18 @@ func TestGORM(t *testing.T) {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
+
+func TestTableNameWithDash(t *testing.T) {
+	table := &TableNameWithDash{}
+
+	if err := DB.Migrator().DropTable(table); err != nil {
+		t.Fatalf("Failed to drop table, got error %v\n", err)
+	}
+
+	if err := DB.AutoMigrate(&TableNameWithDash{}); err != nil {
+		t.Fatalf("Failed to migrate, got error %v\n", err)
+	}
+	if err := DB.AutoMigrate(&TableNameWithDash{}); err != nil {
+		t.Errorf("Failed to re-migrate, got error %v\n", err)
+	}
+}
