@@ -58,3 +58,10 @@ type Language struct {
 	Code string `gorm:"primarykey"`
 	Name string
 }
+
+// Tree model to reproduce boolean default value bug
+type Tree struct {
+	ID        uint    `json:"id" gorm:"primaryKey"`
+	IsAlive   bool    `json:"is_alive" gorm:"default:true"`
+	Height    float64 `json:"height" gorm:"type:FLOAT"`
+}
