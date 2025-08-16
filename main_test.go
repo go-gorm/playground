@@ -9,12 +9,22 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	DB.AutoMigrate(&Aster{}, &Bold{})
+	//DB.Delete(&Bold{}, DB.Where("true = ?", true))
+	//DB.Delete(&Aster{}, DB.Where("true = ?", true))
 
-	DB.Create(&user)
+	dataTest := Aster{
+		Name: "Sergio",
+		Bolds: &[]Bold{
+			{Tech: "Go"},
+			{Tech: "Python"},
+		},
+	}
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
+	DB.Create(&dataTest)
+
+	var result *Aster
+	if err := DB.Joins("Bolds").First(&result).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
 }
