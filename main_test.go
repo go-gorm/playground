@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gorm.io/gorm"
 	"testing"
 )
 
@@ -9,12 +10,21 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := User{Name: "jinzhu"}
+	// I have used Postgres for the test
+	userWithAssignedID := User{
+		Model: gorm.Model{ // first create with an assigned ID -> record is successfully inserted
+			ID: 1,
+		},
+		Name: "jinzhu",
+	}
 
-	DB.Create(&user)
+	DB.Create(&userWithAssignedID)
 
-	var result User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	userWithoutAssignedID := User{
+		Name: "jinzhu", // Since the ID 1 is already assigned to a record, ideally GORM should
+	} // have checked and used the next available sequence value.
+	err := DB.Create(&userWithoutAssignedID).Error
+	if err != nil {
+		t.Error(err.Error())
 	}
 }

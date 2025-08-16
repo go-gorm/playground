@@ -36,5 +36,3 @@ require (
 	gorm.io/hints v1.1.2 // indirect
 	gorm.io/plugin/dbresolver v1.6.0 // indirect
 )
-
-replace gorm.io/gorm => ./gorm
