@@ -9,7 +9,7 @@ fi
 
 [ -d gorm ] || (echo "git clone --depth 1 -b $(grep GORM_BRANCH main_test.go | awk '{print $3}') $(grep GORM_REPO main_test.go | awk '{print $3}')"; git clone --depth 1 -b $(grep GORM_BRANCH main_test.go | awk '{print $3}') $(grep GORM_REPO main_test.go | awk '{print $3}'))
 
-go get -u -t ./...
+go get -t ./...
 
 
 # SqlServer for Mac M1
