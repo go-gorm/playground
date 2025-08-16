@@ -40,7 +40,7 @@ for dialect in "${dialects[@]}" ; do
     if [[ $(grep TEST_DRIVER main_test.go) =~ "${dialect}" ]]
     then
       echo "testing ${dialect}..."
-      GORM_DIALECT=${dialect} go test -race -count=1 -v ./...
+      GORM_DIALECT=${dialect} go test -race -count=1 -timeout 30s -v ./...
     else
       echo "skip ${dialect}..."
     fi
