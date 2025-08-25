@@ -53,9 +53,14 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 		db, err = gorm.Open(mysql.Open(dbDSN), &gorm.Config{})
 	case "postgres":
 		log.Println("testing postgres...")
-		if dbDSN == "" {
-			dbDSN = "user=gorm password=gorm host=localhost dbname=gorm port=9920 sslmode=disable TimeZone=Asia/Shanghai"
-		}
+		// Absolutely insane but all golang psql libraries require you to pass a sslcert and key
+		// EVEN thought RDS does not support this. So just generate a dummy cert and key. via:
+		// > openssl req -x509 -newkey rsa:2048 -keyout /tmp/dummy.key -out /tmp/dummy.cert -days 365 
+		// -nodes -subj "/C=US/ST=State/L=City/O=Organization/CN=localhost"
+		dbDSN := fmt.Sprintf("host=localhost port=5432 user=assembly_admin password=%s dbname=assembly_prod 
+		sslmode=require sslrootcert=%s/Documents/aws-rds-cert.pem sslcert=/tmp/dummy.cert sslkey=/tmp/
+		dummy.key",
+			os.Getenv("PGPASSWORD"), os.Getenv("HOME"))
 		db, err = gorm.Open(postgres.Open(dbDSN), &gorm.Config{})
 	case "sqlserver":
 		// CREATE LOGIN gorm WITH PASSWORD = 'LoremIpsum86';
