@@ -13,6 +13,7 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	. "gorm.io/playground/models"
 )
 
 var DB *gorm.DB
