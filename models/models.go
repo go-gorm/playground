@@ -12,7 +12,7 @@ import (
 // He speaks many languages (many to many) and has many friends (many to many - single-table)
 // His pet also has one Toy (has one - polymorphic)
 type User struct {
-	gorm.Model
+	*gorm.Model
 	Name      string
 	Age       uint
 	Birthday  *time.Time
@@ -30,7 +30,7 @@ type User struct {
 }
 
 type Account struct {
-	gorm.Model
+	*gorm.Model
 	UserID sql.NullInt64
 	Number string
 }
