@@ -2,34 +2,30 @@ package main
 
 import (
 	"testing"
-
-	"gorm.io/playground/models"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
+// TEST_DRIVERS: mysql
 
 func TestGORM(t *testing.T) {
-	user := models.User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result models.User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	type GormBugTest struct {
+		IDS []string `gorm:"serializer:json;column:ids;type:varchar(1000);not null;default:'名称';comment:ids" json:"ids"`
 	}
+
+	for i := 0; i < 3; i++ {
+		// If a field in a database table uses the serializer tag and AutoMigrate is used,
+		// then even if there are no changes to this field
+		// ,AutoMigrate will still perform an ALTER on the table every time.
+
+		// This will alter the ids field of the GormBugTest table four times,
+		// even though the field hasn't changed at all.
+		err := DB.AutoMigrate(GormBugTest{})
+		if err != nil {
+			t.Errorf("Failed, got error: %v", err)
+		}
+	}
+
+	t.Log("This will alter the ids field of the GormBugTest table four times,even though the field hasn't changed at all.")
+	t.Log("这里会alter四次GormBugTest表的ids字段 虽然字段没有任何变化")
 }
-
-// func TestGORMGen(t *testing.T) {
-// 	user := models.User{Name: "jinzhu2"}
-// 	ctx := context.Background()
-
-// 	gorm.G[models.User](DB).Create(ctx, &user)
-
-// 	if u, err := gorm.G[models.User](DB).Where(g.User.ID.Eq(user.ID)).First(ctx); err != nil {
-// 		t.Errorf("Failed, got error: %v", err)
-// 	} else if u.Name != user.Name {
-// 		t.Errorf("Failed, got user name: %v", u.Name)
-// 	}
-// }
