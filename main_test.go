@@ -11,25 +11,27 @@ import (
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
 func TestGORM(t *testing.T) {
-	user := models.User{Name: "jinzhu"}
+	acc := models.Account{Number: "foo"}
+	DB.Create(&acc)
+	acc2 := models.Account{Number: "baz"}
+	DB.Create(&acc2)
+
+	user := models.User{AccountId: &acc.ID, Name: "Bar"}
 
 	DB.Create(&user)
 
-	var result models.User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
+	var user2 = models.User{}
+	DB.Preload("Account").Where(models.User{Name: "Bar"}).FirstOrInit(&user2)
+
+	id_backup := acc2.ID
+
+	// This should update the AccountId to acc2.ID.
+	// However, when a relation was loaded before, this will actually reset back to acc.ID
+	// When using nullable fields like here, it will also overwrite the ID in acc2
+	user2.AccountId = &acc2.ID
+	DB.Save(&user2)
+
+	if  *user2.AccountId != id_backup {
+		t.Errorf("Account ID not properly saved: %v", *user2.AccountId)
 	}
 }
-
-// func TestGORMGen(t *testing.T) {
-// 	user := models.User{Name: "jinzhu2"}
-// 	ctx := context.Background()
-
-// 	gorm.G[models.User](DB).Create(ctx, &user)
-
-// 	if u, err := gorm.G[models.User](DB).Where(g.User.ID.Eq(user.ID)).First(ctx); err != nil {
-// 		t.Errorf("Failed, got error: %v", err)
-// 	} else if u.Name != user.Name {
-// 		t.Errorf("Failed, got user name: %v", u.Name)
-// 	}
-// }
