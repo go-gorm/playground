@@ -1,8 +1,8 @@
 package main
 
 import (
+	"gorm.io/gorm/schema"
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
 	"time"
@@ -13,34 +13,69 @@ import (
 	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	. "gorm.io/playground/models"
 )
 
-var DB *gorm.DB
+var (
+	GormDB *gorm.DB
+)
 
-func init() {
-	var err error
-	if DB, err = OpenTestConnection(); err != nil {
-		log.Printf("failed to connect database, got error %v\n", err)
-		os.Exit(1)
-	} else {
-		sqlDB, err := DB.DB()
-		if err == nil {
-			err = sqlDB.Ping()
-		}
-
-		if err != nil {
-			log.Printf("failed to connect database, got error %v\n", err)
-		}
-
-		RunMigrations()
-		if DB.Dialector.Name() == "sqlite" {
-			DB.Exec("PRAGMA foreign_keys = ON")
-		}
-
-		DB.Logger = DB.Logger.LogMode(logger.Info)
+// Config gorm 自定义配置
+func Config() *gorm.Config {
+	return &gorm.Config{
+		// 自定义日志记录器
+		Logger: logger.New(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+			SlowThreshold: 200 * time.Millisecond, // 慢查询的门槛 200毫秒
+			LogLevel:      logger.Info,            // 日志级别
+			Colorful:      true,                   // 启用彩色输出
+		}),
+		// 命名策略
+		NamingStrategy: schema.NamingStrategy{
+			TablePrefix:   "",    // 表名前缀
+			SingularTable: false, // true启用单数表名（false默认是复数表名）
+		},
+		// 设置为 true 后，GORM 在迁移时不会自动添加外键约束。适用于不需要外键约束的场景
+		DisableForeignKeyConstraintWhenMigrating: true,
 	}
 }
+
+func init() {
+	pgsqlConfig := postgres.Config{
+		DSN:                  "host=127.0.0.1 user=postgres password=admin dbname=go-gva port=5432 sslmode=disable TimeZone=Asia/Shanghai",
+		PreferSimpleProtocol: false,
+	}
+	if db, err := gorm.Open(postgres.New(pgsqlConfig), Config()); err != nil {
+		return
+	} else {
+		sqlDB, _ := db.DB()
+		sqlDB.SetMaxIdleConns(10)
+		sqlDB.SetMaxOpenConns(100)
+		GormDB = db
+	}
+}
+
+//func init() {
+//	var err error
+//	if DB, err = OpenTestConnection(); err != nil {
+//		log.Printf("failed to connect database, got error %v\n", err)
+//		os.Exit(1)
+//	} else {
+//		sqlDB, err := DB.DB()
+//		if err == nil {
+//			err = sqlDB.Ping()
+//		}
+//
+//		if err != nil {
+//			log.Printf("failed to connect database, got error %v\n", err)
+//		}
+//
+//		RunMigrations()
+//		if DB.Dialector.Name() == "sqlite" {
+//			DB.Exec("PRAGMA foreign_keys = ON")
+//		}
+//
+//		DB.Logger = DB.Logger.LogMode(logger.Info)
+//	}
+//}
 
 func OpenTestConnection() (db *gorm.DB, err error) {
 	dbDSN := os.Getenv("GORM_DSN")
@@ -82,28 +117,28 @@ func OpenTestConnection() (db *gorm.DB, err error) {
 	return
 }
 
-func RunMigrations() {
-	var err error
-	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
-	rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
-
-	DB.Migrator().DropTable("user_friends", "user_speaks")
-
-	if err = DB.Migrator().DropTable(allModels...); err != nil {
-		log.Printf("Failed to drop table, got error %v\n", err)
-		os.Exit(1)
-	}
-
-	if err = DB.AutoMigrate(allModels...); err != nil {
-		log.Printf("Failed to auto migrate, but got error %v\n", err)
-		os.Exit(1)
-	}
-
-	for _, m := range allModels {
-		if !DB.Migrator().HasTable(m) {
-			log.Printf("Failed to create table for %#v\n", m)
-			os.Exit(1)
-		}
-	}
-}
+//func RunMigrations() {
+//	var err error
+//	allModels := []interface{}{&User{}, &Account{}, &Pet{}, &Company{}, &Toy{}, &Language{}}
+//	rand.Seed(time.Now().UnixNano())
+//	rand.Shuffle(len(allModels), func(i, j int) { allModels[i], allModels[j] = allModels[j], allModels[i] })
+//
+//	DB.Migrator().DropTable("user_friends", "user_speaks")
+//
+//	if err = DB.Migrator().DropTable(allModels...); err != nil {
+//		log.Printf("Failed to drop table, got error %v\n", err)
+//		os.Exit(1)
+//	}
+//
+//	if err = DB.AutoMigrate(allModels...); err != nil {
+//		log.Printf("Failed to auto migrate, but got error %v\n", err)
+//		os.Exit(1)
+//	}
+//
+//	for _, m := range allModels {
+//		if !DB.Migrator().HasTable(m) {
+//			log.Printf("Failed to create table for %#v\n", m)
+//			os.Exit(1)
+//		}
+//	}
+//}
