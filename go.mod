@@ -1,8 +1,6 @@
 module gorm.io/playground
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.25.0
 
 require (
 	gorm.io/driver/mysql v1.6.0
