@@ -19,6 +19,11 @@ func TestGORM(t *testing.T) {
 	if err := DB.First(&result, user.ID).Error; err != nil {
 		t.Errorf("Failed, got error: %v", err)
 	}
+
+	gorm.G[User](DB).where("id = ?", 1).Updates(context.TODO(), map[string]any{
+		Name: "test",
+		Age:  0,
+	})
 }
 
 // func TestGORMGen(t *testing.T) {
