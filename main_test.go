@@ -1,35 +1,54 @@
 package main
 
 import (
+	"context"
+	"strings"
+	"sync/atomic"
 	"testing"
+	"time"
 
-	"gorm.io/playground/models"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-// GORM_REPO: https://github.com/go-gorm/gorm.git
-// GORM_BRANCH: master
-// TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
-
-func TestGORM(t *testing.T) {
-	user := models.User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result models.User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+type DefaultNullDemo struct {
+	ID  uint   `gorm:"primarykey"`
+	Key string `gorm:"size:255;default:NULL"`
 }
 
-// func TestGORMGen(t *testing.T) {
-// 	user := models.User{Name: "jinzhu2"}
-// 	ctx := context.Background()
+type Counter struct {
+	logger.Interface
+	count int64
+}
 
-// 	gorm.G[models.User](DB).Create(ctx, &user)
+func (a *Counter) Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error) {
+	sql, _ := fc()
+	if strings.HasPrefix(strings.ToUpper(strings.TrimSpace(sql)), "ALTER TABLE") {
+		atomic.AddInt64(&a.count, 1)
+	}
+	a.Interface.Trace(ctx, begin, fc, err)
+}
 
-// 	if u, err := gorm.G[models.User](DB).Where(g.User.ID.Eq(user.ID)).First(ctx); err != nil {
-// 		t.Errorf("Failed, got error: %v", err)
-// 	} else if u.Name != user.Name {
-// 		t.Errorf("Failed, got user name: %v", u.Name)
-// 	}
-// }
+func TestPGDefaultNullAlterColumn(t *testing.T) {
+
+	// 首次：CreateTable
+	if err := DB.AutoMigrate(&DefaultNullDemo{}); err != nil {
+		t.Fatal(err)
+	}
+
+	// 第二次：装上计数 logger，期望 0 条 ALTER
+	counter := &Counter{Interface: DB.Logger}
+	session := DB.Session(&gorm.Session{Logger: counter})
+	if err := session.AutoMigrate(&DefaultNullDemo{}); err != nil {
+		t.Fatal(err)
+	}
+	if err := DB.AutoMigrate(&DefaultNullDemo{}); err != nil {
+		t.Fatal(err)
+	}
+
+	if counter.count > 0 {
+		t.Fatalf("expected 0 ALTER statements on second AutoMigrate, got %d", counter.count)
+	} else {
+		t.Log("ok")
+	}
+}
