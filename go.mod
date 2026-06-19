@@ -1,8 +1,6 @@
 module gorm.io/playground
 
-go 1.24.0
-
-toolchain go1.24.3
+go 1.25.7
 
 require (
 	gorm.io/driver/mysql v1.6.0
@@ -32,7 +30,6 @@ require (
 	golang.org/x/sync v0.16.0 // indirect
 	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/tools v0.36.0 // indirect
-	gorm.io/cmd/gorm v0.1.1-0.20250825094947-30e7d4fa1f1f // indirect
 	gorm.io/datatypes v1.2.5 // indirect
 	gorm.io/hints v1.1.2 // indirect
 	gorm.io/plugin/dbresolver v1.6.0 // indirect
