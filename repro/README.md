@@ -77,5 +77,6 @@ GORM_DIALECT=postgres GORM_DSN="$GORM_DSN" \
   go test -mod=mod -run '^TestGORM$/pointer=false/configured=false/count=1$' -v
 ```
 
-The standalone module pins driver v1.6.3; the root playground module retains
-upstream dependency declarations, and its normal `test.sh` refreshes them.
+The standalone module pins driver v1.6.3; the root playground uses upstream driver declarations, and its normal
+`test.sh` refreshes them. An unused `gorm.io/cmd/gorm` indirect requirement was
+removed because its unavailable vanity import blocked CI before tests could run.
