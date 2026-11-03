@@ -1,4 +1,3 @@
 gorm
-go.sum
 .*
 *.db
