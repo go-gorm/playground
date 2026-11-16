@@ -1,35 +1,58 @@
 package main
 
 import (
+	"context"
 	"testing"
 
-	"gorm.io/playground/models"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // GORM_REPO: https://github.com/go-gorm/gorm.git
 // GORM_BRANCH: master
 // TEST_DRIVERS: sqlite, mysql, postgres, sqlserver
 
-func TestGORM(t *testing.T) {
-	user := models.User{Name: "jinzhu"}
-
-	DB.Create(&user)
-
-	var result models.User
-	if err := DB.First(&result, user.ID).Error; err != nil {
-		t.Errorf("Failed, got error: %v", err)
-	}
+type HookUser struct {
+	ID         uint
+	Name       string
+	HookCalled bool `gorm:"-"`
 }
 
-// func TestGORMGen(t *testing.T) {
-// 	user := models.User{Name: "jinzhu2"}
-// 	ctx := context.Background()
+func (u *HookUser) BeforeUpdate(tx *gorm.DB) error {
+	u.HookCalled = true
+	return nil
+}
 
-// 	gorm.G[models.User](DB).Create(ctx, &user)
+func TestGORM(t *testing.T) {
+	ctx := context.Background()
 
-// 	if u, err := gorm.G[models.User](DB).Where(g.User.ID.Eq(user.ID)).First(ctx); err != nil {
-// 		t.Errorf("Failed, got error: %v", err)
-// 	} else if u.Name != user.Name {
-// 		t.Errorf("Failed, got user name: %v", u.Name)
-// 	}
-// }
+	t.Run("traditional API invokes pointer hook", func(t *testing.T) {
+		user := HookUser{}
+		tx := DB.Session(&gorm.Session{
+			DryRun:                 true,
+			SkipDefaultTransaction: true,
+		}).WithContext(ctx).Model(&user).
+			Where("id = ?", 1).
+			Updates(map[string]any{"name": "updated"})
+		if tx.Error != nil {
+			t.Fatal(tx.Error)
+		}
+		if !user.HookCalled {
+			t.Fatal("BeforeUpdate was not called")
+		}
+	})
+
+	t.Run("generics Set Update supports pointer hook", func(t *testing.T) {
+		db := DB.Session(&gorm.Session{
+			DryRun:                 true,
+			SkipDefaultTransaction: true,
+		})
+		_, err := gorm.G[HookUser](db).
+			Where("id = ?", 1).
+			Set(clause.Assignments(map[string]any{"name": "updated"})).
+			Update(ctx)
+		if err != nil {
+			t.Fatalf("expected pointer hook to work as in traditional API, got: %v", err)
+		}
+	})
+}
